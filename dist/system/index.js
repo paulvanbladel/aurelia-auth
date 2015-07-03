@@ -1,16 +1,13 @@
-System.register(['./authFilter', './baseConfig', './authService', './authorizeStep'], function (_export) {
+System.register(['./baseConfig', './authService', './authorizeStep', './authFilter'], function (_export) {
 	'use strict';
 
-	var AuthFilterValueConverter, BaseConfig;
+	var BaseConfig;
 
 	_export('configure', configure);
 
 	function configure(aurelia, configCallback) {
 		var version = 'versie 1.0.10';
 
-		var authFilterValueConverter = new AuthFilterValueConverter();;
-
-		aurelia.container.registerSingleton(AuthFilterValueConverter, authFilterValueConverter);
 		var baseConfig = aurelia.container.get(BaseConfig);
 		if (configCallback !== undefined && typeof configCallback === 'function') {
 			configCallback(baseConfig);
@@ -18,14 +15,14 @@ System.register(['./authFilter', './baseConfig', './authService', './authorizeSt
 	}
 
 	return {
-		setters: [function (_authFilter) {
-			AuthFilterValueConverter = _authFilter.AuthFilterValueConverter;
-		}, function (_baseConfig) {
+		setters: [function (_baseConfig) {
 			BaseConfig = _baseConfig.BaseConfig;
 		}, function (_authService) {
 			_export('AuthService', _authService.AuthService);
 		}, function (_authorizeStep) {
 			_export('AuthorizeStep', _authorizeStep.AuthorizeStep);
+		}, function (_authFilter) {
+			_export('AuthFilterValueConverter', _authFilter.AuthFilterValueConverter);
 		}],
 		execute: function () {
 			;

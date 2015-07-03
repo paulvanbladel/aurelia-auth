@@ -1,6 +1,6 @@
 {
   "name": "aureliauth",
-  "version": "1.0.12",
+  "version": "1.0.13",
   "description": "Plugin for social media authentication and local authentication ",
   "main": "dist/commonjs/index.js",
   "scripts": {

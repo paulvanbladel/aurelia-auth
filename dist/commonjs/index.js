@@ -5,8 +5,6 @@ Object.defineProperty(exports, '__esModule', {
 });
 exports.configure = configure;
 
-var _authFilter = require('./authFilter');
-
 var _baseConfig = require('./baseConfig');
 
 var _authService = require('./authService');
@@ -27,12 +25,18 @@ Object.defineProperty(exports, 'AuthorizeStep', {
 	}
 });
 
+var _authFilter = require('./authFilter');
+
+Object.defineProperty(exports, 'AuthFilterValueConverter', {
+	enumerable: true,
+	get: function get() {
+		return _authFilter.AuthFilterValueConverter;
+	}
+});
+
 function configure(aurelia, configCallback) {
 	var version = 'versie 1.0.10';
 
-	var authFilterValueConverter = new _authFilter.AuthFilterValueConverter();;
-
-	aurelia.container.registerSingleton(_authFilter.AuthFilterValueConverter, authFilterValueConverter);
 	var baseConfig = aurelia.container.get(_baseConfig.BaseConfig);
 	if (configCallback !== undefined && typeof configCallback === 'function') {
 		configCallback(baseConfig);
