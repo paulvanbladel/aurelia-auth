@@ -6,7 +6,7 @@ System.register(['./authService', './baseConfig'], function (_export) {
 	_export('configure', configure);
 
 	function configure(aurelia, configCallback) {
-		var version = 'versie 1.0.5';
+		var version = 'versie 1.0.6';
 		var baseConfig = aurelia.container.get(BaseConfig);
 		if (configCallback !== undefined && typeof configCallback === 'function') {
 			configCallback(baseConfig);
