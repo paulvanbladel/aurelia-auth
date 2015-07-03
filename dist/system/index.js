@@ -8,9 +8,9 @@ System.register(['./authFilter', './baseConfig', './authService', './authorizeSt
 	function configure(aurelia, configCallback) {
 		var version = 'versie 1.0.10';
 
-		var authFilterValueConverter = aurelia.container.get(AuthFilterValueConverter);
+		var authFilterValueConverter = new AuthFilterValueConverter();;
 
-		aurelia.withSingleton(AuthFilterValueConverter, authFilterValueConverter);
+		aurelia.container.registerSingleton(AuthFilterValueConverter, authFilterValueConverter);
 		var baseConfig = aurelia.container.get(BaseConfig);
 		if (configCallback !== undefined && typeof configCallback === 'function') {
 			configCallback(baseConfig);

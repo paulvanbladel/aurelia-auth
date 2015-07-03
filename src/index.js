@@ -16,9 +16,9 @@ export function configure(aurelia, configCallback){
 	
 	//aurelia.globalizeResources('./hello-world');
 	
-	var authFilterValueConverter = aurelia.container.get(AuthFilterValueConverter);
+	var authFilterValueConverter = new AuthFilterValueConverter();;
 
-	aurelia.withSingleton(AuthFilterValueConverter, authFilterValueConverter);
+	aurelia.container.registerSingleton(AuthFilterValueConverter, authFilterValueConverter);
 	var baseConfig = aurelia.container.get(BaseConfig);
 	if(configCallback !== undefined && typeof(configCallback) === 'function')
 	{
