@@ -1,6 +1,6 @@
 {
   "name": "aureliauth",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "Plugin for social media authentication and local authentication ",
   "main": "dist/commonjs/index.js",
   "scripts": {
@@ -48,8 +48,10 @@
     "packages": "jspm_packages"
   },
   "jspm": {
+    "main": "index",
+    "format": "register",
     "directories": {
-      "doc": "doc"
+      "lib": "dist/system"
     },
     "dependencies": {
       "aurelia-framework": "github:aurelia/framework@^0.13.0",

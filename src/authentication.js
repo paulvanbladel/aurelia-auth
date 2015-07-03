@@ -11,7 +11,6 @@ export class Authentication{
                 + this.config.tokenName : this.config.tokenName;
   }
 
-  
 getLoginUrl() {
   return  this.config.baseUrl ? authUtils.joinUrl(this.config.baseUrl, this.config.loginUrl) : this.config.loginUrl;
 };
