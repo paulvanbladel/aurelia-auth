@@ -17,6 +17,12 @@ define(['exports', './authFilter', './baseConfig', './authService', './authorize
 			return _authorizeStep.AuthorizeStep;
 		}
 	});
+	Object.defineProperty(exports, 'AuthFilterValueConverter', {
+		enumerable: true,
+		get: function get() {
+			return _authFilter.AuthFilterValueConverter;
+		}
+	});
 
 	function configure(aurelia, configCallback) {
 		var version = 'versie 1.0.15';

@@ -19,6 +19,8 @@ System.register(['./authFilter', './baseConfig', './authService', './authorizeSt
 	return {
 		setters: [function (_authFilter) {
 			AuthFilterValueConverter = _authFilter.AuthFilterValueConverter;
+
+			_export('AuthFilterValueConverter', _authFilter.AuthFilterValueConverter);
 		}, function (_baseConfig) {
 			BaseConfig = _baseConfig.BaseConfig;
 		}, function (_authService) {
