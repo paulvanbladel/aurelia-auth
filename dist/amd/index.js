@@ -1,4 +1,4 @@
-define(['exports', './authService', './authorizeStep', './authFilter', './baseConfig'], function (exports, _authService, _authorizeStep, _authFilter, _baseConfig) {
+define(['exports', './baseConfig', './authService', './authorizeStep', './authFilter'], function (exports, _baseConfig, _authService, _authorizeStep, _authFilter) {
 	'use strict';
 
 	Object.defineProperty(exports, '__esModule', {
@@ -25,7 +25,7 @@ define(['exports', './authService', './authorizeStep', './authFilter', './baseCo
 	});
 
 	function configure(aurelia, configCallback) {
-		var version = 'versie 1.0.7';
+		var version = 'versie 1.0.9';
 		var baseConfig = aurelia.container.get(_baseConfig.BaseConfig);
 		if (configCallback !== undefined && typeof configCallback === 'function') {
 			configCallback(baseConfig);
