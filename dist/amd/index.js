@@ -13,6 +13,7 @@ define(['exports', './authService', './baseConfig'], function (exports, _authSer
 	});
 
 	function configure(aurelia, configCallback) {
+		var version = 'versie 1.0.4';
 		var baseConfig = aurelia.container.get(_baseConfig.BaseConfig);
 		if (configCallback !== undefined && typeof configCallback === 'function') {
 			configCallback(baseConfig);
