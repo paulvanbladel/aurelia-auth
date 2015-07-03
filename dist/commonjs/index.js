@@ -5,8 +5,6 @@ Object.defineProperty(exports, '__esModule', {
 });
 exports.configure = configure;
 
-var _authFilter = require('./authFilter');
-
 var _baseConfig = require('./baseConfig');
 
 var _authService = require('./authService');
@@ -24,12 +22,6 @@ Object.defineProperty(exports, 'AuthorizeStep', {
 	enumerable: true,
 	get: function get() {
 		return _authorizeStep.AuthorizeStep;
-	}
-});
-Object.defineProperty(exports, 'AuthFilterValueConverter', {
-	enumerable: true,
-	get: function get() {
-		return _authFilter.AuthFilterValueConverter;
 	}
 });
 

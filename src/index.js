@@ -3,9 +3,9 @@ export {AuthService} from './authService';
 
 //import {AuthorizeStep} from './authorizeStep';
 export {AuthorizeStep} from './authorizeStep';
-import {AuthFilterValueConverter} from './authFilter';
+/*import {AuthFilterValueConverter} from './authFilter';
 export {AuthFilterValueConverter} from './authFilter';
-
+*/
 import {BaseConfig} from './baseConfig';
 
 

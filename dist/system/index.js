@@ -1,7 +1,7 @@
-System.register(['./authFilter', './baseConfig', './authService', './authorizeStep'], function (_export) {
+System.register(['./baseConfig', './authService', './authorizeStep'], function (_export) {
 	'use strict';
 
-	var AuthFilterValueConverter, BaseConfig;
+	var BaseConfig;
 
 	_export('configure', configure);
 
@@ -17,11 +17,7 @@ System.register(['./authFilter', './baseConfig', './authService', './authorizeSt
 	}
 
 	return {
-		setters: [function (_authFilter) {
-			AuthFilterValueConverter = _authFilter.AuthFilterValueConverter;
-
-			_export('AuthFilterValueConverter', _authFilter.AuthFilterValueConverter);
-		}, function (_baseConfig) {
+		setters: [function (_baseConfig) {
 			BaseConfig = _baseConfig.BaseConfig;
 		}, function (_authService) {
 			_export('AuthService', _authService.AuthService);
