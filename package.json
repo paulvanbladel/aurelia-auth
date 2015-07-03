@@ -1,0 +1,65 @@
+{
+  "name": "aureliauth",
+  "version": "1.0.0",
+  "description": "Plugin for social media authentication and local authentication ",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/paulvanbladel/aureliauth.git"
+  },
+  "keywords": [
+    "aurelia",
+    "oauth"
+  ],
+  "author": "paul van bladel",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/paulvanbladel/aureliauth/issues"
+  },
+  "homepage": "https://github.com/paulvanbladel/aureliauth#readme",
+  "devDependencies": {
+    "aurelia-tools": "^0.1.7",
+    "conventional-changelog": "0.0.11",
+    "del": "^1.1.0",
+    "gulp": "^3.8.10",
+    "gulp-babel": "^5.1.0",
+    "gulp-bump": "^0.1.11",
+    "gulp-jshint": "^1.9.0",
+    "gulp-yuidoc": "^0.1.2",
+    "jasmine-core": "^2.1.3",
+    "jshint-stylish": "^1.0.0",
+    "karma": "^0.12.28",
+    "karma-babel-preprocessor": "^5.2.1",
+    "karma-chrome-launcher": "^0.1.7",
+    "karma-coverage": "^0.3.1",
+    "karma-jasmine": "^0.3.5",
+    "karma-jspm": "^1.1.5",
+    "object.assign": "^1.0.3",
+    "require-dir": "^0.1.0",
+    "run-sequence": "^1.0.2",
+    "vinyl-paths": "^1.0.0",
+    "yargs": "^2.1.1"
+  },
+  "directories": {
+    "doc": "doc",
+    "packages": "jspm_packages"
+  },
+  "jspm": {
+    "directories": {
+      "doc": "doc"
+    },
+    "dependencies": {
+      "aurelia-framework": "github:aurelia/framework@^0.13.0",
+      "aurelia-http-client": "github:aurelia/http-client@^0.10.0",
+      "aurelia-router": "github:aurelia/router@^0.10.0"
+    },
+    "devDependencies": {
+      "babel": "npm:babel-core@^5.1.13",
+      "babel-runtime": "npm:babel-runtime@^5.1.13",
+      "core-js": "npm:core-js@^0.9.4"
+    }
+  }
+}
