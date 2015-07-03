@@ -21,7 +21,7 @@ define(['exports', './authFilter', './baseConfig', './authService', './authorize
 	function configure(aurelia, configCallback) {
 		var version = 'versie 1.0.15';
 
-		aurelia.withResources(_authFilter.AuthFilterValueConverter);
+		aurelia.globalizeResources(_authFilter.AuthFilterValueConverter);
 
 		var baseConfig = aurelia.container.get(_baseConfig.BaseConfig);
 		if (configCallback !== undefined && typeof configCallback === 'function') {
