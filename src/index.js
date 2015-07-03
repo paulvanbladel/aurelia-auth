@@ -14,7 +14,7 @@ import {BaseConfig} from './baseConfig';
 export function configure(aurelia, configCallback){
 	var version = "versie 1.0.15";
 	
-	aurelia.globalizeResources(AuthFilterValueConverter);
+	aurelia.globalizeResources('.authFilter');
 /*	var authFilterValueConverter = new AuthFilterValueConverter();;
 	aurelia.container.registerSingleton(AuthFilterValueConverter, authFilterValueConverter);
 */
