@@ -8,7 +8,7 @@ System.register(['./authFilter', './baseConfig', './authService', './authorizeSt
 	function configure(aurelia, configCallback) {
 		var version = 'versie 1.0.15';
 
-		aurelia.globalizeResources('.authFilter');
+		aurelia.globalizeResources('./authFilter');
 
 		var baseConfig = aurelia.container.get(BaseConfig);
 		if (configCallback !== undefined && typeof configCallback === 'function') {

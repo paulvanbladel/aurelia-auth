@@ -36,7 +36,7 @@ Object.defineProperty(exports, 'AuthFilterValueConverter', {
 function configure(aurelia, configCallback) {
 	var version = 'versie 1.0.15';
 
-	aurelia.globalizeResources('.authFilter');
+	aurelia.globalizeResources('./authFilter');
 
 	var baseConfig = aurelia.container.get(_baseConfig.BaseConfig);
 	if (configCallback !== undefined && typeof configCallback === 'function') {
