@@ -1,8 +1,8 @@
 {
   "name": "aureliauth",
   "version": "1.0.23",
-  "description": "Plugin for social media authentication and local authentication ",
-  "main": "dist/commonjs/index.js",
+  "description": "Plugin for social media authentication and local authentication together with other authentication utilities",
+  "main": "dist/system/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -12,7 +12,7 @@
   },
   "keywords": [
     "aurelia",
-    "oauth"
+    "oauth", "authentication"
   ],
   "author": "paul van bladel",
   "license": "MIT",
