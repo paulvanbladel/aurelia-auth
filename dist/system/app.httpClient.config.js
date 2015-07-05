@@ -1,7 +1,7 @@
-System.register(['aurelia-http-client', './authenticationInterceptor', './baseConfig', './authentication', './storage', 'aurelia-framework'], function (_export) {
+System.register(['aurelia-http-client', './baseConfig', './authentication', './storage', 'aurelia-framework'], function (_export) {
 	'use strict';
 
-	var HttpClient, RequestBuilder, AuthenticateInterceptor, BaseConfig, Authentication, Storage, inject, _default;
+	var HttpClient, RequestBuilder, BaseConfig, Authentication, Storage, inject, _default;
 
 	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
@@ -11,8 +11,6 @@ System.register(['aurelia-http-client', './authenticationInterceptor', './baseCo
 		setters: [function (_aureliaHttpClient) {
 			HttpClient = _aureliaHttpClient.HttpClient;
 			RequestBuilder = _aureliaHttpClient.RequestBuilder;
-		}, function (_authenticationInterceptor) {
-			AuthenticateInterceptor = _authenticationInterceptor.AuthenticateInterceptor;
 		}, function (_baseConfig) {
 			BaseConfig = _baseConfig.BaseConfig;
 		}, function (_authentication) {
@@ -57,7 +55,6 @@ System.register(['aurelia-http-client', './authenticationInterceptor', './baseCo
 
 						this.http.configure(function (x) {
 							x.authTokenHandling();
-							x.withInterceptor(new AuthenticateInterceptor());
 						});
 					}
 				}]);

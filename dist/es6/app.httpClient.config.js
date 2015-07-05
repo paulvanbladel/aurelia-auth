@@ -1,5 +1,4 @@
 import {HttpClient, RequestBuilder} from 'aurelia-http-client';
-import {AuthenticateInterceptor} from './authenticationInterceptor';
 import {BaseConfig}  from './baseConfig';
 import {Authentication} from './authentication';
 import {Storage} from './storage';
@@ -15,26 +14,23 @@ export  default class  {
 
 	configure(){
 		RequestBuilder.addHelper('authTokenHandling', ()=>{
-	      return (client, processor, message)=>{
-	        if (this.auth.isAuthenticated() && this.config.httpInterceptor) {
-	              var tokenName = this.config.tokenPrefix 
-	              	? this.config.tokenPrefix + '_' + this.config.tokenName : this.config.tokenName;
-	              var token = this.storage.get(tokenName);
+			return (client, processor, message)=>{
+				if (this.auth.isAuthenticated() && this.config.httpInterceptor) {
+					var tokenName = this.config.tokenPrefix 
+					? this.config.tokenPrefix + '_' + this.config.tokenName : this.config.tokenName;
+					var token = this.storage.get(tokenName);
 
-	              if (this.config.authHeader && this.config.authToken) {
-	                token = this.config.authToken + ' ' + token;
-	              }
+					if (this.config.authHeader && this.config.authToken) {
+						token = this.config.authToken + ' ' + token;
+					}
 
-	              message.headers.add(this.config.authHeader, token);
-	        }
-	      }
-	    });
+					message.headers.add(this.config.authHeader, token);
+				}
+			}
+		});
 
-
-	    this.http.configure(x=>{
-	     x.authTokenHandling();
-	     x.withInterceptor( new AuthenticateInterceptor());
-	     });	
+		this.http.configure(x => {
+			x.authTokenHandling();
+		});	
 	}
-	
 }

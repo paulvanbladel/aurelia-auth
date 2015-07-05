@@ -10,8 +10,6 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 var _aureliaHttpClient = require('aurelia-http-client');
 
-var _authenticationInterceptor = require('./authenticationInterceptor');
-
 var _baseConfig = require('./baseConfig');
 
 var _authentication = require('./authentication');
@@ -54,7 +52,6 @@ var _default = (function () {
 
 			this.http.configure(function (x) {
 				x.authTokenHandling();
-				x.withInterceptor(new _authenticationInterceptor.AuthenticateInterceptor());
 			});
 		}
 	}]);

@@ -26,8 +26,6 @@ Object.defineProperty(exports, 'AuthorizeStep', {
 });
 
 function configure(aurelia, configCallback) {
-	var version = 'versie 1.0.15';
-
 	aurelia.globalizeResources('./authFilter');
 
 	var baseConfig = aurelia.container.get(_baseConfig.BaseConfig);

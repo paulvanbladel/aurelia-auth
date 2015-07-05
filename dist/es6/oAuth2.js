@@ -29,8 +29,6 @@ export class OAuth2 {
         };
     }
 
-
-
     open(options, userData) {
         authUtils.extend(this.defaults, options);
         var stateName = this.defaults.name + '_state';

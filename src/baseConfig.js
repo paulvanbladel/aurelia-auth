@@ -7,7 +7,6 @@ export class BaseConfig{
   };
 
   
-  
 get current(){
     return this._current;
   };
