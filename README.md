@@ -1,6 +1,6 @@
 
-### Sample app: [aureliauth.opinionatedapps.com](http://aureliauth.opinionatedapps.com)
-### Sources sample app: [github.com/paulvanbladel/aureliauth-sample] (https://github.com/paulvanbladel/aureliauth-sample)
+#### Sample app: [aureliauth.opinionatedapps.com](http://aureliauth.opinionatedapps.com)
+#### Sources sample app: [github.com/paulvanbladel/aureliauth-sample] (https://github.com/paulvanbladel/aureliauth-sample)
 ##What is Aureliauth?
 Aureliauth is a token-based authentication plugin for [Aurelia](http://aurelia.io/) with support for popular social authentication providers (Google, Twitter, Facebook, LinkedIn, Windows Live, FourSquare, Yahoo, Github ) and a local stragegy, i.e. simple username (email) and password.
 
