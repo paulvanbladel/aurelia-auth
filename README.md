@@ -1,4 +1,5 @@
 
+Sample app: [aureliauth.opinionatedapps.com](http://aureliauth.opinionatedapps.com)
 Aureliauth is a token-based authentication plugin for [Aurelia](http://aurelia.io/) with support for popular social authentication providers (Google, Twitter, Facebook, LinkedIn, Windows Live, FourSquare, Yahoo, Github ) and a local stragegy, i.e. simple username (email) and password.
 
 Aureliauth is a port of the great [Sattelizer](https://github.com/sahat/satellizer/) library to ES6 and packaged as an Aurelia plugin.
