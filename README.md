@@ -1,7 +1,7 @@
 
-Aureliauth is a token-based authentication plugin for Aurelia with support for popular social authentication providers (Google, Twitter, Facebook, LinkedIn, Windows Live, FourSquare, Yahoo, Github ) and a local stragegy, i.e. simple username (email) and password.
+Aureliauth is a token-based authentication plugin for [Aurelia](http://aurelia.io/) with support for popular social authentication providers (Google, Twitter, Facebook, LinkedIn, Windows Live, FourSquare, Yahoo, Github ) and a local stragegy, i.e. simple username (email) and password.
 
-Aureliauth is a port of the great Satellizer library to ES6 and packaged as an Aurelia plugin.
+Aureliauth is a port of the great [Sattelizer](https://github.com/sahat/satellizer/) library to ES6 and packaged as an Aurelia plugin.
 
 Other OAuth1 and Oauth2 than the above mentioned providers can be simply added by editing the extensible configuration file.
 
@@ -15,9 +15,11 @@ The aurelia token will be sent automatically to your API when the user is authen
 
 ![Authentication header](./pictures/authHeader.png)
 
+#Installation prerequisites
+Obviously, the prerequisites ([NodeJs](https://nodejs.org/), [Gulp](http://gulpjs.com/)) from [Aurelia](http://aurelia.io/). Since Aureliauth is an [Aurelia plugin](https://github.com/aurelia/skeleton-plugin) , we presume here you have your [Aurelia](http://aurelia.io/) project up and running.
 #Installation
-jspm install github:paulvanbladel/aureliauth@1.0.0
-(TODO add aureliauth in the jspm registry)
+jspm install github:paulvanbladel/aureliauth@.9.2
+
 #How to use Aureliauth?
 Aureliauth does not contain any UI widgets. It's conceived as a simple service with following interface:
 ```
