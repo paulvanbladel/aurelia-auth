@@ -5,7 +5,7 @@ Aureliauth is a port of the great [Sattelizer](https://github.com/sahat/satelliz
 
 Other OAuth1 and Oauth2 than the above mentioned providers can be simply added by editing the extensible configuration file.
 
-Basically, Aureliauth does not use any cookies but relies on a JWT (jason web token) stored in the local storage of the browser:
+Basically, Aureliauth does not use any cookies but relies on a JWT (json web token) stored in the local storage of the browser:
 
 ![JWT in local storage](./pictures/TokenViaDevelopmentTools.png)
 
