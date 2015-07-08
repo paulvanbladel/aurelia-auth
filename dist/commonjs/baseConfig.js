@@ -27,6 +27,7 @@ var BaseConfig = (function () {
       signupRedirect: '/login',
       loginUrl: '/auth/login',
       signupUrl: '/auth/signup',
+      profileUrl: '/auth/me',
       loginRoute: '/login',
       signupRoute: '/signup',
       tokenRoot: false,

@@ -87,8 +87,6 @@ pollPopup(){
         }
 
         self.popupWindow.close();
-            //TODO check this angular feature
-            //interval.cancel(polling);
         clearInterval(self.polling);
           }
         } catch (error) {}

@@ -223,6 +223,7 @@ Via the above mentioned configuration virtually all aspects of the authenticatio
   signupRedirect: '/login',
   loginUrl: '/auth/login',
   signupUrl: '/auth/signup',
+  profileUrl: '/auth/me',
   loginRoute: '/login',
   signupRoute: '/signup',
   tokenRoot: false,

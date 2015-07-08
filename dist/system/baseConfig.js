@@ -25,6 +25,7 @@ System.register(['./authUtils'], function (_export) {
             signupRedirect: '/login',
             loginUrl: '/auth/login',
             signupUrl: '/auth/signup',
+            profileUrl: '/auth/me',
             loginRoute: '/login',
             signupRoute: '/signup',
             tokenRoot: false,

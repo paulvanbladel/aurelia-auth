@@ -110,7 +110,6 @@ System.register(['./authUtils', './baseConfig', 'aurelia-framework'], function (
                     }
 
                     self.popupWindow.close();
-
                     clearInterval(self.polling);
                   }
                 } catch (error) {}

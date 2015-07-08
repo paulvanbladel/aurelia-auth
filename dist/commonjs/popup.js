@@ -112,7 +112,6 @@ var Popup = (function () {
               }
 
               self.popupWindow.close();
-
               clearInterval(self.polling);
             }
           } catch (error) {}

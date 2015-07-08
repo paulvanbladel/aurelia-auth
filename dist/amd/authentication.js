@@ -35,6 +35,11 @@ define(['exports', 'aurelia-framework', './baseConfig', './storage', './authUtil
         return this.config.baseUrl ? _authUtils2['default'].joinUrl(this.config.baseUrl, this.config.signupUrl) : this.config.signupUrl;
       }
     }, {
+      key: 'getProfileUrl',
+      value: function getProfileUrl() {
+        return this.config.baseUrl ? _authUtils2['default'].joinUrl(this.config.baseUrl, this.config.profileUrl) : this.config.profileUrl;
+      }
+    }, {
       key: 'getToken',
       value: function getToken() {
         return this.storage.get(this.tokenName);

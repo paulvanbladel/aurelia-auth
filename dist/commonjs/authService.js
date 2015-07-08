@@ -42,8 +42,8 @@ var AuthService = (function () {
 	_createClass(_AuthService, [{
 		key: 'getMe',
 		value: function getMe() {
-			var url = 'auth/me';
-			return this.http.createRequest(url).asGet().send().then(function (response) {
+			var profileUrl = this.auth.getProfileUrl();
+			return this.http.createRequest(profileUrl).asGet().send().then(function (response) {
 				return response.content;
 			});
 		}
@@ -58,7 +58,13 @@ var AuthService = (function () {
 			var _this = this;
 
 			var signupUrl = this.auth.getSignupUrl();
-			return this.http.createRequest(signupUrl).asPost().withContent({ 'displayName': displayName, 'email': email, 'password': password }).send().then(function (response) {
+			var content;
+			if (typeof arguments[0] === 'object') {
+				content = arguments[0];
+			} else {
+				content = { 'displayName': displayName, 'email': email, 'password': password };
+			}
+			return this.http.createRequest(signupUrl).asPost().withContent(content).send().then(function (response) {
 				if (_this.config.loginOnSignup) {
 					_this.auth.setToken(response);
 				} else if (_this.config.signupRedirect) {
