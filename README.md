@@ -21,7 +21,7 @@ The aurelia token will be sent automatically to your API when the user is authen
 #Installation prerequisites
 Obviously, the prerequisites ([NodeJs](https://nodejs.org/), [Gulp](http://gulpjs.com/)) from [Aurelia](http://aurelia.io/). Since Aureliauth is an [Aurelia plugin](https://github.com/aurelia/skeleton-plugin) , we presume here you have your [Aurelia](http://aurelia.io/) project up and running.
 #Installation
-jspm install github:paulvanbladel/aureliauth@0.9.2
+jspm install github:paulvanbladel/aureliauth@0.9.3
 
 #How to use Aureliauth?
 Aureliauth does not contain any UI widgets. It's conceived as a simple service with following interface:
