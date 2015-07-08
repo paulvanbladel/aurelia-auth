@@ -19,6 +19,10 @@ getSignupUrl(){
   return  this.config.baseUrl ? authUtils.joinUrl(this.config.baseUrl, this.config.signupUrl) : this.config.signupUrl;
 };
 
+getProfileUrl() {
+  return  this.config.baseUrl ? authUtils.joinUrl(this.config.baseUrl, this.config.profileUrl) : this.config.profileUrl;
+};
+
 getToken() {
   return this.storage.get(this.tokenName);
 };
