@@ -16,8 +16,8 @@ export class AuthService  {
 	};
 
 	getMe(){
-		var url = 'auth/me';
-		return this.http.createRequest(url)
+		var profileUrl = this.auth.getProfileUrl();
+		return this.http.createRequest(profileUrl)
 		.asGet()
 		.send().then(response => {
 			return response.content;
@@ -29,19 +29,25 @@ export class AuthService  {
 	};
 
 	signup(displayName, email, password){
-		var signupUrl = this.auth.getSignupUrl();
+		var signupUrl = this.auth.getSignupUrl();		
+		var content;
+		if (typeof arguments[0] === 'object') {
+			content = arguments[0];
+		} else {
+			content = {'displayName': displayName,'email': email, 'password':password}
+		}		
 		return this.http.createRequest(signupUrl)
-		.asPost()
-		.withContent({'displayName': displayName,'email': email, 'password':password})
-		.send()
-		.then(response => {
-			if (this.config.loginOnSignup) {
-				this.auth.setToken(response);
-			} else if (this.config.signupRedirect) {
-				window.location.href = this.config.signupRedirect;
-			}
-			return response;
-		});
+			.asPost()
+			.withContent(content)
+			.send()
+			.then(response => {
+				if (this.config.loginOnSignup) {
+					this.auth.setToken(response);
+				} else if (this.config.signupRedirect) {
+					window.location.href = this.config.signupRedirect;
+				}
+				return response;
+			});
 	};
 
 	login(email, password){
