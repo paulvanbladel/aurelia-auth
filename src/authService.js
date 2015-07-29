@@ -34,7 +34,7 @@ export class AuthService  {
 		if (typeof arguments[0] === 'object') {
 			content = arguments[0];
 		} else {
-			content = {'displayName': displayName,'email': email, 'password':password}
+			content = {'displayName': displayName,'email': email, 'password':password};
 		}		
 		return this.http.createRequest(signupUrl)
 			.asPost()
@@ -51,11 +51,17 @@ export class AuthService  {
 	};
 
 	login(email, password){
-
 		var loginUrl = this.auth.getLoginUrl();
+		var content;
+		if (typeof arguments[0] === 'object') {
+			content = arguments[0];
+		} else {
+			content = {'email': email, 'password':password};
+		}
+
 		return this.http.createRequest(loginUrl)
 		.asPost()
-		.withContent({'email': email, 'password':password})
+		.withContent(content)
 		.send()
 		.then(response => {
 			this.auth.setToken(response);
