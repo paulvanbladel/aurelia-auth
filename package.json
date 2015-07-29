@@ -1,6 +1,6 @@
 {
-  "name": "aureliauth",
-  "version": "0.9.3",
+  "name": "aurelia-auth",
+  "version": "0.9.6",
   "description": "Plugin for social media authentication and local authentication together with other authentication utilities",
   "main": "dist/system/index.js",
   "scripts": {
@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/paulvanbladel/aureliauth.git"
+    "url": "git+https://github.com/paulvanbladel/aurelia-auth.git"
   },
   "keywords": [
     "aurelia",
@@ -18,9 +18,9 @@
   "author": "paul van bladel",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/paulvanbladel/aureliauth/issues"
+    "url": "https://github.com/paulvanbladel/aurelia-auth/issues"
   },
-  "homepage": "https://github.com/paulvanbladel/aureliauth#readme",
+  "homepage": "https://github.com/paulvanbladel/aurelia-auth#readme",
   "devDependencies": {
     "aurelia-tools": "^0.1.7",
     "conventional-changelog": "0.0.11",

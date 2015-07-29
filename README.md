@@ -1,29 +1,29 @@
 
-#### Sample app: [aureliauth.opinionatedapps.com](http://aureliauth.opinionatedapps.com)
-#### Sources sample app: [github.com/paulvanbladel/aureliauth-sample] (https://github.com/paulvanbladel/aureliauth-sample)
-##What is Aureliauth?
-Aureliauth is a token-based authentication plugin for [Aurelia](http://aurelia.io/) with support for popular social authentication providers (Google, Twitter, Facebook, LinkedIn, Windows Live, FourSquare, Yahoo, Github ) and a local stragegy, i.e. simple username (email) and password.
+#### Sample app: [aurelia-auth.opinionatedapps.com](http://aureliauth.opinionatedapps.com)
+#### Sources sample app: [github.com/paulvanbladel/aurelia-auth-sample] (https://github.com/paulvanbladel/aurelia-auth-sample)
+##What is aurelia-auth?
+aurelia-auth is a token-based authentication plugin for [Aurelia](http://aurelia.io/) with support for popular social authentication providers (Google, Twitter, Facebook, LinkedIn, Windows Live, FourSquare, Yahoo, Github ) and a local stragegy, i.e. simple username (email) and password.
 
-Aureliauth is a port of the great [Satellizer](https://github.com/sahat/satellizer/) library to ES6 and packaged as an Aurelia plugin.
+aurelia-auth is a port of the great [Satellizer](https://github.com/sahat/satellizer/) library to ES6 and packaged as an Aurelia plugin.
 
 Other OAuth1 and Oauth2 than the above mentioned providers can be simply added by editing the extensible configuration file.
 
-Basically, Aureliauth does not use any cookies but relies on a JWT (json web token) stored in the local storage of the browser:
+Basically, aurelia-auth does not use any cookies but relies on a JWT (json web token) stored in the local storage of the browser:
 
 ![JWT in local storage](./pictures/TokenViaDevelopmentTools.png)
 
-Both **local storage** as well as **session storage** can be used (via the Aureliauth security configuration file).
+Both **local storage** as well as **session storage** can be used (via the aurelia-auth security configuration file).
 
 The aurelia token will be sent automatically to your API when the user is authenticated.
 
 ![Authentication header](./pictures/authHeader.png)
 
 #Installation prerequisites
-Obviously, the prerequisites ([NodeJs](https://nodejs.org/), [Gulp](http://gulpjs.com/)) from [Aurelia](http://aurelia.io/). Since Aureliauth is an [Aurelia plugin](https://github.com/aurelia/skeleton-plugin) , we presume here you have your [Aurelia](http://aurelia.io/) project up and running.
+Obviously, the prerequisites ([NodeJs](https://nodejs.org/), [Gulp](http://gulpjs.com/)) from [Aurelia](http://aurelia.io/). Since aurelia-auth is an [Aurelia plugin](https://github.com/aurelia/skeleton-plugin) , we presume here you have your [Aurelia](http://aurelia.io/) project up and running.
 #Installation
-jspm install github:paulvanbladel/aureliauth
-#How to use Aureliauth?
-Aureliauth does not contain any UI widgets. It's conceived as a simple service with following interface:
+jspm install github:paulvanbladel/aurelia-auth
+#How to use aurelia-auth?
+aurelia-auth does not contain any UI widgets. It's conceived as a simple service with following interface:
 ```
 login(email, password)
 logout(redirectUri)
@@ -36,9 +36,9 @@ unlink(provider)
 ```
 Login is used for the local authentication strategy (email + password). Authenticate is for social media authentication. Authenticate is also used for linking a social media account to an existing account.
 
-##Add an Aureliauth security configuration file
-Add an javascript file to your project where you will store the Aureliauth  security configuration data. Call it for example authConfig.js.
-Since this file is available via the browser, it should never contain sensitive data. Note that for OAuth the clientId is non sensitive. The client secret is sensitive data and should be only available server side. The Aureliauth config file is compatible with the original Satellizer config file, easing the migration of AngularJs projects to Aurelia.
+##Add an aurelia-auth security configuration file
+Add an javascript file to your project where you will store the aurelia-auth  security configuration data. Call it for example authConfig.js.
+Since this file is available via the browser, it should never contain sensitive data. Note that for OAuth the clientId is non sensitive. The client secret is sensitive data and should be only available server side. The aurelia-auth config file is compatible with the original Satellizer config file, easing the migration of AngularJs projects to Aurelia.
 
 ```
 var configForDevelopment = {
@@ -86,7 +86,7 @@ export default config;
 The above configuration file can cope with a development and production version (not mandatory of course). The strategy is that when your run on localhost, the development configuration file is used, otherwise the production configuration file is taken.
 ##update the aurelia configuration file
 
-In your aurelia configuration file, add the plugin and inject the Aureliauth security configuration file :
+In your aurelia configuration file, add the plugin and inject the aurelia-auth security configuration file :
 ```
 import config from './authConfig';
 export function configure(aurelia) {
@@ -94,17 +94,17 @@ export function configure(aurelia) {
     .standardConfiguration()
     .developmentLogging()
     .plugin('aurelia-animator-css')
-    .plugin('paulvanbladel/aureliauth', (baseConfig)=>{
+    .plugin('paulvanbladel/aurelia-auth', (baseConfig)=>{
          baseConfig.configure(config);
     });
   aurelia.start().then(a => a.setRoot());
 }
 ```
-The above aurelia configuration file consumes the Aureliauth security configuration file.
+The above aurelia configuration file consumes the aurelia-auth security configuration file.
 
 ##Provide a UI for a login, singup and profile.
 
-See aureliauth-samples for more details.
+See aurelia-auth-samples for more details.
 
 Button actions are passed to the corresponding view model via a simple click.delegate:
 ```
@@ -113,9 +113,9 @@ Button actions are passed to the corresponding view model via a simple click.del
 </button>
 ```
 
-The login view model will speak directly with the Aureliauth service, which is made available via constructor injection.
+The login view model will speak directly with the aurelia-auth service, which is made available via constructor injection.
 ```
-import {AuthService} from 'paulvanbladel/aureliauth';
+import {AuthService} from 'paulvanbladel/aurelia-auth';
 import {inject} from 'aurelia-framework';
 @inject(AuthService )
 

@@ -79,7 +79,14 @@ var AuthService = (function () {
 			var _this2 = this;
 
 			var loginUrl = this.auth.getLoginUrl();
-			return this.http.createRequest(loginUrl).asPost().withContent({ 'email': email, 'password': password }).send().then(function (response) {
+			var content;
+			if (typeof arguments[0] === 'object') {
+				content = arguments[0];
+			} else {
+				content = { 'email': email, 'password': password };
+			}
+
+			return this.http.createRequest(loginUrl).asPost().withContent(content).send().then(function (response) {
 				_this2.auth.setToken(response);
 				console.log('authservice login ok ');
 				return response;
