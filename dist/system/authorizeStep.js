@@ -24,9 +24,7 @@ System.register(['aurelia-framework', './authentication', 'aurelia-router'], fun
           this.auth = auth;
         }
 
-        var _AuthorizeStep = AuthorizeStep;
-
-        _createClass(_AuthorizeStep, [{
+        _createClass(AuthorizeStep, [{
           key: 'run',
           value: function run(routingContext, next) {
             if (routingContext.nextInstructions.some(function (i) {
@@ -42,6 +40,7 @@ System.register(['aurelia-framework', './authentication', 'aurelia-router'], fun
           }
         }]);
 
+        var _AuthorizeStep = AuthorizeStep;
         AuthorizeStep = inject(Authentication)(AuthorizeStep) || AuthorizeStep;
         return AuthorizeStep;
       })();

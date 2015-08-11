@@ -29,9 +29,7 @@ var Authentication = (function () {
     this.tokenName = this.config.tokenPrefix ? this.config.tokenPrefix + '_' + this.config.tokenName : this.config.tokenName;
   }
 
-  var _Authentication = Authentication;
-
-  _createClass(_Authentication, [{
+  _createClass(Authentication, [{
     key: 'getLoginUrl',
     value: function getLoginUrl() {
       return this.config.baseUrl ? _authUtils2['default'].joinUrl(this.config.baseUrl, this.config.loginUrl) : this.config.loginUrl;
@@ -139,6 +137,7 @@ var Authentication = (function () {
     }
   }]);
 
+  var _Authentication = Authentication;
   Authentication = (0, _aureliaFramework.inject)(_storage.Storage, _baseConfig.BaseConfig)(Authentication) || Authentication;
   return Authentication;
 })();

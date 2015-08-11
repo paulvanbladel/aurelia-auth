@@ -13,6 +13,18 @@ System.register(['./authUtils'], function (_export) {
     }],
     execute: function () {
       BaseConfig = (function () {
+        _createClass(BaseConfig, [{
+          key: 'configure',
+          value: function configure(incomingConfig) {
+            authUtils.merge(this._current, incomingConfig);
+          }
+        }, {
+          key: 'current',
+          get: function get() {
+            return this._current;
+          }
+        }]);
+
         function BaseConfig() {
           _classCallCheck(this, BaseConfig);
 
@@ -52,7 +64,10 @@ System.register(['./authUtils'], function (_export) {
                 display: 'popup',
                 type: '2.0',
 
-                popupOptions: { width: 452, height: 633 }
+                popupOptions: {
+                  width: 452,
+                  height: 633
+                }
               },
               facebook: {
                 name: 'facebook',
@@ -67,7 +82,10 @@ System.register(['./authUtils'], function (_export) {
                 requiredUrlParams: ['nonce', 'display', 'scope'],
                 display: 'popup',
                 type: '2.0',
-                popupOptions: { width: 580, height: 400 }
+                popupOptions: {
+                  width: 580,
+                  height: 400
+                }
               },
               linkedin: {
                 name: 'linkedin',
@@ -79,7 +97,10 @@ System.register(['./authUtils'], function (_export) {
                 scopeDelimiter: ' ',
                 state: 'STATE',
                 type: '2.0',
-                popupOptions: { width: 527, height: 582 }
+                popupOptions: {
+                  width: 527,
+                  height: 582
+                }
               },
               github: {
                 name: 'github',
@@ -90,7 +111,10 @@ System.register(['./authUtils'], function (_export) {
                 scope: ['user:email'],
                 scopeDelimiter: ' ',
                 type: '2.0',
-                popupOptions: { width: 1020, height: 618 }
+                popupOptions: {
+                  width: 1020,
+                  height: 618
+                }
               },
               yahoo: {
                 name: 'yahoo',
@@ -100,14 +124,20 @@ System.register(['./authUtils'], function (_export) {
                 scope: [],
                 scopeDelimiter: ',',
                 type: '2.0',
-                popupOptions: { width: 559, height: 519 }
+                popupOptions: {
+                  width: 559,
+                  height: 519
+                }
               },
               twitter: {
                 name: 'twitter',
                 url: '/auth/twitter',
                 authorizationEndpoint: 'https://api.twitter.com/oauth/authenticate',
                 type: '1.0',
-                popupOptions: { width: 495, height: 645 }
+                popupOptions: {
+                  width: 495,
+                  height: 645
+                }
               },
               live: {
                 name: 'live',
@@ -119,23 +149,14 @@ System.register(['./authUtils'], function (_export) {
                 requiredUrlParams: ['display', 'scope'],
                 display: 'popup',
                 type: '2.0',
-                popupOptions: { width: 500, height: 560 }
+                popupOptions: {
+                  width: 500,
+                  height: 560
+                }
               }
             }
           };
         }
-
-        _createClass(BaseConfig, [{
-          key: 'configure',
-          value: function configure(incomingConfig) {
-            authUtils.merge(this._current, incomingConfig);
-          }
-        }, {
-          key: 'current',
-          get: function get() {
-            return this._current;
-          }
-        }]);
 
         return BaseConfig;
       })();

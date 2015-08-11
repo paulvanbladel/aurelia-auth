@@ -39,9 +39,7 @@ System.register(['aurelia-framework', './authUtils', './storage', './popup', './
 					};
 				}
 
-				var _OAuth1 = OAuth1;
-
-				_createClass(_OAuth1, [{
+				_createClass(OAuth1, [{
 					key: 'open',
 					value: function open(options, userData) {
 						authUtils.extend(this.defaults, options);
@@ -74,7 +72,7 @@ System.register(['aurelia-framework', './authUtils', './storage', './popup', './
 						return this.http.createRequest(exchangeForTokenUrl).asPost().withCredentials(this.config.withCredentials).withContent(data).send().then(function (response) {
 							return response;
 						})['catch'](function (err) {
-							console.log('error :' + err.content.message);
+							console.log("error :" + err.content.message);
 							throw err;
 						});
 					}
@@ -91,6 +89,7 @@ System.register(['aurelia-framework', './authUtils', './storage', './popup', './
 					}
 				}]);
 
+				var _OAuth1 = OAuth1;
 				OAuth1 = inject(Storage, Popup, HttpClient, BaseConfig)(OAuth1) || OAuth1;
 				return OAuth1;
 			})();

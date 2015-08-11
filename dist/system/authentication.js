@@ -27,9 +27,7 @@ System.register(['aurelia-framework', './baseConfig', './storage', './authUtils'
           this.tokenName = this.config.tokenPrefix ? this.config.tokenPrefix + '_' + this.config.tokenName : this.config.tokenName;
         }
 
-        var _Authentication = Authentication;
-
-        _createClass(_Authentication, [{
+        _createClass(Authentication, [{
           key: 'getLoginUrl',
           value: function getLoginUrl() {
             return this.config.baseUrl ? authUtils.joinUrl(this.config.baseUrl, this.config.loginUrl) : this.config.loginUrl;
@@ -137,6 +135,7 @@ System.register(['aurelia-framework', './baseConfig', './storage', './authUtils'
           }
         }]);
 
+        var _Authentication = Authentication;
         Authentication = inject(Storage, BaseConfig)(Authentication) || Authentication;
         return Authentication;
       })();

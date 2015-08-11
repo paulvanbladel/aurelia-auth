@@ -19,9 +19,7 @@ var Storage = (function () {
 		this.config = config.current;
 	}
 
-	var _Storage = Storage;
-
-	_createClass(_Storage, [{
+	_createClass(Storage, [{
 		key: 'get',
 		value: function get(key) {
 			switch (this.config.storage) {
@@ -92,6 +90,7 @@ var Storage = (function () {
 		}
 	}]);
 
+	var _Storage = Storage;
 	Storage = (0, _aureliaFramework.inject)(_baseConfig.BaseConfig)(Storage) || Storage;
 	return Storage;
 })();
