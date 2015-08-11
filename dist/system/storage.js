@@ -21,9 +21,7 @@ System.register(['aurelia-framework', './baseConfig'], function (_export) {
 					this.config = config.current;
 				}
 
-				var _Storage = Storage;
-
-				_createClass(_Storage, [{
+				_createClass(Storage, [{
 					key: 'get',
 					value: function get(key) {
 						switch (this.config.storage) {
@@ -94,6 +92,7 @@ System.register(['aurelia-framework', './baseConfig'], function (_export) {
 					}
 				}]);
 
+				var _Storage = Storage;
 				Storage = inject(BaseConfig)(Storage) || Storage;
 				return Storage;
 			})();

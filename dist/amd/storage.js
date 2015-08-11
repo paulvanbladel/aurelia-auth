@@ -16,9 +16,7 @@ define(['exports', 'aurelia-framework', './baseConfig'], function (exports, _aur
 			this.config = config.current;
 		}
 
-		var _Storage = Storage;
-
-		_createClass(_Storage, [{
+		_createClass(Storage, [{
 			key: 'get',
 			value: function get(key) {
 				switch (this.config.storage) {
@@ -89,6 +87,7 @@ define(['exports', 'aurelia-framework', './baseConfig'], function (exports, _aur
 			}
 		}]);
 
+		var _Storage = Storage;
 		Storage = (0, _aureliaFramework.inject)(_baseConfig.BaseConfig)(Storage) || Storage;
 		return Storage;
 	})();

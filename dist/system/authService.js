@@ -35,9 +35,7 @@ System.register(['aurelia-framework', 'aurelia-http-client', './authentication',
 					this.config = config.current;
 				}
 
-				var _AuthService = AuthService;
-
-				_createClass(_AuthService, [{
+				_createClass(AuthService, [{
 					key: 'getMe',
 					value: function getMe() {
 						var profileUrl = this.auth.getProfileUrl();
@@ -86,10 +84,10 @@ System.register(['aurelia-framework', 'aurelia-http-client', './authentication',
 
 						return this.http.createRequest(loginUrl).asPost().withContent(content).send().then(function (response) {
 							_this2.auth.setToken(response);
-							console.log('authservice login ok ');
+							console.log("authservice login ok ");
 							return response;
 						})['catch'](function (err) {
-							console.log('error :' + err.content.message);
+							console.log("error :" + err.content.message);
 							throw err;
 						});
 					}
@@ -98,7 +96,7 @@ System.register(['aurelia-framework', 'aurelia-http-client', './authentication',
 					value: function logout(redirectUri) {
 						var _this3 = this;
 
-						console.log('log out service');
+						console.log("log out service");
 						return new Promise(function (resolve, reject) {
 							_this3.auth.logout(redirectUri).then(function (response) {})['catch'](function (err) {});
 						});
@@ -117,7 +115,7 @@ System.register(['aurelia-framework', 'aurelia-http-client', './authentication',
 							_this4.auth.setToken(response, redirect);
 							return response;
 						})['catch'](function (error) {
-							console.log('auth problem');
+							console.log("auth problem");
 							throw error;
 						});
 					}
@@ -138,6 +136,7 @@ System.register(['aurelia-framework', 'aurelia-http-client', './authentication',
 					}
 				}]);
 
+				var _AuthService = AuthService;
 				AuthService = inject(HttpClient, Authentication, OAuth1, OAuth2, BaseConfig)(AuthService) || AuthService;
 				return AuthService;
 			})();

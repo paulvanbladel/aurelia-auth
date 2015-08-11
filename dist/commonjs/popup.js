@@ -28,9 +28,7 @@ var Popup = (function () {
     this.url = '';
   }
 
-  var _Popup = Popup;
-
-  _createClass(_Popup, [{
+  _createClass(Popup, [{
     key: 'open',
     value: function open(url, windowName, options, redirectUri) {
       this.url = url;
@@ -150,6 +148,7 @@ var Popup = (function () {
     }
   }]);
 
+  var _Popup = Popup;
   Popup = (0, _aureliaFramework.inject)(_baseConfig.BaseConfig)(Popup) || Popup;
   return Popup;
 })();

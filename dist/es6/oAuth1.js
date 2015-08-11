@@ -7,7 +7,7 @@ import { HttpClient} from 'aurelia-http-client';
 @inject(Storage, Popup, HttpClient, BaseConfig )
 export class OAuth1{
 	constructor(storage, popup, http , config) {
-		this.storage = storage;
+    this.storage = storage;
 		this.config = config.current;
 		this.popup = popup;
 		this.http = http;
