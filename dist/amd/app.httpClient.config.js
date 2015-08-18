@@ -6,18 +6,16 @@ define(['exports', 'module', 'aurelia-http-client', './baseConfig', './authentic
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
 	var _default = (function () {
-		var _class = function _default(http, auth, storage, config) {
-			_classCallCheck(this, _class2);
+		function _default(http, auth, storage, config) {
+			_classCallCheck(this, _default2);
 
 			this.http = http;
 			this.auth = auth;
 			this.storage = storage;
 			this.config = config.current;
-		};
+		}
 
-		var _class2 = _class;
-
-		_createClass(_class2, [{
+		_createClass(_default, [{
 			key: 'configure',
 			value: function configure() {
 				var _this = this;
@@ -43,8 +41,9 @@ define(['exports', 'module', 'aurelia-http-client', './baseConfig', './authentic
 			}
 		}]);
 
-		_class = (0, _aureliaFramework.inject)(_aureliaHttpClient.HttpClient, _authentication.Authentication, _storage.Storage, _baseConfig.BaseConfig)(_class) || _class;
-		return _class;
+		var _default2 = _default;
+		_default = (0, _aureliaFramework.inject)(_aureliaHttpClient.HttpClient, _authentication.Authentication, _storage.Storage, _baseConfig.BaseConfig)(_default) || _default;
+		return _default;
 	})();
 
 	module.exports = _default;

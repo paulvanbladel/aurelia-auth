@@ -22,18 +22,16 @@ System.register(['aurelia-http-client', './baseConfig', './authentication', './s
 		}],
 		execute: function () {
 			_default = (function () {
-				var _class = function _default(http, auth, storage, config) {
-					_classCallCheck(this, _class2);
+				function _default(http, auth, storage, config) {
+					_classCallCheck(this, _default2);
 
 					this.http = http;
 					this.auth = auth;
 					this.storage = storage;
 					this.config = config.current;
-				};
+				}
 
-				var _class2 = _class;
-
-				_createClass(_class2, [{
+				_createClass(_default, [{
 					key: 'configure',
 					value: function configure() {
 						var _this = this;
@@ -59,8 +57,9 @@ System.register(['aurelia-http-client', './baseConfig', './authentication', './s
 					}
 				}]);
 
-				_class = inject(HttpClient, Authentication, Storage, BaseConfig)(_class) || _class;
-				return _class;
+				var _default2 = _default;
+				_default = inject(HttpClient, Authentication, Storage, BaseConfig)(_default) || _default;
+				return _default;
 			})();
 
 			_export('default', _default);

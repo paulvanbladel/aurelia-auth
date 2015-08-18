@@ -23,9 +23,7 @@ define(['exports', './authUtils', './baseConfig', 'aurelia-framework'], function
       this.url = '';
     }
 
-    var _Popup = Popup;
-
-    _createClass(_Popup, [{
+    _createClass(Popup, [{
       key: 'open',
       value: function open(url, windowName, options, redirectUri) {
         this.url = url;
@@ -145,6 +143,7 @@ define(['exports', './authUtils', './baseConfig', 'aurelia-framework'], function
       }
     }]);
 
+    var _Popup = Popup;
     Popup = (0, _aureliaFramework.inject)(_baseConfig.BaseConfig)(Popup) || Popup;
     return Popup;
   })();

@@ -19,18 +19,16 @@ var _storage = require('./storage');
 var _aureliaFramework = require('aurelia-framework');
 
 var _default = (function () {
-	var _class = function _default(http, auth, storage, config) {
-		_classCallCheck(this, _class2);
+	function _default(http, auth, storage, config) {
+		_classCallCheck(this, _default2);
 
 		this.http = http;
 		this.auth = auth;
 		this.storage = storage;
 		this.config = config.current;
-	};
+	}
 
-	var _class2 = _class;
-
-	_createClass(_class2, [{
+	_createClass(_default, [{
 		key: 'configure',
 		value: function configure() {
 			var _this = this;
@@ -56,8 +54,9 @@ var _default = (function () {
 		}
 	}]);
 
-	_class = (0, _aureliaFramework.inject)(_aureliaHttpClient.HttpClient, _authentication.Authentication, _storage.Storage, _baseConfig.BaseConfig)(_class) || _class;
-	return _class;
+	var _default2 = _default;
+	_default = (0, _aureliaFramework.inject)(_aureliaHttpClient.HttpClient, _authentication.Authentication, _storage.Storage, _baseConfig.BaseConfig)(_default) || _default;
+	return _default;
 })();
 
 exports['default'] = _default;

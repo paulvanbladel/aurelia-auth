@@ -38,9 +38,7 @@ define(['exports', 'aurelia-framework', './authUtils', './storage', './popup', '
             };
         }
 
-        var _OAuth2 = OAuth2;
-
-        _createClass(_OAuth2, [{
+        _createClass(OAuth2, [{
             key: 'open',
             value: function open(options, userData) {
                 _authUtils2['default'].extend(this.defaults, options);
@@ -94,7 +92,7 @@ define(['exports', 'aurelia-framework', './authUtils', './storage', './popup', '
                 return this.http.createRequest(exchangeForTokenUrl).asPost().withContent(data).withCredentials(this.config.withCredentials).send().then(function (response) {
                     return response;
                 })['catch'](function (err) {
-                    console.log('error :' + err.content.message);
+                    console.log("error :" + err.content.message);
                     throw err;
                 });
             }
@@ -134,6 +132,7 @@ define(['exports', 'aurelia-framework', './authUtils', './storage', './popup', '
             }
         }]);
 
+        var _OAuth2 = OAuth2;
         OAuth2 = (0, _aureliaFramework.inject)(_storage.Storage, _popup.Popup, _aureliaHttpClient.HttpClient, _baseConfig.BaseConfig)(OAuth2) || OAuth2;
         return OAuth2;
     })();
