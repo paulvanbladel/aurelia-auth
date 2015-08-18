@@ -4,7 +4,7 @@ import {BaseConfig} from './baseConfig';
 
 
 export function configure(aurelia, configCallback){
-	aurelia.globalizeResources('./authFilter');
+	aurelia.globalResources('./authFilter');
 
 	var baseConfig = aurelia.container.get(BaseConfig);
 	if(configCallback !== undefined && typeof(configCallback) === 'function')
