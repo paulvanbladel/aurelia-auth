@@ -53,6 +53,7 @@ System.register(['aurelia-http-client', './baseConfig', './authentication', './s
 
 						this.http.configure(function (x) {
 							x.authTokenHandling();
+							x.withHeader('Accept', 'application/json');
 						});
 					}
 				}]);

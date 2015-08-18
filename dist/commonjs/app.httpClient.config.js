@@ -50,6 +50,7 @@ var _default = (function () {
 
 			this.http.configure(function (x) {
 				x.authTokenHandling();
+				x.withHeader('Accept', 'application/json');
 			});
 		}
 	}]);

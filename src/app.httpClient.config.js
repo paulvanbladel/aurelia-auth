@@ -31,6 +31,7 @@ export  default class  {
 
 		this.http.configure(x => {
 			x.authTokenHandling();
+      x.withHeader('Accept', 'application/json');
 		});	
 	}
 }

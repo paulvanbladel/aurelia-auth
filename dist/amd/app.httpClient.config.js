@@ -37,6 +37,7 @@ define(['exports', 'module', 'aurelia-http-client', './baseConfig', './authentic
 
 				this.http.configure(function (x) {
 					x.authTokenHandling();
+					x.withHeader('Accept', 'application/json');
 				});
 			}
 		}]);
