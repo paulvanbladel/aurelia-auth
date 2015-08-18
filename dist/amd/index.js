@@ -19,7 +19,7 @@ define(['exports', './baseConfig', './authService', './authorizeStep'], function
 	});
 
 	function configure(aurelia, configCallback) {
-		aurelia.globalizeResources('./authFilter');
+		aurelia.globalResources('./authFilter');
 
 		var baseConfig = aurelia.container.get(_baseConfig.BaseConfig);
 		if (configCallback !== undefined && typeof configCallback === 'function') {
