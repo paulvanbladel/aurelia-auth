@@ -73,11 +73,7 @@ define(['exports', 'aurelia-framework', 'aurelia-http-client', './authentication
 
 				return this.http.createRequest(loginUrl).asPost().withContent(content).send().then(function (response) {
 					_this2.auth.setToken(response);
-					console.log("authservice login ok ");
 					return response;
-				})['catch'](function (err) {
-					console.log("error :" + err.content.message);
-					throw err;
 				});
 			}
 		}, {
@@ -85,9 +81,8 @@ define(['exports', 'aurelia-framework', 'aurelia-http-client', './authentication
 			value: function logout(redirectUri) {
 				var _this3 = this;
 
-				console.log("log out service");
 				return new Promise(function (resolve, reject) {
-					_this3.auth.logout(redirectUri).then(function (response) {})['catch'](function (err) {});
+					_this3.auth.logout(redirectUri).then(function (response) {});
 				});
 			}
 		}, {
@@ -103,9 +98,6 @@ define(['exports', 'aurelia-framework', 'aurelia-http-client', './authentication
 				return provider.open(this.config.providers[name], userData || {}).then(function (response) {
 					_this4.auth.setToken(response, redirect);
 					return response;
-				})['catch'](function (error) {
-					console.log("auth problem");
-					throw error;
 				});
 			}
 		}, {

@@ -65,27 +65,17 @@ export class AuthService  {
 		.send()
 		.then(response => {
 			this.auth.setToken(response);
-			console.log("authservice login ok ");
 			return response;
-		})
-		.catch(err => {
-			console.log("error :" + err.content.message);
-			throw err;
 		});
 
 	};
 
 	logout(redirectUri){
-		console.log("log out service");
 		return new Promise((resolve, reject)=>{
 			this.auth.logout(redirectUri)
 			.then(response=>{
 
 			})
-			.catch(err=>{
-
-
-			});
 		});
 	};
 
@@ -100,13 +90,7 @@ export class AuthService  {
 		.then((response) => {
 			this.auth.setToken(response, redirect);
 			return response;
-		})
-		.catch((error)=> {
-			console.log("auth problem");
-			throw error;
 		});
-
-
 	};
 	
 	unlink(provider) {
@@ -122,8 +106,6 @@ export class AuthService  {
                 });
 		}
 		else if (this.config.unlinkMethod === 'post') {
-			//TODO 
-			//return $http.post(unlinkUrl, provider);
 			return this.http.createRequest(unlinkUrl)
                 .asPost()
                 .withContent(provider)

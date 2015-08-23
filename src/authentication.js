@@ -10,7 +10,9 @@ export class Authentication{
     this.tokenName = this.config.tokenPrefix ? this.config.tokenPrefix + '_' 
     + this.config.tokenName : this.config.tokenName;
   }
-
+  getLoginRoute(){
+    return this.config.loginRoute;
+  };
   getLoginUrl() {
     return  this.config.baseUrl ? authUtils.joinUrl(this.config.baseUrl, this.config.loginUrl) : this.config.loginUrl;
   };

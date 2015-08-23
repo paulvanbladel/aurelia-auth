@@ -32,7 +32,9 @@ System.register(['aurelia-framework', './authentication', 'aurelia-router'], fun
             })) {
               var isLoggedIn = this.auth.isAuthenticated();
               if (!isLoggedIn) {
-                return next.cancel(new Redirect('login'));
+                var loginRoute = this.auth.getLoginRoute();
+                console.log("login route : " + loginRoute);
+                return next.cancel(new Redirect(loginRoute));
               }
             }
 

@@ -12,7 +12,9 @@ export class AuthorizeStep {
     if (routingContext.nextInstructions.some(i => i.config.auth)) {
       var isLoggedIn =  this.auth.isAuthenticated(); 
       if (!isLoggedIn) {
-        return next.cancel(new Redirect('login'));
+        var loginRoute = this.auth.getLoginRoute();
+        console.log("login route : " + loginRoute);
+        return next.cancel(new Redirect(loginRoute));
       }
     }
 

@@ -29,7 +29,9 @@ var AuthorizeStep = (function () {
       })) {
         var isLoggedIn = this.auth.isAuthenticated();
         if (!isLoggedIn) {
-          return next.cancel(new _aureliaRouter.Redirect('login'));
+          var loginRoute = this.auth.getLoginRoute();
+          console.log("login route : " + loginRoute);
+          return next.cancel(new _aureliaRouter.Redirect(loginRoute));
         }
       }
 

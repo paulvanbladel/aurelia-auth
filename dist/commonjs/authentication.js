@@ -30,6 +30,11 @@ var Authentication = (function () {
   }
 
   _createClass(Authentication, [{
+    key: 'getLoginRoute',
+    value: function getLoginRoute() {
+      return this.config.loginRoute;
+    }
+  }, {
     key: 'getLoginUrl',
     value: function getLoginUrl() {
       return this.config.baseUrl ? _authUtils2['default'].joinUrl(this.config.baseUrl, this.config.loginUrl) : this.config.loginUrl;
