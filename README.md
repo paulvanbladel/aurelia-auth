@@ -106,7 +106,7 @@ export function configure(aurelia) {
 ```
 The above aurelia configuration file consumes the aurelia-auth security configuration file.
 
-##Provide a UI for a login, singup and profile.
+##Provide a UI for a login, signup and profile.
 
 See aurelia-auth-samples for more details.
 
