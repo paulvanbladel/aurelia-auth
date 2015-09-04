@@ -16,11 +16,8 @@ var AuthFilterValueConverter = (function () {
   _createClass(AuthFilterValueConverter, [{
     key: "toView",
     value: function toView(routes, isAuthenticated) {
-      console.log(isAuthenticated);
-      if (isAuthenticated) return routes;
-
       return routes.filter(function (r) {
-        return !r.config.auth;
+        return r.config.auth === undefined || r.config.auth === isAuthenticated;
       });
     }
   }]);
