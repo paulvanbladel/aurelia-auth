@@ -23,7 +23,7 @@ Obviously, the prerequisites ([NodeJs](https://nodejs.org/), [Gulp](http://gulpj
 
 #Installation
 ```
-jspm install github:paulvanbladel/aurelia-auth
+jspm install aurelia-auth
 ```
 
 #How to use aurelia-auth?
@@ -98,7 +98,7 @@ export function configure(aurelia) {
     .standardConfiguration()
     .developmentLogging()
     .plugin('aurelia-animator-css')
-    .plugin('paulvanbladel/aurelia-auth', (baseConfig)=>{
+    .plugin('aurelia-auth', (baseConfig)=>{
          baseConfig.configure(config);
     });
   aurelia.start().then(a => a.setRoot());
@@ -119,7 +119,7 @@ Button actions are passed to the corresponding view model via a simple click.del
 
 The login view model will speak directly with the aurelia-auth service, which is made available via constructor injection.
 ```js
-import {AuthService} from 'paulvanbladel/aurelia-auth';
+import {AuthService} from 'aurelia-auth';
 import {inject} from 'aurelia-framework';
 @inject(AuthService)
 
