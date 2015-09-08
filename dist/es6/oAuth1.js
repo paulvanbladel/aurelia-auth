@@ -63,7 +63,7 @@ export class OAuth1{
 				return self.exchangeForToken(response, userData);
 			});
 		});
-};
+}
 
 exchangeForToken(oauthData, userData) {
 	var data = authUtils.extend({}, userData, oauthData);
@@ -82,7 +82,7 @@ exchangeForToken(oauthData, userData) {
 		throw err;
 	});
 
-};
+}
 
 buildQueryString (obj) {
 	var str = [];
@@ -92,6 +92,5 @@ buildQueryString (obj) {
 	});
 
 	return str.join('&');
-};
-
+}
 }
