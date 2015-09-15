@@ -137,9 +137,9 @@ export class BaseConfig {
         },
         instagram: {
           name: 'instagram',
-          url: 'http://localhost:9000',
+          url: '/auth/instagram',
           authorizationEndpoint: 'https://api.instagram.com/oauth/authorize',
-          redirectUri: 'http://localhost:9000',
+          redirectUri: window.location.origin || window.location.protocol + '//' + window.location.host,
           scope: ['likes', 'comments'],
           scopeDelimiter: '+',
           requiredUrlParams: ['scope'],
