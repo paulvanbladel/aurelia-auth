@@ -140,9 +140,9 @@ export class BaseConfig {
           url: '/auth/instagram',
           authorizationEndpoint: 'https://api.instagram.com/oauth/authorize',
           redirectUri: window.location.origin || window.location.protocol + '//' + window.location.host,
-          scope: ['likes', 'comments'],
-          scopeDelimiter: '+',
           requiredUrlParams: ['scope'],
+          scope: ['basic'],
+          scopeDelimiter: '+',
           display: 'popup',
           type: '2.0',
           popupOptions: {
