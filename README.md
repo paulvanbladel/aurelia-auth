@@ -2,7 +2,7 @@
 #### Sample app: [aurelia-auth.opinionatedapps.com](http://aureliauth.opinionatedapps.com)
 #### Sources sample app: [github.com/paulvanbladel/aurelia-auth-sample] (https://github.com/paulvanbladel/aurelia-auth-sample)
 ##What is aurelia-auth?
-aurelia-auth is a token-based authentication plugin for [Aurelia](http://aurelia.io/) with support for popular social authentication providers (Google, Twitter, Facebook, LinkedIn, Windows Live, FourSquare, Yahoo, Github ) and a local stragegy, i.e. simple username (email) and password.
+aurelia-auth is a token-based authentication plugin for [Aurelia](http://aurelia.io/) with support for popular social authentication providers (Google, Twitter, Facebook, LinkedIn, Windows Live, FourSquare, Yahoo, Github, Instagram ) and a local stragegy, i.e. simple username (email) and password.
 
 aurelia-auth is a port of the great [Satellizer](https://github.com/sahat/satellizer/) library to ES6 and packaged as an Aurelia plugin.
 
