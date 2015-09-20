@@ -28,7 +28,7 @@ define(['exports', 'aurelia-framework', 'aurelia-http-client', './authentication
 			key: 'getMe',
 			value: function getMe() {
 				var profileUrl = this.auth.getProfileUrl();
-				return this.http.createRequest(profileUrl).asGet().send().then(function (response) {
+				return this.http.createRequest(profileUrl).asGet().withHeader('Authorization', 'Bearer ' + this.auth.getToken()).send().then(function (response) {
 					return response.content;
 				});
 			}
