@@ -39,28 +39,58 @@ export class OAuth2 {
             this.storage.set(stateName, this.defaults.state);
         }
 
-        var url = this.defaults.authorizationEndpoint + '?' + this.buildQueryString();
-
-        var openPopup;
-            if (this.config.platform === 'mobile') {
-              openPopup = this.popup.open(url, this.defaults.name, this.defaults.popupOptions, this.defaults.redirectUri).eventListener(this.defaults.redirectUri);
-            } else {
-              openPopup = this.popup.open(url, this.defaults.name, this.defaults.popupOptions, this.defaults.redirectUri).pollPopup();
+        if(this.defaults.display === 'inline'){
+            var loginUrl = this.defaults.authorizationEndpoint;
+            
+            var addAttr = {grant_type: this.defaults.grant_type, client_id: this.defaults.client_id};
+            if(typeof userData === 'string'){
+                for (var key in addAttr) {
+                    if (userData != "") {
+                        userData += "&";
+                    }
+                    userData += key + "=" + encodeURIComponent(addAttr[key]);
+                }
             }
-
-        var self = this;
-        return openPopup
-            .then((oauthData) => {
-                if (self.defaults.responseType === 'token') {
+            else if(typeof userData === 'object'){
+                authUtils.extend(userData, addAttr);
+            }
+            else{
+                throw "Type of userData is not correct.";
+            }
+            
+            return this.http
+                .createRequest(loginUrl)
+                .asPost()
+                .withContent(userData)
+                .send()
+                .then((oauthData) => {
                     return oauthData;
+                });	
+        }
+        else{
+            var url = this.defaults.authorizationEndpoint + '?' + this.buildQueryString();
+            
+            var openPopup;
+                if (this.config.platform === 'mobile') {
+                openPopup = this.popup.open(url, this.defaults.name, this.defaults.popupOptions, this.defaults.redirectUri).eventListener(this.defaults.redirectUri);
+                } else {
+                openPopup = this.popup.open(url, this.defaults.name, this.defaults.popupOptions, this.defaults.redirectUri).pollPopup();
                 }
-                if (oauthData.state && oauthData.state !== self.storage.get(stateName)) {
-                    return Promise.reject('OAuth 2.0 state parameter mismatch.');
-                }
-                return self.exchangeForToken(oauthData, userData);
-            });
+    
+            var self = this;
+            return openPopup
+                .then((oauthData) => {
+                    if (self.defaults.responseType === 'token') {
+                        return oauthData;
+                    }
+                    if (oauthData.state && oauthData.state !== self.storage.get(stateName)) {
+                        return Promise.reject('OAuth 2.0 state parameter mismatch.');
+                    }
+                    return self.exchangeForToken(oauthData, userData);
+                });
+        }
     };
-
+    
     exchangeForToken(oauthData, userData) {
         var data = authUtils.extend({}, userData, {
             code: oauthData.code,
@@ -78,7 +108,6 @@ export class OAuth2 {
 
         var exchangeForTokenUrl = this.config.baseUrl ? authUtils.joinUrl(this.config.baseUrl, this.defaults.url) : this.defaults.url;
       
-
             return this.http.createRequest(exchangeForTokenUrl)
                 .asPost()
                 .withContent(data)
