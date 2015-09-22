@@ -146,57 +146,34 @@ The login view model will speak directly with the aurelia-auth service, which is
 ```js
 import {AuthService} from 'aurelia-auth';
 import {inject} from 'aurelia-framework';
-import config from '../authConfig';
+@inject(AuthService)
 
-@inject(AuthService,config)
 export class Login{
-	constructor(auth,config){
-		this.auth = auth;
-		this.config = config;
-	};
+    constructor(auth){
+        this.auth = auth;
+    };
 
-	title = 'Login';
-	
-	username='';
-	password='';
-	
-	login(){
-		var userData = $.param({
-				'username': this.username, 
-				'password': this.password,
-			});
-		
-		this.auth.authenticate('fsAuth', null, userData)
-			.then(response=>{
-				console.log("success logged " + response);
-			})
-			.catch(err=>{
-				console.log("login failure");
-			});
-	};
+    heading = 'Login';
+
+    email='';
+    password='';
+    login(){
+        return this.auth.login(this.email, this.password)
+        .then(response=>{
+            console.log("success logged " + response);
+        })
+        .catch(err=>{
+            console.log("login failure");
+        });
+    };
+
+    authenticate(name){
+        return this.auth.authenticate(name, false, null)
+        .then((response)=>{
+            console.log("auth response " + response);
+        });
+    }
 }
-```
-
-Config file setup
-
-```js
-var configForDevelopment = {
-	baseUrl:'/',	
-	loginUrl: '/auth/login',	
-	tokenName:'access_token',
-	loginRedirect:'',
-	providers: {
-		fsAuth: {
-			name: 'fsAuth',
-			url: '/oauth/token',
-			display: 'inline', //Added for ResourceOwnerPasswordCredentialsGrant rather than ImplicitGrant
-			grant_type: 'password',
-			type: '2.0',
-			client_id:'099153c2625141452cb3e85e03f0022', //Set per your clientId
-			authorizationEndpoint: 'http://trustedDomain/oauth/token' //set per your site
-		}
-	}
-};
 ```
 
 On the profile page, social media accounts can be linked and unlinked. For a nice UI experience, use  if.bind for either showing the link or unlink button:
