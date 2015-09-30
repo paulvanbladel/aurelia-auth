@@ -35,6 +35,7 @@ authenticate(provider, redirect, userData)
 signup(displayName, email, password)
 getMe()
 isAuthenticated()
+getTokenPayload()
 unlink(provider)
 ```
 Login is used for the local authentication strategy (email + password). Authenticate is for social media authentication. Authenticate is also used for linking a social media account to an existing account.
