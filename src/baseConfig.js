@@ -149,6 +149,12 @@ export class BaseConfig {
             width: 550,
             height: 369
           }
+        },
+        resourceOwnerPasswordCredentialsGrant: {
+          name: 'resourceOwnerPasswordCredentialsGrant',
+          url: '/oauth/token',
+          display: 'inline',
+          type: '2.0'
         }
       }
     };

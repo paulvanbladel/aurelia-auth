@@ -186,6 +186,66 @@ On the profile page, social media accounts can be linked and unlinked. For a nic
     <i class="ion-social-facebook"></i> Link Facebook Account
 </button>
 ```
+
+## Alternative oAuth login Example use
+
+Login page code
+```javascript
+import {AuthService} from 'aurelia-auth';
+import {inject} from 'aurelia-framework';
+import config from '../authConfig';
+
+@inject(AuthService,config)
+export class Login{
+	constructor(auth,config){
+		this.auth = auth;
+		this.config = config;
+	};
+
+	title = 'Login';
+	
+	username='';
+	password='';
+	
+	login(){
+		var userData = $.param({
+				'username': this.username, 
+				'password': this.password,
+			});
+		
+		this.auth.authenticate('fsAuth', null, userData)
+			.then(response=>{
+				console.log("success logged " + response);
+			})
+			.catch(err=>{
+				console.log("login failure");
+			});
+	};
+}
+```
+You would use this with a config that looks something like this:
+
+```js
+var configForDevelopment = {
+	baseUrl:'/',	
+	loginUrl: '/auth/login',	
+	tokenName:'access_token',
+	loginRedirect:'',
+	providers: {
+		fsAuth: {
+			name: 'fsAuth',
+			url: '/oauth/token',
+			display: 'inline',
+			grant_type: 'password',
+			type: '2.0',
+			client_id:'not153c262514f438ecb3e85e03freal', //Set ClientID
+			authorizationEndpoint: 'http://yourdomain/oauth/token' //set token path
+		}
+	}
+};
+```
+
+
 ## Making the Aurelia Router authentication aware
 
 The logout and profile links are only shown when the user is authenticated, whereas the login link is only visible when the user is not authenticated.
