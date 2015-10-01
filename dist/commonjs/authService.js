@@ -51,6 +51,11 @@ var AuthService = (function () {
 			return this.auth.isAuthenticated();
 		}
 	}, {
+		key: 'getTokenPayload',
+		value: function getTokenPayload() {
+			return this.auth.getPayload();
+		}
+	}, {
 		key: 'signup',
 		value: function signup(displayName, email, password) {
 			var _this = this;
