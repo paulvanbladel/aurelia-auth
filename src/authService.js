@@ -28,14 +28,18 @@ export class AuthService  {
 		return this.auth.isAuthenticated();
 	};
 
+	getTokenPayload(){
+		return this.auth.getPayload();
+	};
+
 	signup(displayName, email, password){
-		var signupUrl = this.auth.getSignupUrl();		
+		var signupUrl = this.auth.getSignupUrl();
 		var content;
 		if (typeof arguments[0] === 'object') {
 			content = arguments[0];
 		} else {
 			content = {'displayName': displayName,'email': email, 'password':password};
-		}		
+		}
 		return this.http.createRequest(signupUrl)
 			.asPost()
 			.withContent(content)
@@ -92,9 +96,9 @@ export class AuthService  {
 			return response;
 		});
 	};
-	
+
 	unlink(provider) {
-		var unlinkUrl =  this.config.baseUrl 
+		var unlinkUrl =  this.config.baseUrl
 		? authUtils.joinUrl(this.config.baseUrl, this.config.unlinkUrl) : this.config.unlinkUrl;
 
 		if (this.config.unlinkMethod === 'get') {
