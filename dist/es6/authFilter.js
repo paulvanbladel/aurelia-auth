@@ -1,9 +1,5 @@
 export class AuthFilterValueConverter {
   toView(routes, isAuthenticated) {
-    console.log(isAuthenticated);
-    if (isAuthenticated)
-      return routes;
-
-    return routes.filter(r => !r.config.auth);
+    return routes.filter(r => r.config.auth === undefined || r.config.auth === isAuthenticated);
   }
 }

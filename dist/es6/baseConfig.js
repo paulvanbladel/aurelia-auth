@@ -134,6 +134,21 @@ export class BaseConfig {
             width: 500,
             height: 560
           }
+        },
+        instagram: {
+          name: 'instagram',
+          url: '/auth/instagram',
+          authorizationEndpoint: 'https://api.instagram.com/oauth/authorize',
+          redirectUri: window.location.origin || window.location.protocol + '//' + window.location.host,
+          requiredUrlParams: ['scope'],
+          scope: ['basic'],
+          scopeDelimiter: '+',
+          display: 'popup',
+          type: '2.0',
+          popupOptions: {
+            width: 550,
+            height: 369
+          }
         }
       }
     };

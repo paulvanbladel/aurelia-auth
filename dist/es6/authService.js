@@ -53,7 +53,7 @@ export class AuthService  {
 	login(email, password){
 		var loginUrl = this.auth.getLoginUrl();
 		var content;
-		if (typeof arguments[0] === 'object') {
+		if (typeof arguments[1] !== 'string') {
 			content = arguments[0];
 		} else {
 			content = {'email': email, 'password':password};
