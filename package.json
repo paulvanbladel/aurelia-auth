@@ -1,6 +1,6 @@
 {
   "name": "aurelia-auth",
-  "version": "0.9.19",
+  "version": "0.10.1",
   "description": "Plugin for social media authentication and local authentication together with other authentication utilities",
   "main": "dist/system/index.js",
   "scripts": {
@@ -61,6 +61,7 @@
       "lib": "dist/system"
     },
     "dependencies": {
+      "aurelia-fetch-client": "github:aurelia/fetch-client@^0.3.0",
       "aurelia-framework": "github:aurelia/framework@^0.17.0",
       "aurelia-http-client": "github:aurelia/http-client@^0.12.0",
       "aurelia-router": "github:aurelia/router@^0.13.0"

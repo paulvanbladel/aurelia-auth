@@ -15,6 +15,7 @@ System.config({
   },
 
   map: {
+    "aurelia-fetch-client": "github:aurelia/fetch-client@0.3.0",
     "aurelia-framework": "github:aurelia/framework@0.17.0",
     "aurelia-http-client": "github:aurelia/http-client@0.12.0",
     "aurelia-router": "github:aurelia/router@0.13.0",
@@ -35,6 +36,9 @@ System.config({
     },
     "github:aurelia/event-aggregator@0.9.0": {
       "aurelia-logging": "github:aurelia/logging@0.8.0"
+    },
+    "github:aurelia/fetch-client@0.3.0": {
+      "core-js": "npm:core-js@0.9.18"
     },
     "github:aurelia/framework@0.17.0": {
       "aurelia-binding": "github:aurelia/binding@0.10.0",
