@@ -43,11 +43,11 @@ var FetchConfig = (function () {
                 }).withInterceptor({
                     request: function request(_request) {
                         if (auth.isAuthenticated() && config.httpInterceptor) {
-                            var tokenName = config.tokenPrefix ? '{config.tokenPrefix} {config.tokenName}' : config.tokenName;
+                            var tokenName = config.tokenPrefix ? config.tokenPrefix + '_' + config.tokenName : config.tokenName;
                             var token = storage.get(tokenName);
 
                             if (config.authHeader && config.authToken) {
-                                token = '{config.authToken} {token}';
+                                token = config.authToken + ' ' + token;
                             }
 
                             _request.headers.append(config.authHeader, token);

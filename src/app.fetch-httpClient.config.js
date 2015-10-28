@@ -28,11 +28,11 @@ export default class FetchConfig{
             .withInterceptor({
                 request(request) {
                     if (auth.isAuthenticated() && config.httpInterceptor) {
-                        var tokenName = config.tokenPrefix ? `{config.tokenPrefix} {config.tokenName}` : config.tokenName;
+                        var tokenName = config.tokenPrefix ? `${config.tokenPrefix}_${config.tokenName}` : config.tokenName;
                         var token = storage.get(tokenName);
 
                         if (config.authHeader && config.authToken) {
-                            token = `{config.authToken} {token}`;
+                            token = `${config.authToken} ${token}`;
                         }
 
                         request.headers.append(config.authHeader, token);

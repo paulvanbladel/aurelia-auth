@@ -23,11 +23,11 @@ define(['exports', 'module', 'aurelia-http-client', './baseConfig', './authentic
 				_aureliaHttpClient.RequestBuilder.addHelper('authTokenHandling', function () {
 					return function (client, processor, message) {
 						if (_this.auth.isAuthenticated() && _this.config.httpInterceptor) {
-							var tokenName = _this.config.tokenPrefix ? '{this.config.tokenPrefix} {this.config.tokenName}' : _this.config.tokenName;
+							var tokenName = _this.config.tokenPrefix ? _this.config.tokenPrefix + '_' + _this.config.tokenName : _this.config.tokenName;
 							var token = _this.storage.get(tokenName);
 
 							if (_this.config.authHeader && _this.config.authToken) {
-								token = '{this.config.authToken} {token}';
+								token = _this.config.authToken + ' ' + token;
 							}
 
 							message.headers.add(_this.config.authHeader, token);
