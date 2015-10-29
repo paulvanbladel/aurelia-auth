@@ -65,5 +65,4 @@ var FetchConfig = (function () {
     return FetchConfig;
 })();
 
-exports['default'] = FetchConfig;
-module.exports = exports['default'];
+exports.FetchConfig = FetchConfig;

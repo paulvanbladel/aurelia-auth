@@ -67,7 +67,7 @@ System.register(['aurelia-fetch-client', './authentication', './baseConfig', 'au
                 return FetchConfig;
             })();
 
-            _export('default', FetchConfig);
+            _export('FetchConfig', FetchConfig);
         }
     };
 });

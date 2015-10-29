@@ -4,7 +4,7 @@ import {Authentication} from './authentication';
 import {Storage} from './storage';
 import {inject} from 'aurelia-framework';
 @inject(HttpClient,Authentication,Storage, BaseConfig )
-export  default class  {
+export  default class   {
 	constructor(http, auth, storage, config ){
 		this.http = http;
 		this.auth = auth;

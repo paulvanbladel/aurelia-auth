@@ -5,7 +5,7 @@ import {inject} from 'aurelia-framework';
 import {Storage} from './storage';
 
 @inject(HttpClient, Authentication, Storage, BaseConfig)
-export default class FetchConfig{
+export class FetchConfig {
     constructor(httpClient, authService, storage, config){
         this.httpClient = httpClient;
         this.auth = authService;
