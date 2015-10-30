@@ -7,12 +7,17 @@ export class Authentication{
   constructor( storage, config){
     this.storage = storage;
     this.config = config.current;
-    this.tokenName = this.config.tokenPrefix ? this.config.tokenPrefix + '_' 
+    this.tokenName = this.config.tokenPrefix ? this.config.tokenPrefix + '_'
     + this.config.tokenName : this.config.tokenName;
   }
   getLoginRoute(){
     return this.config.loginRoute;
   };
+
+  getLoginRedirect(){
+    return this.config.loginRedirect;
+  }
+  
   getLoginUrl() {
     return  this.config.baseUrl ? authUtils.joinUrl(this.config.baseUrl, this.config.loginUrl) : this.config.loginUrl;
   };
@@ -54,14 +59,14 @@ export class Authentication{
     }
 
     if (!token && response) {
-      token = this.config.tokenRoot && response.content[this.config.tokenRoot] 
-      ? response.content[this.config.tokenRoot][this.config.tokenName] 
+      token = this.config.tokenRoot && response.content[this.config.tokenRoot]
+      ? response.content[this.config.tokenRoot][this.config.tokenName]
       : response.content[this.config.tokenName];
     }
 
     if (!token) {
-      var tokenPath = this.config.tokenRoot 
-      ? this.config.tokenRoot + '.' + this.config.tokenName 
+      var tokenPath = this.config.tokenRoot
+      ? this.config.tokenRoot + '.' + this.config.tokenName
       : this.config.tokenName;
 
       throw new Error('Expecting a token named "' + tokenPath + '" but instead got: ' + JSON.stringify(response.content));
