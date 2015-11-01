@@ -76,10 +76,6 @@ exchangeForToken(oauthData, userData) {
 	.send()
 	.then(response => {
 		return response;
-	})
-	.catch(err => {
-		console.log("error :" + err.content.message);
-		throw err;
 	});
 
 }
