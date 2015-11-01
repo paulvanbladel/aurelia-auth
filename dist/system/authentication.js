@@ -33,6 +33,11 @@ System.register(['aurelia-framework', './baseConfig', './storage', './authUtils'
             return this.config.loginRoute;
           }
         }, {
+          key: 'getLoginRedirect',
+          value: function getLoginRedirect() {
+            return this.config.loginRedirect;
+          }
+        }, {
           key: 'getLoginUrl',
           value: function getLoginUrl() {
             return this.config.baseUrl ? authUtils.joinUrl(this.config.baseUrl, this.config.loginUrl) : this.config.loginUrl;

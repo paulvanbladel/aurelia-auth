@@ -35,6 +35,11 @@ var Authentication = (function () {
       return this.config.loginRoute;
     }
   }, {
+    key: 'getLoginRedirect',
+    value: function getLoginRedirect() {
+      return this.config.loginRedirect;
+    }
+  }, {
     key: 'getLoginUrl',
     value: function getLoginUrl() {
       return this.config.baseUrl ? _authUtils2['default'].joinUrl(this.config.baseUrl, this.config.loginUrl) : this.config.loginUrl;

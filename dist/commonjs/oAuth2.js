@@ -102,9 +102,6 @@ var OAuth2 = (function () {
 
             return this.http.createRequest(exchangeForTokenUrl).asPost().withContent(data).withCredentials(this.config.withCredentials).send().then(function (response) {
                 return response;
-            })['catch'](function (err) {
-                console.log("error :" + err.content.message);
-                throw err;
             });
         }
     }, {
