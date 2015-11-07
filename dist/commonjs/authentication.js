@@ -66,7 +66,7 @@ var Authentication = (function () {
 
       if (token && token.split('.').length === 3) {
         var base64Url = token.split('.')[1];
-        var base64 = base64Url.replace('-', '+').replace('_', '/');
+        var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
         return JSON.parse(decodeURIComponent(escape(window.atob(base64))));
       }
     }
@@ -117,7 +117,7 @@ var Authentication = (function () {
       if (token) {
         if (token.split('.').length === 3) {
           var base64Url = token.split('.')[1];
-          var base64 = base64Url.replace('-', '+').replace('_', '/');
+          var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
           var exp = JSON.parse(window.atob(base64)).exp;
           if (exp) {
             return Math.round(new Date().getTime() / 1000) <= exp;
