@@ -70,7 +70,7 @@ System.register(['aurelia-framework', './authUtils', './storage', './popup', './
 
                         var self = this;
                         return openPopup.then(function (oauthData) {
-                            if (self.defaults.responseType === 'token') {
+                            if (self.defaults.responseType === 'token' || self.defaults.responseType === 'id_token%20token' || self.defaults.responseType === 'token%20id_token') {
                                 return oauthData;
                             }
                             if (oauthData.state && oauthData.state !== self.storage.get(stateName)) {

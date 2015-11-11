@@ -12,13 +12,13 @@ export class AuthorizeStep {
     var isLoggedIn =  this.auth.isAuthenticated();
     var loginRoute = this.auth.getLoginRoute();
 
-    if (routingContext.nextInstructions.some(i => i.config.auth)) {
+    if (routingContext.getAllInstructions().some(i => i.config.auth)) {
       if (!isLoggedIn) {
         console.log("login route : " + loginRoute);
         return next.cancel(new Redirect(loginRoute));
       }
     }
-    else if (isLoggedIn && routingContext.nextInstructions.some(i => i.fragment) == loginRoute) {
+    else if (isLoggedIn && routingContext.getAllInstructions().some(i => i.fragment) == loginRoute) {
       var loginRedirect = this.auth.getLoginRedirect();
       return next.cancel(new Redirect(loginRedirect));
     }

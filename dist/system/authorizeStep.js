@@ -30,14 +30,14 @@ System.register(['aurelia-framework', './authentication', 'aurelia-router'], fun
             var isLoggedIn = this.auth.isAuthenticated();
             var loginRoute = this.auth.getLoginRoute();
 
-            if (routingContext.nextInstructions.some(function (i) {
+            if (routingContext.getAllInstructions().some(function (i) {
               return i.config.auth;
             })) {
               if (!isLoggedIn) {
                 console.log("login route : " + loginRoute);
                 return next.cancel(new Redirect(loginRoute));
               }
-            } else if (isLoggedIn && routingContext.nextInstructions.some(function (i) {
+            } else if (isLoggedIn && routingContext.getAllInstructions().some(function (i) {
               return i.fragment;
             }) == loginRoute) {
               var loginRedirect = this.auth.getLoginRedirect();
