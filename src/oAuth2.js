@@ -51,8 +51,11 @@ export class OAuth2 {
       var self = this;
       return openPopup
       .then((oauthData) => {
-        if (self.defaults.responseType === 'token') {
-            return oauthData;
+        if (self.defaults.responseType === 'token' ||
+                    self.defaults.responseType === 'id_token%20token' ||                   
+                    self.defaults.responseType === 'token%20id_token' 
+                    ) {
+                    return oauthData;
         }
         if (oauthData.state && oauthData.state !== self.storage.get(stateName)) {
             return Promise.reject('OAuth 2.0 state parameter mismatch.');
