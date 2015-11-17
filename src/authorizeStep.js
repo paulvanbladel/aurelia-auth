@@ -18,8 +18,8 @@ export class AuthorizeStep {
         return next.cancel(new Redirect(loginRoute));
       }
     }
-    else if (isLoggedIn && routingContext.getAllInstructions().some(i => i.fragment) == loginRoute) {
-      var loginRedirect = this.auth.getLoginRedirect();
+    else if (isLoggedIn && routingContext.getAllInstructions().some(i => i.fragment == loginRoute)) {
+      var loginRedirect = this.auth.getLoginRedirect().replace(/\/#/gi, '');
       return next.cancel(new Redirect(loginRedirect));
     }
 
