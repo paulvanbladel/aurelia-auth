@@ -18,19 +18,19 @@ System.config({
     "aurelia-fetch-client": "github:aurelia/fetch-client@0.4.0",
     "aurelia-framework": "github:aurelia/framework@0.18.0",
     "aurelia-http-client": "github:aurelia/http-client@0.13.0",
-    "aurelia-router": "github:aurelia/router@0.14.0",
+    "aurelia-router": "github:aurelia/router@0.14.1",
     "babel": "npm:babel-core@5.8.23",
     "babel-runtime": "npm:babel-runtime@5.8.20",
     "core-js": "npm:core-js@0.9.18",
-    "github:aurelia/binding@0.11.0": {
-      "aurelia-metadata": "github:aurelia/metadata@0.10.0",
+    "github:aurelia/binding@0.11.4": {
+      "aurelia-metadata": "github:aurelia/metadata@0.10.1",
       "aurelia-pal": "github:aurelia/pal@0.3.0",
       "aurelia-task-queue": "github:aurelia/task-queue@0.9.0",
       "core-js": "npm:core-js@1.2.6"
     },
-    "github:aurelia/dependency-injection@0.12.0": {
+    "github:aurelia/dependency-injection@0.12.1": {
       "aurelia-logging": "github:aurelia/logging@0.9.0",
-      "aurelia-metadata": "github:aurelia/metadata@0.10.0",
+      "aurelia-metadata": "github:aurelia/metadata@0.10.1",
       "aurelia-pal": "github:aurelia/pal@0.3.0",
       "core-js": "npm:core-js@1.2.6"
     },
@@ -41,15 +41,15 @@ System.config({
       "core-js": "npm:core-js@1.2.6"
     },
     "github:aurelia/framework@0.18.0": {
-      "aurelia-binding": "github:aurelia/binding@0.11.0",
-      "aurelia-dependency-injection": "github:aurelia/dependency-injection@0.12.0",
+      "aurelia-binding": "github:aurelia/binding@0.11.4",
+      "aurelia-dependency-injection": "github:aurelia/dependency-injection@0.12.1",
       "aurelia-loader": "github:aurelia/loader@0.11.0",
       "aurelia-logging": "github:aurelia/logging@0.9.0",
-      "aurelia-metadata": "github:aurelia/metadata@0.10.0",
+      "aurelia-metadata": "github:aurelia/metadata@0.10.1",
       "aurelia-pal": "github:aurelia/pal@0.3.0",
       "aurelia-path": "github:aurelia/path@0.11.0",
       "aurelia-task-queue": "github:aurelia/task-queue@0.9.0",
-      "aurelia-templating": "github:aurelia/templating@0.17.1",
+      "aurelia-templating": "github:aurelia/templating@0.17.5",
       "core-js": "npm:core-js@1.2.6"
     },
     "github:aurelia/http-client@0.13.0": {
@@ -58,10 +58,10 @@ System.config({
       "core-js": "npm:core-js@1.2.6"
     },
     "github:aurelia/loader@0.11.0": {
-      "aurelia-metadata": "github:aurelia/metadata@0.10.0",
+      "aurelia-metadata": "github:aurelia/metadata@0.10.1",
       "aurelia-path": "github:aurelia/path@0.11.0"
     },
-    "github:aurelia/metadata@0.10.0": {
+    "github:aurelia/metadata@0.10.1": {
       "aurelia-pal": "github:aurelia/pal@0.3.0",
       "core-js": "npm:core-js@1.2.6"
     },
@@ -69,8 +69,8 @@ System.config({
       "aurelia-path": "github:aurelia/path@0.11.0",
       "core-js": "npm:core-js@1.2.6"
     },
-    "github:aurelia/router@0.14.0": {
-      "aurelia-dependency-injection": "github:aurelia/dependency-injection@0.12.0",
+    "github:aurelia/router@0.14.1": {
+      "aurelia-dependency-injection": "github:aurelia/dependency-injection@0.12.1",
       "aurelia-event-aggregator": "github:aurelia/event-aggregator@0.10.0",
       "aurelia-history": "github:aurelia/history@0.9.0",
       "aurelia-logging": "github:aurelia/logging@0.9.0",
@@ -81,12 +81,12 @@ System.config({
     "github:aurelia/task-queue@0.9.0": {
       "aurelia-pal": "github:aurelia/pal@0.3.0"
     },
-    "github:aurelia/templating@0.17.1": {
-      "aurelia-binding": "github:aurelia/binding@0.11.0",
-      "aurelia-dependency-injection": "github:aurelia/dependency-injection@0.12.0",
+    "github:aurelia/templating@0.17.5": {
+      "aurelia-binding": "github:aurelia/binding@0.11.4",
+      "aurelia-dependency-injection": "github:aurelia/dependency-injection@0.12.1",
       "aurelia-loader": "github:aurelia/loader@0.11.0",
       "aurelia-logging": "github:aurelia/logging@0.9.0",
-      "aurelia-metadata": "github:aurelia/metadata@0.10.0",
+      "aurelia-metadata": "github:aurelia/metadata@0.10.1",
       "aurelia-pal": "github:aurelia/pal@0.3.0",
       "aurelia-path": "github:aurelia/path@0.11.0",
       "aurelia-task-queue": "github:aurelia/task-queue@0.9.0",
