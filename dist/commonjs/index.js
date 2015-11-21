@@ -25,6 +25,15 @@ Object.defineProperty(exports, 'AuthorizeStep', {
 	}
 });
 
+var _appFetchHttpClientConfig = require('./app.fetch-httpClient.config');
+
+Object.defineProperty(exports, 'FetchConfig', {
+	enumerable: true,
+	get: function get() {
+		return _appFetchHttpClientConfig.FetchConfig;
+	}
+});
+
 function configure(aurelia, configCallback) {
 	aurelia.globalResources('./authFilter');
 

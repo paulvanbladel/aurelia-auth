@@ -107,8 +107,31 @@ export function configure(aurelia) {
 ```
 The above aurelia configuration file consumes the aurelia-auth security configuration file.
 
-## Configure Http Client
+## Configure the Fetch Client
+In your aurelia app file, inject the {FetchConfig} class from aurelia-auth. We need to explicitely opt-in for the configuration of your fetch client by calling the configure function of the FetchConfig class:
+```
+import 'bootstrap';
 
+import {inject} from 'aurelia-framework';
+import {Router} from 'aurelia-router';
+import {FetchConfig} from 'aurelia-auth';
+@inject(Router,FetchConfig, AppRouterConfig )
+export class App {
+
+  constructor(router, fetchConfig, appRouterConfig){
+    this.router = router;
+    this.fetchConfig = fetchConfig;
+  }
+  
+  activate(){
+    this.fetchConfig.configure();
+  }
+}
+```
+
+## Configure Http Client 
+Allthough the Fetch Client is the preferred 'http client' for aurelia, there is also support for aurelia-http-client.
+The configuration of aurelia-http-client is similar to aurelia-fetch-client.
 In your aurelia app file, inject the `HttpClientConfig`.
 In the activate step, invoke the `configure()` method to send Authorization tokens with every HttpClient request.
 
