@@ -97,16 +97,12 @@ var AuthService = (function () {
 	}, {
 		key: 'logout',
 		value: function logout(redirectUri) {
-			var _this3 = this;
-
-			return new Promise(function (resolve, reject) {
-				_this3.auth.logout(redirectUri).then(function (response) {});
-			});
+			return this.auth.logout(redirectUri);
 		}
 	}, {
 		key: 'authenticate',
 		value: function authenticate(name, redirect, userData) {
-			var _this4 = this;
+			var _this3 = this;
 
 			var provider = this.oAuth2;
 			if (this.config.providers[name].type === '1.0') {
@@ -114,7 +110,7 @@ var AuthService = (function () {
 			};
 
 			return provider.open(this.config.providers[name], userData || {}).then(function (response) {
-				_this4.auth.setToken(response, redirect);
+				_this3.auth.setToken(response, redirect);
 				return response;
 			});
 		}

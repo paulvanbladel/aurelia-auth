@@ -107,34 +107,38 @@ define(['exports', 'aurelia-framework', './baseConfig', './storage', './authUtil
       value: function isAuthenticated() {
         var token = this.storage.get(this.tokenName);
 
-        if (token) {
-          if (token.split('.').length === 3) {
-            var base64Url = token.split('.')[1];
-            var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-            var exp = JSON.parse(window.atob(base64)).exp;
-            if (exp) {
-              return Math.round(new Date().getTime() / 1000) <= exp;
-            }
-            return true;
-          }
+        if (!token) {
+          return false;
+        }
+
+        if (token.split('.').length !== 3) {
           return true;
         }
-        return false;
+
+        var base64Url = token.split('.')[1];
+        var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+        var exp = JSON.parse(window.atob(base64)).exp;
+
+        if (exp) {
+          return Math.round(new Date().getTime() / 1000) <= exp;
+        }
+
+        return true;
       }
     }, {
       key: 'logout',
       value: function logout(redirect) {
         var _this = this;
 
-        var tokenName = this.tokenName;
-        return new Promise(function (resolve, reject) {
-          _this.storage.remove(tokenName);
+        return new Promise(function (resolve) {
+          _this.storage.remove(_this.tokenName);
 
           if (_this.config.logoutRedirect && !redirect) {
             window.location.href = _this.config.logoutRedirect;
           } else if (_authUtils2['default'].isString(redirect)) {
             window.location.href = redirect;
           }
+
           resolve();
         });
       }
