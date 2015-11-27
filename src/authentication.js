@@ -17,7 +17,7 @@ export class Authentication{
   getLoginRedirect(){
     return this.config.loginRedirect;
   }
-  
+
   getLoginUrl() {
     return  this.config.baseUrl ? authUtils.joinUrl(this.config.baseUrl, this.config.loginUrl) : this.config.loginUrl;
   };
@@ -85,40 +85,42 @@ export class Authentication{
   removeToken(){
     this.storage.remove(this.tokenName);
   }
+
   isAuthenticated() {
     var token = this.storage.get(this.tokenName);
 
-    if (token) {
-      if (token.split('.').length === 3) {
-        var base64Url = token.split('.')[1];
-        var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-        var exp = JSON.parse(window.atob(base64)).exp;
-        if (exp) {
-          return Math.round(new Date().getTime() / 1000) <= exp;
-        }
-        return true;
-      }
+    // There's no token, so user is not authenticated.
+    if (!token) {
+      return false;
+    }
+
+    // There is a token, but in a different format. Return true.
+    if (token.split('.').length !== 3) {
       return true;
     }
-    return false;
+
+    var base64Url = token.split('.')[1];
+    var base64    = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    var exp       = JSON.parse(window.atob(base64)).exp;
+
+    if (exp) {
+      return Math.round(new Date().getTime() / 1000) <= exp;
+    }
+
+    return true;
   };
 
   logout(redirect) {
-    var tokenName = this.tokenName;
-    return  new Promise((resolve,reject)=>{
-      this.storage.remove(tokenName);
-//var this.config = this.this.config;
-if (this.config.logoutRedirect && !redirect) {
-  window.location.href = this.config.logoutRedirect;
-}
-else if (authUtils.isString(redirect)) {
-//window.location.href =redirect;
-//this.router.navigate(redirect);
-window.location.href = redirect;
+    return new Promise(resolve => {
+      this.storage.remove(this.tokenName);
 
-}
-resolve();
-});
+      if (this.config.logoutRedirect && !redirect) {
+        window.location.href = this.config.logoutRedirect;
+      } else if (authUtils.isString(redirect)) {
+        window.location.href = redirect;
+      }
 
+      resolve();
+    });
   };
 }

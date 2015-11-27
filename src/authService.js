@@ -74,15 +74,9 @@ export class AuthService  {
 
 	};
 
-	logout(redirectUri){
-		return new Promise((resolve, reject)=>{
-			this.auth.logout(redirectUri)
-			.then(response=>{
-
-			})
-		});
-	};
-
+	logout (redirectUri) {
+		return this.auth.logout(redirectUri);
+	}
 
 	authenticate(name, redirect, userData) {
 		var provider = this.oAuth2;
