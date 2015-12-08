@@ -1,3 +1,6 @@
+### 0.11.5 (2015-12-08)
+* Updated dependencies
+
 ### 0.11.4 (2015-11-25)
 * Improved logout logic
 * Logout now returns and resolves a promise
