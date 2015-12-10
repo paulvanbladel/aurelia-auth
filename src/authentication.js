@@ -1,7 +1,7 @@
-import { inject } from 'aurelia-framework';
-import { BaseConfig }  from './baseConfig';
-import { Storage } from './storage';
-import { authUtils } from './authUtils';
+import {inject} from 'aurelia-framework';
+import {BaseConfig}  from './baseConfig';
+import {Storage} from './storage';
+import {authUtils} from './authUtils';
 
 @inject(Storage, BaseConfig)
 export class Authentication {

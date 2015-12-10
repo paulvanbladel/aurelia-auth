@@ -1,7 +1,7 @@
-import { inject } from 'aurelia-framework';
-import { Authentication } from './authentication';
-import { Redirect } from 'aurelia-router';
-import { Router } from 'aurelia-router';
+import {inject} from 'aurelia-framework';
+import {Authentication} from './authentication';
+import {Redirect} from 'aurelia-router';
+import {Router} from 'aurelia-router';
 
 @inject(Authentication)
 export class AuthorizeStep {

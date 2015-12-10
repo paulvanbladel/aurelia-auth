@@ -1,5 +1,5 @@
-import { inject } from 'aurelia-framework';
-import { BaseConfig } from './baseConfig';
+import {inject} from 'aurelia-framework';
+import {BaseConfig} from './baseConfig';
 
 @inject(BaseConfig)
 export class Storage {

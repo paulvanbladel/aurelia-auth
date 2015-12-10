@@ -1,8 +1,8 @@
-import { HttpClient } from 'aurelia-fetch-client';
-import { Authentication } from './authentication';
-import { BaseConfig } from './baseConfig';
-import { inject } from 'aurelia-framework';
-import { Storage } from './storage';
+import {HttpClient} from 'aurelia-fetch-client';
+import {Authentication} from './authentication';
+import {BaseConfig} from './baseConfig';
+import {inject} from 'aurelia-framework';
+import {Storage} from './storage';
 
 @inject(HttpClient, Authentication, Storage, BaseConfig)
 export class FetchConfig {

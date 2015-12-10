@@ -1,10 +1,10 @@
-import { inject } from 'aurelia-framework';
-import { HttpClient } from 'aurelia-http-client';
-import { Authentication } from './authentication';
-import { BaseConfig } from './baseConfig';
-import { OAuth1 } from './oAuth1';
-import { OAuth2 } from './oAuth2';
-import { authUtils } from './authUtils';
+import {inject} from 'aurelia-framework';
+import {HttpClient} from 'aurelia-http-client';
+import {Authentication} from './authentication';
+import {BaseConfig} from './baseConfig';
+import {OAuth1} from './oAuth1';
+import {OAuth2} from './oAuth2';
+import {authUtils} from './authUtils';
 
 @inject(HttpClient,Authentication, OAuth1, OAuth2, BaseConfig)
 export class AuthService {

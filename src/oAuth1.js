@@ -1,9 +1,9 @@
-import { inject } from 'aurelia-framework';
-import { authUtils } from './authUtils';
-import { Storage } from './storage';
-import { Popup } from './popup';
-import { BaseConfig } from './baseConfig';
-import { HttpClient } from 'aurelia-http-client';
+import {inject} from 'aurelia-framework';
+import {authUtils} from './authUtils';
+import {Storage} from './storage';
+import {Popup} from './popup';
+import {BaseConfig} from './baseConfig';
+import {HttpClient} from 'aurelia-http-client';
 
 @inject(Storage, Popup, HttpClient, BaseConfig)
 export class OAuth1 {
