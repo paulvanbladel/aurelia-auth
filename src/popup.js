@@ -135,4 +135,4 @@ export class Popup {
     });
     return parts.join(',');
   }
-};
+}

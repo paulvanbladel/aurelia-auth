@@ -24,4 +24,4 @@ export class AuthorizeStep {
 
     return next();
   }
-}:
+}

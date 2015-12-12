@@ -154,4 +154,4 @@ export class BaseConfig {
       }
     };
   }
-};
+}

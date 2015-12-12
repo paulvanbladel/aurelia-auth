@@ -34,4 +34,4 @@ export default class {
       x.withHeader('Accept', 'application/json');
     });
   }
-};
+}

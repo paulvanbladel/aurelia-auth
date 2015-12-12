@@ -74,4 +74,4 @@ export class Storage {
       break;
     }
   }
-};
+}

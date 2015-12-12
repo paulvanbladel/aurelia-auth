@@ -120,4 +120,4 @@ export class Authentication {
       resolve();
     });
   }
-};
+}

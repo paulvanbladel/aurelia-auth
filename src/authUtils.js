@@ -6,7 +6,7 @@ function setHashKey(obj, h) {
   } else {
     delete obj.$$hashKey;
   }
-};
+}
 
 function baseExtend(dst, objs, deep) {
   var h = dst.$$hashKey;
@@ -30,7 +30,7 @@ function baseExtend(dst, objs, deep) {
 
   setHashKey(dst, h);
   return dst;
-};
+}
 
 var authUtils = {
   isDefined: function(value) {
@@ -149,6 +149,6 @@ var authUtils = {
     return obj;
   }
 
-}
+};
 
 export default authUtils;

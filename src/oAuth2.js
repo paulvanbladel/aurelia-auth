@@ -123,4 +123,4 @@ export class OAuth2 {
     }).join('&');
   }
 
-};
+}
