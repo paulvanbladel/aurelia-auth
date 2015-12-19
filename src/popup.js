@@ -1,4 +1,4 @@
-import {authUtils} from './authUtils';
+import authUtils from './authUtils';
 import {BaseConfig}  from './baseConfig';
 import {inject} from 'aurelia-framework';
 
