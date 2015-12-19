@@ -1,4 +1,4 @@
-import {authUtils} from './authUtils';
+import authUtils from './authUtils';
 
 export class BaseConfig {
   configure(incomingConfig) {
