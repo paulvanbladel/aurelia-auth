@@ -28,7 +28,7 @@ jspm install aurelia-auth
 
 # How to use aurelia-auth?
 aurelia-auth does not contain any UI widgets. It's conceived as a simple service with following interface:
-```
+```js
 login(email, password)
 logout(redirectUri)
 authenticate(provider, redirect, userData)
@@ -109,7 +109,7 @@ The above aurelia configuration file consumes the aurelia-auth security configur
 
 ## Configure the Fetch Client
 In your aurelia app file, inject the {FetchConfig} class from aurelia-auth. We need to explicitely opt-in for the configuration of your fetch client by calling the configure function of the FetchConfig class:
-```
+```js
 import 'bootstrap';
 
 import {inject} from 'aurelia-framework';
@@ -135,7 +135,7 @@ The configuration of aurelia-http-client is similar to aurelia-fetch-client.
 In your aurelia app file, inject the `HttpClientConfig`.
 In the activate step, invoke the `configure()` method to send Authorization tokens with every HttpClient request.
 
-```
+```js
 import {inject} from 'aurelia-framework';
 import HttpClientConfig from 'aurelia-auth/app.httpClient.config';
 
