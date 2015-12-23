@@ -1,3 +1,5 @@
+## Discontinued
+Further development on this module has continued over at [this fork](https://github.com/SpoonX/aurelia-auth).
 
 #### Sample app: [aurelia-auth.opinionatedapps.com](http://aureliauth.opinionatedapps.com)
 #### Sources sample app: [github.com/paulvanbladel/aurelia-auth-sample] (https://github.com/paulvanbladel/aurelia-auth-sample)
