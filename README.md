@@ -50,13 +50,12 @@ var configForDevelopment = {
     providers: {
         google: {
             clientId: '239531826023-ibk10mb9p7ull54j55a61og5lvnjrff6.apps.googleusercontent.com'
-        }
-        ,
+        },
         linkedin:{
-            clientId:'778mif8zyqbei7'
+            clientId: '778mif8zyqbei7'
         },
         facebook:{
-            clientId:'1452782111708498'
+            clientId: '1452782111708498'
         }
     }
 };
@@ -68,16 +67,16 @@ var configForProduction = {
         }
         ,
         linkedin:{
-            clientId:'7561959vdub4x1'
+            clientId: '7561959vdub4x1'
         },
         facebook:{
-            clientId:'1653908914832509'
+            clientId: '1653908914832509'
         }
 
     }
 };
 var config ;
-if (window.location.hostname==='localhost') {
+if (window.location.hostname === 'localhost') {
     config = configForDevelopment;
 }
 else{
@@ -95,12 +94,13 @@ The above configuration file can cope with a development and production version 
 In your aurelia configuration file, add the plugin and inject the aurelia-auth security configuration file :
 ```js
 import config from './authConfig';
+
 export function configure(aurelia) {
   aurelia.use
     .standardConfiguration()
     .developmentLogging()
     .plugin('aurelia-animator-css')
-    .plugin('aurelia-auth', (baseConfig)=>{
+    .plugin('aurelia-auth', baseConfig => {
          baseConfig.configure(config);
     });
   aurelia.start().then(a => a.setRoot());
@@ -111,20 +111,19 @@ The above aurelia configuration file consumes the aurelia-auth security configur
 ## Configure the Fetch Client
 In your aurelia app file, inject the {FetchConfig} class from aurelia-auth. We need to explicitely opt-in for the configuration of your fetch client by calling the configure function of the FetchConfig class:
 ```js
-import 'bootstrap';
-
 import {inject} from 'aurelia-framework';
 import {Router} from 'aurelia-router';
 import {FetchConfig} from 'aurelia-auth';
-@inject(Router,FetchConfig, AppRouterConfig )
+
+@inject(Router, FetchConfig)
 export class App {
 
-  constructor(router, fetchConfig, appRouterConfig){
+  constructor(router, fetchConfig) {
     this.router = router;
     this.fetchConfig = fetchConfig;
   }
   
-  activate(){
+  activate() {
     this.fetchConfig.configure();
   }
 }
@@ -138,17 +137,18 @@ In the activate step, invoke the `configure()` method to send Authorization toke
 
 ```js
 import {inject} from 'aurelia-framework';
+import {Router} from 'aurelia-router';
 import HttpClientConfig from 'aurelia-auth/app.httpClient.config';
 
-@inject(Router,HttpClientConfig,AppRouterConfig )
+@inject(Router, HttpClientConfig)
 export class App {
 
-  constructor(router, httpClientConfig){
+  constructor(router, httpClientConfig) {
     this.router = router;
     this.httpClientConfig = httpClientConfig;
   }
 
-  activate(){
+  activate() {
     this.httpClientConfig.configure();
   }
 
@@ -171,31 +171,31 @@ The login view model will speak directly with the aurelia-auth service, which is
 ```js
 import {AuthService} from 'aurelia-auth';
 import {inject} from 'aurelia-framework';
-@inject(AuthService)
 
-export class Login{
-    constructor(auth){
+@inject(AuthService)
+export class Login {
+    heading = 'Login';
+    email = '';
+    password = '';
+    
+    constructor(auth) {
         this.auth = auth;
     };
 
-    heading = 'Login';
-
-    email='';
-    password='';
-    login(){
+    login() {
         return this.auth.login(this.email, this.password)
         .then(response=>{
-            console.log("success logged " + response);
+            console.log('success logged ' + response);
         })
         .catch(err=>{
-            console.log("login failure");
+            console.log('login failure');
         });
     };
 
-    authenticate(name){
+    authenticate(name) {
         return this.auth.authenticate(name, false, null)
         .then((response)=>{
-            console.log("auth response " + response);
+            console.log('auth response ' + response);
         });
     }
 }
@@ -243,8 +243,8 @@ Menu items visibility can also be linked with the authFilter to the isAuthentica
 In the router config function, you can specifify an auth property in the routing map indicating wether or not the user needs to be authenticated in order to access the route:
 
 ```js
-configure(){
-    var appRouterConfig = function(config){
+configure() {
+    var appRouterConfig = function(config) {
         config.title = 'Aurelia';
         config.addPipelineStep('authorize', AuthorizeStep); // Add a route filter to the authorize extensibility point.
 
