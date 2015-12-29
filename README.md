@@ -123,14 +123,14 @@ export class App {
     this.router = router;
     this.fetchConfig = fetchConfig;
   }
-  
+
   activate(){
     this.fetchConfig.configure();
   }
 }
 ```
 
-## Configure Http Client 
+## Configure Http Client
 Allthough the Fetch Client is the preferred 'http client' for aurelia, there is also support for aurelia-http-client.
 The configuration of aurelia-http-client is similar to aurelia-fetch-client.
 In your aurelia app file, inject the `HttpClientConfig`.
@@ -282,6 +282,7 @@ Via the above mentioned configuration virtually all aspects of the authenticatio
   tokenRoot: false,
   tokenName: 'token',
   tokenPrefix: 'aurelia',
+  responseTokenProp: 'access_token',
   unlinkUrl: '/auth/unlink/',
   unlinkMethod: 'get',
   authHeader: 'Authorization',
