@@ -44,6 +44,7 @@ define(['exports', './authUtils'], function (exports, _authUtils) {
         tokenRoot: false,
         tokenName: 'token',
         tokenPrefix: 'aurelia',
+        responseTokenProp: 'access_token',
         unlinkUrl: '/auth/unlink/',
         unlinkMethod: 'get',
         authHeader: 'Authorization',

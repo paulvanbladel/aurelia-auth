@@ -75,7 +75,7 @@ var Authentication = (function () {
     value: function setToken(response, redirect) {
 
       var tokenName = this.tokenName;
-      var accessToken = response && response.access_token;
+      var accessToken = response && response[this.config.responseTokenProp];
       var token;
 
       if (accessToken) {
