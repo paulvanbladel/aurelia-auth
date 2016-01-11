@@ -42,86 +42,85 @@ export class OAuth2 {
         var url = this.defaults.authorizationEndpoint + '?' + this.buildQueryString();
 
         var openPopup;
-            if (this.config.platform === 'mobile') {
-              openPopup = this.popup.open(url, this.defaults.name, this.defaults.popupOptions, this.defaults.redirectUri).eventListener(this.defaults.redirectUri);
-            } else {
-              openPopup = this.popup.open(url, this.defaults.name, this.defaults.popupOptions, this.defaults.redirectUri).pollPopup();
+        if (this.config.platform === 'mobile') {
+          openPopup = this.popup.open(url, this.defaults.name, this.defaults.popupOptions, this.defaults.redirectUri).eventListener(this.defaults.redirectUri);
+      } else {
+          openPopup = this.popup.open(url, this.defaults.name, this.defaults.popupOptions, this.defaults.redirectUri).pollPopup();
+      }
+
+      var self = this;
+      return openPopup
+      .then((oauthData) => {
+        if (self.defaults.responseType === 'token' ||
+                    self.defaults.responseType === 'id_token%20token' ||                   
+                    self.defaults.responseType === 'token%20id_token' 
+                    ) {
+                    return oauthData;
+        }
+        if (oauthData.state && oauthData.state !== self.storage.get(stateName)) {
+            return Promise.reject('OAuth 2.0 state parameter mismatch.');
+        }
+        return self.exchangeForToken(oauthData, userData);
+    });
+  };
+
+  exchangeForToken(oauthData, userData) {
+    var data = authUtils.extend({}, userData, {
+        code: oauthData.code,
+        clientId: this.defaults.clientId,
+        redirectUri: this.defaults.redirectUri
+    });
+
+    if (oauthData.state) {
+        data.state = oauthData.state;
+    }
+
+    authUtils.forEach(this.defaults.responseParams, function(param) {
+        data[param] = oauthData[param];
+    });
+
+    var exchangeForTokenUrl = this.config.baseUrl ? authUtils.joinUrl(this.config.baseUrl, this.defaults.url) : this.defaults.url;
+    
+
+    return this.http.createRequest(exchangeForTokenUrl)
+    .asPost()
+    .withContent(data)
+    .withCredentials(this.config.withCredentials)
+    .send()
+    .then(response => {
+        return response;
+    });
+};
+
+buildQueryString() {
+    var keyValuePairs = [];
+    var urlParams = ['defaultUrlParams', 'requiredUrlParams', 'optionalUrlParams'];
+    authUtils.forEach(urlParams, (params) => {
+
+        authUtils.forEach(this.defaults[params], (paramName) => {
+            var camelizedName = authUtils.camelCase(paramName);
+            var paramValue = authUtils.isFunction(this.defaults[paramName]) ? this.defaults[paramName]() : this.defaults[camelizedName];
+
+            if (paramName === 'state') {
+                var stateName = this.defaults.name + '_state';
+                paramValue = encodeURIComponent(this.storage.get(stateName));
             }
 
-        var self = this;
-        return openPopup
-            .then((oauthData) => {
-                if (self.defaults.responseType === 'token') {
-                    return oauthData;
-                }
-                if (oauthData.state && oauthData.state !== self.storage.get(stateName)) {
-                    return Promise.reject('OAuth 2.0 state parameter mismatch.');
-                }
-                return self.exchangeForToken(oauthData, userData);
-            });
-    };
+            if (paramName === 'scope' && Array.isArray(paramValue)) {
+                paramValue = paramValue.join(this.defaults.scopeDelimiter);
 
-    exchangeForToken(oauthData, userData) {
-        var data = authUtils.extend({}, userData, {
-            code: oauthData.code,
-            clientId: this.defaults.clientId,
-            redirectUri: this.defaults.redirectUri
+                if (this.defaults.scopePrefix) {
+                    paramValue = [this.defaults.scopePrefix, paramValue].join(this.defaults.scopeDelimiter);
+                }
+            }
+
+            keyValuePairs.push([paramName, paramValue]);
         });
+    });
 
-        if (oauthData.state) {
-            data.state = oauthData.state;
-        }
-
-        authUtils.forEach(this.defaults.responseParams, function(param) {
-            data[param] = oauthData[param];
-        });
-
-        var exchangeForTokenUrl = this.config.baseUrl ? authUtils.joinUrl(this.config.baseUrl, this.defaults.url) : this.defaults.url;
-      
-
-            return this.http.createRequest(exchangeForTokenUrl)
-                .asPost()
-                .withContent(data)
-                .withCredentials(this.config.withCredentials)
-                .send()
-                .then(response => {
-                    return response;
-                })
-                .catch(err => {
-                    console.log("error :" + err.content.message);
-                    throw err;
-                });
-    };
-
-    buildQueryString() {
-        var keyValuePairs = [];
-        var urlParams = ['defaultUrlParams', 'requiredUrlParams', 'optionalUrlParams'];
-        authUtils.forEach(urlParams, (params) => {
-
-            authUtils.forEach(this.defaults[params], (paramName) => {
-                var camelizedName = authUtils.camelCase(paramName);
-                var paramValue = authUtils.isFunction(this.defaults[paramName]) ? this.defaults[paramName]() : this.defaults[camelizedName];
-
-                if (paramName === 'state') {
-                    var stateName = this.defaults.name + '_state';
-                    paramValue = encodeURIComponent(this.storage.get(stateName));
-                }
-
-                if (paramName === 'scope' && Array.isArray(paramValue)) {
-                    paramValue = paramValue.join(this.defaults.scopeDelimiter);
-
-                    if (this.defaults.scopePrefix) {
-                        paramValue = [this.defaults.scopePrefix, paramValue].join(this.defaults.scopeDelimiter);
-                    }
-                }
-
-                keyValuePairs.push([paramName, paramValue]);
-            });
-        });
-
-        return keyValuePairs.map(function(pair) {
-            return pair.join('=');
-        }).join('&');
-    };
+    return keyValuePairs.map(function(pair) {
+        return pair.join('=');
+    }).join('&');
+};
 
 }

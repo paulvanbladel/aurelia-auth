@@ -73,9 +73,6 @@ var OAuth1 = (function () {
 			var exchangeForTokenUrl = this.config.baseUrl ? _authUtils2['default'].joinUrl(this.config.baseUrl, this.defaults.url) : this.defaults.url;
 			return this.http.createRequest(exchangeForTokenUrl).asPost().withCredentials(this.config.withCredentials).withContent(data).send().then(function (response) {
 				return response;
-			})['catch'](function (err) {
-				console.log("error :" + err.content.message);
-				throw err;
 			});
 		}
 	}, {

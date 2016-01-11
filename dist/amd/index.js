@@ -1,4 +1,4 @@
-define(['exports', './baseConfig', './authService', './authorizeStep'], function (exports, _baseConfig, _authService, _authorizeStep) {
+define(['exports', './baseConfig', './authService', './authorizeStep', './app.fetch-httpClient.config'], function (exports, _baseConfig, _authService, _authorizeStep, _appFetchHttpClientConfig) {
 	'use strict';
 
 	Object.defineProperty(exports, '__esModule', {
@@ -15,6 +15,12 @@ define(['exports', './baseConfig', './authService', './authorizeStep'], function
 		enumerable: true,
 		get: function get() {
 			return _authorizeStep.AuthorizeStep;
+		}
+	});
+	Object.defineProperty(exports, 'FetchConfig', {
+		enumerable: true,
+		get: function get() {
+			return _appFetchHttpClientConfig.FetchConfig;
 		}
 	});
 

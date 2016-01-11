@@ -28,6 +28,11 @@ define(['exports', 'aurelia-framework', './baseConfig', './storage', './authUtil
         return this.config.loginRoute;
       }
     }, {
+      key: 'getLoginRedirect',
+      value: function getLoginRedirect() {
+        return this.config.loginRedirect;
+      }
+    }, {
       key: 'getLoginUrl',
       value: function getLoginUrl() {
         return this.config.baseUrl ? _authUtils2['default'].joinUrl(this.config.baseUrl, this.config.loginUrl) : this.config.loginUrl;
@@ -54,7 +59,7 @@ define(['exports', 'aurelia-framework', './baseConfig', './storage', './authUtil
 
         if (token && token.split('.').length === 3) {
           var base64Url = token.split('.')[1];
-          var base64 = base64Url.replace('-', '+').replace('_', '/');
+          var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
           return JSON.parse(decodeURIComponent(escape(window.atob(base64))));
         }
       }
@@ -105,7 +110,7 @@ define(['exports', 'aurelia-framework', './baseConfig', './storage', './authUtil
         if (token) {
           if (token.split('.').length === 3) {
             var base64Url = token.split('.')[1];
-            var base64 = base64Url.replace('-', '+').replace('_', '/');
+            var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
             var exp = JSON.parse(window.atob(base64)).exp;
             if (exp) {
               return Math.round(new Date().getTime() / 1000) <= exp;

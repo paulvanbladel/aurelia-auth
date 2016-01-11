@@ -4,7 +4,7 @@ import {Authentication} from './authentication';
 import {Storage} from './storage';
 import {inject} from 'aurelia-framework';
 @inject(HttpClient,Authentication,Storage, BaseConfig )
-export  default class  {
+export  default class   {
 	constructor(http, auth, storage, config ){
 		this.http = http;
 		this.auth = auth;
@@ -17,11 +17,11 @@ export  default class  {
 			return (client, processor, message)=>{
 				if (this.auth.isAuthenticated() && this.config.httpInterceptor) {
 					var tokenName = this.config.tokenPrefix 
-					? this.config.tokenPrefix + '_' + this.config.tokenName : this.config.tokenName;
+						? `${this.config.tokenPrefix}_${this.config.tokenName}` : this.config.tokenName;
 					var token = this.storage.get(tokenName);
 
 					if (this.config.authHeader && this.config.authToken) {
-						token = this.config.authToken + ' ' + token;
+						token = `${this.config.authToken} ${token}`;
 					}
 
 					message.headers.add(this.config.authHeader, token);

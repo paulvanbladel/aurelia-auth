@@ -27,15 +27,21 @@ System.register(['aurelia-framework', './authentication', 'aurelia-router'], fun
         _createClass(AuthorizeStep, [{
           key: 'run',
           value: function run(routingContext, next) {
-            if (routingContext.nextInstructions.some(function (i) {
+            var isLoggedIn = this.auth.isAuthenticated();
+            var loginRoute = this.auth.getLoginRoute();
+
+            if (routingContext.getAllInstructions().some(function (i) {
               return i.config.auth;
             })) {
-              var isLoggedIn = this.auth.isAuthenticated();
               if (!isLoggedIn) {
-                var loginRoute = this.auth.getLoginRoute();
                 console.log("login route : " + loginRoute);
                 return next.cancel(new Redirect(loginRoute));
               }
+            } else if (isLoggedIn && routingContext.getAllInstructions().some(function (i) {
+              return i.fragment;
+            }) == loginRoute) {
+              var loginRedirect = this.auth.getLoginRedirect();
+              return next.cancel(new Redirect(loginRedirect));
             }
 
             return next();

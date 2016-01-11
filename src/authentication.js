@@ -7,12 +7,17 @@ export class Authentication{
   constructor( storage, config){
     this.storage = storage;
     this.config = config.current;
-    this.tokenName = this.config.tokenPrefix ? this.config.tokenPrefix + '_' 
+    this.tokenName = this.config.tokenPrefix ? this.config.tokenPrefix + '_'
     + this.config.tokenName : this.config.tokenName;
   }
   getLoginRoute(){
     return this.config.loginRoute;
   };
+
+  getLoginRedirect(){
+    return this.config.loginRedirect;
+  }
+  
   getLoginUrl() {
     return  this.config.baseUrl ? authUtils.joinUrl(this.config.baseUrl, this.config.loginUrl) : this.config.loginUrl;
   };
@@ -34,7 +39,7 @@ export class Authentication{
 
     if (token && token.split('.').length === 3) {
       var base64Url = token.split('.')[1];
-      var base64 = base64Url.replace('-', '+').replace('_', '/');
+      var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
       return JSON.parse(decodeURIComponent(escape(window.atob(base64))));
     }
   };
@@ -54,14 +59,14 @@ export class Authentication{
     }
 
     if (!token && response) {
-      token = this.config.tokenRoot && response.content[this.config.tokenRoot] 
-      ? response.content[this.config.tokenRoot][this.config.tokenName] 
+      token = this.config.tokenRoot && response.content[this.config.tokenRoot]
+      ? response.content[this.config.tokenRoot][this.config.tokenName]
       : response.content[this.config.tokenName];
     }
 
     if (!token) {
-      var tokenPath = this.config.tokenRoot 
-      ? this.config.tokenRoot + '.' + this.config.tokenName 
+      var tokenPath = this.config.tokenRoot
+      ? this.config.tokenRoot + '.' + this.config.tokenName
       : this.config.tokenName;
 
       throw new Error('Expecting a token named "' + tokenPath + '" but instead got: ' + JSON.stringify(response.content));
@@ -86,7 +91,7 @@ export class Authentication{
     if (token) {
       if (token.split('.').length === 3) {
         var base64Url = token.split('.')[1];
-        var base64 = base64Url.replace('-', '+').replace('_', '/');
+        var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
         var exp = JSON.parse(window.atob(base64)).exp;
         if (exp) {
           return Math.round(new Date().getTime() / 1000) <= exp;
