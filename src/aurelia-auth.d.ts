@@ -233,10 +233,10 @@ declare module 'aurelia-auth/app.fetch-httpClient.config' {
 }
 declare module 'aurelia-auth/app.httpClient.config' {
 	import { HttpClient } from 'aurelia-http-client';
-	import { BaseConfig } from 'aurelia-auth/baseConfig';
+	import { BaseConfig, IBaseConfig } from 'aurelia-auth/baseConfig';
 	import { Authentication } from 'aurelia-auth/authentication';
 	import { Storage } from 'aurelia-auth/storage';
-	export default class HttpCilentConfig {
+	export class HttpClientConfig {
 	    http: HttpClient;
 	    auth: Authentication;
 	    storage: Storage;
@@ -303,8 +303,8 @@ declare module 'aurelia-auth/oAuth2' {
 	    buildQueryString(): string;
 	}
 	export interface IDefaults {
-	    url?: any;
-	    name?: any;
+	    url?: string;
+	    name?: string;
 	    state?: any;
 	    scope?: any;
 	    scopeDelimiter?: any;
@@ -321,21 +321,26 @@ declare module 'aurelia-auth/oAuth2' {
 	}
 
 }
-declare module 'aurelia-auth/authService' {
+declare module 'aurelia-auth/authService' {  
+    import { Authentication } from 'aurelia-auth/authentication';
+    import {HttpClient} from 'aurelia-http-client';
+    import { IBaseConfig, BaseConfig } from 'aurelia-auth/baseConfig';
+    import {OAuth1} from 'aurelia-auth/oAuth1';
+    import {OAuth2} from 'aurelia-auth/oAuth2';
 	export class AuthService {
-	    http: any;
-	    auth: any;
-	    oAuth1: any;
-	    oAuth2: any;
-	    config: any;
-	    constructor(http: any, auth: any, oAuth1: any, oAuth2: any, config: any);
+	    http: HttpClient;
+	    auth: Authentication;
+	    oAuth1: OAuth1;
+	    oAuth2: OAuth2;
+	    config: IBaseConfig;
+	    constructor(http: HttpClient, auth: Authentication, oAuth1: OAuth1, oAuth2: OAuth2, config: BaseConfig);
 	    getMe(): any;
 	    isAuthenticated(): any;
 	    getTokenPayload(): any;
-	    signup(displayName: any, email: any, password: any): any;
-	    login(email: any, password: any): any;
-	    logout(redirectUri: any): any;
-	    authenticate(name: any, redirect: any, userData: any): any;
+	    signup(displayName: string, email: string, password: string): any;
+	    login(email: string, password: string): any;
+	    logout(redirectUri: string): any;
+	    authenticate(name: string, redirect: string, userData: any): any;
 	    unlink(provider: any): any;
 	}
 

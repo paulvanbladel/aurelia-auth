@@ -10,7 +10,9 @@ gulp.task('build-html-es6', function () {
     .pipe(gulp.dest(paths.output + 'es6'));
 });
 
-gulp.task('build-es6', ['build-html-es6'], function () {
+gulp.task('build-es6', ['build-html-es6'], function () {    
+   gulp.src(paths.definitions)
+    .pipe(gulp.dest(paths.output + 'es6'));
   return gulp.src(paths.source)
     .pipe(gulp.dest(paths.output + 'es6'));
 });
@@ -20,7 +22,9 @@ gulp.task('build-html-commonjs', function () {
     .pipe(gulp.dest(paths.output + 'commonjs'));
 });
 
-gulp.task('build-commonjs', ['build-html-commonjs'], function () {
+gulp.task('build-commonjs', ['build-html-commonjs'], function () {    
+   gulp.src(paths.definitions)
+    .pipe(gulp.dest(paths.output + 'commonjs'));
   return gulp.src(paths.source)
     .pipe(to5(assign({}, compilerOptions, {modules:'common'})))
     .pipe(gulp.dest(paths.output + 'commonjs'));
@@ -32,6 +36,8 @@ gulp.task('build-html-amd', function () {
 });
 
 gulp.task('build-amd', ['build-html-amd'], function () {
+   gulp.src(paths.definitions)
+    .pipe(gulp.dest(paths.output + 'amd'));
   return gulp.src(paths.source)
     .pipe(to5(assign({}, compilerOptions, {modules:'amd'})))
     .pipe(gulp.dest(paths.output + 'amd'));
@@ -42,7 +48,9 @@ gulp.task('build-html-system', function () {
     .pipe(gulp.dest(paths.output + 'system'));
 });
 
-gulp.task('build-system', ['build-html-system'], function () {
+gulp.task('build-system', ['build-html-system'], function () {    
+   gulp.src(paths.definitions)
+    .pipe(gulp.dest(paths.output + 'system'));
   return gulp.src(paths.source)
     .pipe(to5(assign({}, compilerOptions, {modules:'system'})))
     .pipe(gulp.dest(paths.output + 'system'));
