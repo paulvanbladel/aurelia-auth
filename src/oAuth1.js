@@ -3,7 +3,7 @@ import authUtils from './authUtils';
 import {Storage} from './storage';
 import {Popup} from './popup';
 import {BaseConfig} from './baseConfig';
-import {HttpClient} from 'aurelia-http-client';
+import {HttpClient, json} from 'aurelia-fetch-client';
 
 @inject(Storage, Popup, HttpClient, BaseConfig)
 export class OAuth1 {
@@ -30,9 +30,11 @@ export class OAuth1 {
       this.popup = this.popup.open('', this.defaults.name, this.defaults.popupOptions, this.defaults.redirectUri);
     }
     var self = this;
-    return this.http.createRequest(serverUrl)
-      .asPost()
-      .send()
+    return this.http.fetch(serverUrl, {
+      method: 'post'
+    })
+      .then(status)
+      .then(toJson)
       .then(response => {
         if (self.config.platform === 'mobile') {
           self.popup = self.popup.open(
@@ -62,11 +64,13 @@ export class OAuth1 {
   exchangeForToken(oauthData, userData) {
     var data = authUtils.extend({}, userData, oauthData);
     var exchangeForTokenUrl = this.config.baseUrl ? authUtils.joinUrl(this.config.baseUrl, this.defaults.url) : this.defaults.url;
-    return this.http.createRequest(exchangeForTokenUrl)
-      .asPost()
-      .withCredentials(this.config.withCredentials)
-      .withContent(data)
-      .send()
+    return this.http.fetch(exchangeForTokenUrl, {
+      method: 'post',
+      body: json(data),
+      credentials: this.config.withCredentials
+    })
+      .then(status)
+      .then(toJson)
       .then(response => {
         return response;
       });
@@ -82,4 +86,16 @@ export class OAuth1 {
 
     return str.join('&');
   }
+}
+
+function status(response) {
+  if (response.status >= 200 && response.status < 300) {
+    return Promise.resolve(response)
+  } else {
+    return Promise.reject(new Error(response.statusText))
+  }
+}
+
+function toJson(response) {
+  return response.json()
 }
