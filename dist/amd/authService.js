@@ -1,4 +1,4 @@
-define(['exports', 'aurelia-framework', 'aurelia-http-client', './authentication', './baseConfig', './oAuth1', './oAuth2', './authUtils'], function (exports, _aureliaFramework, _aureliaHttpClient, _authentication, _baseConfig, _oAuth1, _oAuth2, _authUtils) {
+define(['exports', 'aurelia-framework', 'aurelia-fetch-client', './authentication', './baseConfig', './oAuth1', './oAuth2', './authUtils'], function (exports, _aureliaFramework, _aureliaFetchClient, _authentication, _baseConfig, _oAuth1, _oAuth2, _authUtils) {
   'use strict';
 
   Object.defineProperty(exports, '__esModule', {
@@ -28,8 +28,8 @@ define(['exports', 'aurelia-framework', 'aurelia-http-client', './authentication
       key: 'getMe',
       value: function getMe() {
         var profileUrl = this.auth.getProfileUrl();
-        return this.http.createRequest(profileUrl).asGet().send().then(function (response) {
-          return response.content;
+        return this.http.fetch(profileUrl).then(status).then(toJson).then(function (response) {
+          return response;
         });
       }
     }, {
@@ -58,7 +58,11 @@ define(['exports', 'aurelia-framework', 'aurelia-http-client', './authentication
             'password': password
           };
         }
-        return this.http.createRequest(signupUrl).asPost().withContent(content).send().then(function (response) {
+
+        return this.http.fetch(signupUrl, {
+          method: 'post',
+          body: (0, _aureliaFetchClient.json)(content)
+        }).then(status).then(toJson).then(function (response) {
           if (_this.config.loginOnSignup) {
             _this.auth.setToken(response);
           } else if (_this.config.signupRedirect) {
@@ -83,7 +87,10 @@ define(['exports', 'aurelia-framework', 'aurelia-http-client', './authentication
           };
         }
 
-        return this.http.createRequest(loginUrl).asPost().withContent(content).send().then(function (response) {
+        return this.http.fetch(loginUrl, {
+          method: 'post',
+          body: (0, _aureliaFetchClient.json)(content)
+        }).then(status).then(toJson).then(function (response) {
           _this2.auth.setToken(response);
           return response;
         });
@@ -114,11 +121,14 @@ define(['exports', 'aurelia-framework', 'aurelia-http-client', './authentication
         var unlinkUrl = this.config.baseUrl ? _authUtils2['default'].joinUrl(this.config.baseUrl, this.config.unlinkUrl) : this.config.unlinkUrl;
 
         if (this.config.unlinkMethod === 'get') {
-          return this.http.createRequest(unlinkUrl + provider).asGet().send().then(function (response) {
+          return this.http.fetch(unlinkUrl + provider).then(status).then(toJson).then(function (response) {
             return response;
           });
         } else if (this.config.unlinkMethod === 'post') {
-          return this.http.createRequest(unlinkUrl).asPost().withContent(provider).send().then(function (response) {
+          return this.http.fetch(unlinkUrl, {
+            method: 'post',
+            body: (0, _aureliaFetchClient.json)(provider)
+          }).then(status).then(toJson).then(function (response) {
             return response;
           });
         }
@@ -126,9 +136,21 @@ define(['exports', 'aurelia-framework', 'aurelia-http-client', './authentication
     }]);
 
     var _AuthService = AuthService;
-    AuthService = (0, _aureliaFramework.inject)(_aureliaHttpClient.HttpClient, _authentication.Authentication, _oAuth1.OAuth1, _oAuth2.OAuth2, _baseConfig.BaseConfig)(AuthService) || AuthService;
+    AuthService = (0, _aureliaFramework.inject)(_aureliaFetchClient.HttpClient, _authentication.Authentication, _oAuth1.OAuth1, _oAuth2.OAuth2, _baseConfig.BaseConfig)(AuthService) || AuthService;
     return AuthService;
   })();
 
   exports.AuthService = AuthService;
+
+  function status(response) {
+    if (response.status >= 200 && response.status < 300) {
+      return Promise.resolve(response);
+    } else {
+      return Promise.reject(new Error(response.statusText));
+    }
+  }
+
+  function toJson(response) {
+    return response.json();
+  }
 });

@@ -1,5 +1,5 @@
 import {inject} from 'aurelia-framework';
-import {HttpClient} from 'aurelia-http-client';
+import {HttpClient, json} from 'aurelia-fetch-client';
 import {Authentication} from './authentication';
 import {BaseConfig} from './baseConfig';
 import {OAuth1} from './oAuth1';
@@ -18,10 +18,11 @@ export class AuthService {
 
   getMe() {
     var profileUrl = this.auth.getProfileUrl();
-    return this.http.createRequest(profileUrl)
-      .asGet()
-      .send().then(response => {
-        return response.content;
+    return this.http.fetch(profileUrl)
+      .then(status)
+      .then(toJson)
+      .then((response) => {
+        return response
       });
   }
 
@@ -45,11 +46,14 @@ export class AuthService {
         'password': password
       };
     }
-    return this.http.createRequest(signupUrl)
-      .asPost()
-      .withContent(content)
-      .send()
-      .then(response => {
+
+    return this.http.fetch(signupUrl, {
+      method: 'post',
+      body: json(content)
+    })
+      .then(status)
+      .then(toJson)
+      .then((response) => {
         if (this.config.loginOnSignup) {
           this.auth.setToken(response);
         } else if (this.config.signupRedirect) {
@@ -71,15 +75,16 @@ export class AuthService {
       };
     }
 
-    return this.http.createRequest(loginUrl)
-      .asPost()
-      .withContent(content)
-      .send()
-      .then(response => {
-        this.auth.setToken(response);
-        return response;
+    return this.http.fetch(loginUrl, {
+      method: 'post',
+      body: json(content)
+    })
+      .then(status)
+      .then(toJson)
+      .then((response) => {
+        this.auth.setToken(response)
+        return response
       });
-
   }
 
   logout(redirectUri) {
@@ -103,20 +108,34 @@ export class AuthService {
     var unlinkUrl = this.config.baseUrl ? authUtils.joinUrl(this.config.baseUrl, this.config.unlinkUrl) : this.config.unlinkUrl;
 
     if (this.config.unlinkMethod === 'get') {
-      return this.http.createRequest(unlinkUrl + provider)
-        .asGet()
-        .send()
-        .then(response => {
+      return this.http.fetch(unlinkUrl + provider)
+        .then(status)
+        .then(toJson)
+        .then((response) => {
           return response;
         });
     } else if (this.config.unlinkMethod === 'post') {
-      return this.http.createRequest(unlinkUrl)
-        .asPost()
-        .withContent(provider)
-        .send()
-        .then(response => {
+      return this.http.fetch(unlinkUrl, {
+        method: 'post',
+        body: json(provider)
+      })
+        .then(status)
+        .then(toJson)
+        .then((response) => {
           return response;
         });
     }
   }
+}
+
+function status(response) {
+  if (response.status >= 200 && response.status < 300) {
+    return Promise.resolve(response)
+  } else {
+    return Promise.reject(new Error(response.statusText))
+  }
+}
+
+function toJson(response) {
+  return response.json()
 }

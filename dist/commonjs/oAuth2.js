@@ -22,7 +22,7 @@ var _popup = require('./popup');
 
 var _baseConfig = require('./baseConfig');
 
-var _aureliaHttpClient = require('aurelia-http-client');
+var _aureliaFetchClient = require('aurelia-fetch-client');
 
 var OAuth2 = (function () {
   function OAuth2(storage, popup, http, config) {
@@ -100,7 +100,11 @@ var OAuth2 = (function () {
 
       var exchangeForTokenUrl = this.config.baseUrl ? _authUtils2['default'].joinUrl(this.config.baseUrl, this.defaults.url) : this.defaults.url;
 
-      return this.http.createRequest(exchangeForTokenUrl).asPost().withContent(data).withCredentials(this.config.withCredentials).send().then(function (response) {
+      return this.http.fetch(exchangeForTokenUrl, {
+        method: 'post',
+        body: (0, _aureliaFetchClient.json)(data),
+        credentials: this.config.withCredentials
+      }).then(status).then(toJson).then(function (response) {
         return response;
       });
     }
@@ -141,8 +145,20 @@ var OAuth2 = (function () {
   }]);
 
   var _OAuth2 = OAuth2;
-  OAuth2 = (0, _aureliaFramework.inject)(_storage.Storage, _popup.Popup, _aureliaHttpClient.HttpClient, _baseConfig.BaseConfig)(OAuth2) || OAuth2;
+  OAuth2 = (0, _aureliaFramework.inject)(_storage.Storage, _popup.Popup, _aureliaFetchClient.HttpClient, _baseConfig.BaseConfig)(OAuth2) || OAuth2;
   return OAuth2;
 })();
 
 exports.OAuth2 = OAuth2;
+
+function status(response) {
+  if (response.status >= 200 && response.status < 300) {
+    return Promise.resolve(response);
+  } else {
+    return Promise.reject(new Error(response.statusText));
+  }
+}
+
+function toJson(response) {
+  return response.json();
+}

@@ -3,7 +3,7 @@ import authUtils from './authUtils';
 import {Storage} from './storage';
 import {Popup} from './popup';
 import {BaseConfig} from './baseConfig';
-import {HttpClient} from 'aurelia-http-client';
+import {HttpClient, json} from 'aurelia-fetch-client';
 
 @inject(Storage, Popup, HttpClient, BaseConfig)
 export class OAuth2 {
@@ -81,14 +81,15 @@ export class OAuth2 {
 
     var exchangeForTokenUrl = this.config.baseUrl ? authUtils.joinUrl(this.config.baseUrl, this.defaults.url) : this.defaults.url;
 
-
-    return this.http.createRequest(exchangeForTokenUrl)
-      .asPost()
-      .withContent(data)
-      .withCredentials(this.config.withCredentials)
-      .send()
-      .then(response => {
-        return response;
+    return this.http.fetch(exchangeForTokenUrl, {
+      method: 'post',
+      body: json(data),
+      credentials: this.config.withCredentials
+    })
+      .then(status)
+      .then(toJson)
+      .then((response) => {
+        return response
       });
   }
 
@@ -123,4 +124,16 @@ export class OAuth2 {
     }).join('&');
   }
 
+}
+
+function status(response) {
+  if (response.status >= 200 && response.status < 300) {
+    return Promise.resolve(response)
+  } else {
+    return Promise.reject(new Error(response.statusText))
+  }
+}
+
+function toJson(response) {
+  return response.json()
 }

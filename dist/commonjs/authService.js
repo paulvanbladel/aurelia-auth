@@ -12,7 +12,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 var _aureliaFramework = require('aurelia-framework');
 
-var _aureliaHttpClient = require('aurelia-http-client');
+var _aureliaFetchClient = require('aurelia-fetch-client');
 
 var _authentication = require('./authentication');
 
@@ -41,8 +41,8 @@ var AuthService = (function () {
     key: 'getMe',
     value: function getMe() {
       var profileUrl = this.auth.getProfileUrl();
-      return this.http.createRequest(profileUrl).asGet().send().then(function (response) {
-        return response.content;
+      return this.http.fetch(profileUrl).then(status).then(toJson).then(function (response) {
+        return response;
       });
     }
   }, {
@@ -71,7 +71,11 @@ var AuthService = (function () {
           'password': password
         };
       }
-      return this.http.createRequest(signupUrl).asPost().withContent(content).send().then(function (response) {
+
+      return this.http.fetch(signupUrl, {
+        method: 'post',
+        body: (0, _aureliaFetchClient.json)(content)
+      }).then(status).then(toJson).then(function (response) {
         if (_this.config.loginOnSignup) {
           _this.auth.setToken(response);
         } else if (_this.config.signupRedirect) {
@@ -96,7 +100,10 @@ var AuthService = (function () {
         };
       }
 
-      return this.http.createRequest(loginUrl).asPost().withContent(content).send().then(function (response) {
+      return this.http.fetch(loginUrl, {
+        method: 'post',
+        body: (0, _aureliaFetchClient.json)(content)
+      }).then(status).then(toJson).then(function (response) {
         _this2.auth.setToken(response);
         return response;
       });
@@ -127,11 +134,14 @@ var AuthService = (function () {
       var unlinkUrl = this.config.baseUrl ? _authUtils2['default'].joinUrl(this.config.baseUrl, this.config.unlinkUrl) : this.config.unlinkUrl;
 
       if (this.config.unlinkMethod === 'get') {
-        return this.http.createRequest(unlinkUrl + provider).asGet().send().then(function (response) {
+        return this.http.fetch(unlinkUrl + provider).then(status).then(toJson).then(function (response) {
           return response;
         });
       } else if (this.config.unlinkMethod === 'post') {
-        return this.http.createRequest(unlinkUrl).asPost().withContent(provider).send().then(function (response) {
+        return this.http.fetch(unlinkUrl, {
+          method: 'post',
+          body: (0, _aureliaFetchClient.json)(provider)
+        }).then(status).then(toJson).then(function (response) {
           return response;
         });
       }
@@ -139,8 +149,20 @@ var AuthService = (function () {
   }]);
 
   var _AuthService = AuthService;
-  AuthService = (0, _aureliaFramework.inject)(_aureliaHttpClient.HttpClient, _authentication.Authentication, _oAuth1.OAuth1, _oAuth2.OAuth2, _baseConfig.BaseConfig)(AuthService) || AuthService;
+  AuthService = (0, _aureliaFramework.inject)(_aureliaFetchClient.HttpClient, _authentication.Authentication, _oAuth1.OAuth1, _oAuth2.OAuth2, _baseConfig.BaseConfig)(AuthService) || AuthService;
   return AuthService;
 })();
 
 exports.AuthService = AuthService;
+
+function status(response) {
+  if (response.status >= 200 && response.status < 300) {
+    return Promise.resolve(response);
+  } else {
+    return Promise.reject(new Error(response.statusText));
+  }
+}
+
+function toJson(response) {
+  return response.json();
+}

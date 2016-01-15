@@ -60,13 +60,13 @@ export class Authentication {
     }
 
     if (!token && response) {
-      token = this.config.tokenRoot && response.content[this.config.tokenRoot] ? response.content[this.config.tokenRoot][this.config.tokenName] : response.content[this.config.tokenName];
+      token = this.config.tokenRoot && response[this.config.tokenRoot] ? response[this.config.tokenRoot][this.config.tokenName] : response[this.config.tokenName];
     }
 
     if (!token) {
       var tokenPath = this.config.tokenRoot ? this.config.tokenRoot + '.' + this.config.tokenName : this.config.tokenName;
 
-      throw new Error('Expecting a token named "' + tokenPath + '" but instead got: ' + JSON.stringify(response.content));
+      throw new Error('Expecting a token named "' + tokenPath + '" but instead got: ' + JSON.stringify(response));
     }
 
 

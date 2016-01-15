@@ -22,7 +22,7 @@ var _popup = require('./popup');
 
 var _baseConfig = require('./baseConfig');
 
-var _aureliaHttpClient = require('aurelia-http-client');
+var _aureliaFetchClient = require('aurelia-fetch-client');
 
 var OAuth1 = (function () {
   function OAuth1(storage, popup, http, config) {
@@ -52,7 +52,9 @@ var OAuth1 = (function () {
         this.popup = this.popup.open('', this.defaults.name, this.defaults.popupOptions, this.defaults.redirectUri);
       }
       var self = this;
-      return this.http.createRequest(serverUrl).asPost().send().then(function (response) {
+      return this.http.fetch(serverUrl, {
+        method: 'post'
+      }).then(status).then(toJson).then(function (response) {
         if (self.config.platform === 'mobile') {
           self.popup = self.popup.open([self.defaults.authorizationEndpoint, self.buildQueryString(response.content)].join('?'), self.defaults.name, self.defaults.popupOptions, self.defaults.redirectUri);
         } else {
@@ -71,7 +73,11 @@ var OAuth1 = (function () {
     value: function exchangeForToken(oauthData, userData) {
       var data = _authUtils2['default'].extend({}, userData, oauthData);
       var exchangeForTokenUrl = this.config.baseUrl ? _authUtils2['default'].joinUrl(this.config.baseUrl, this.defaults.url) : this.defaults.url;
-      return this.http.createRequest(exchangeForTokenUrl).asPost().withCredentials(this.config.withCredentials).withContent(data).send().then(function (response) {
+      return this.http.fetch(exchangeForTokenUrl, {
+        method: 'post',
+        body: (0, _aureliaFetchClient.json)(data),
+        credentials: this.config.withCredentials
+      }).then(status).then(toJson).then(function (response) {
         return response;
       });
     }
@@ -89,8 +95,20 @@ var OAuth1 = (function () {
   }]);
 
   var _OAuth1 = OAuth1;
-  OAuth1 = (0, _aureliaFramework.inject)(_storage.Storage, _popup.Popup, _aureliaHttpClient.HttpClient, _baseConfig.BaseConfig)(OAuth1) || OAuth1;
+  OAuth1 = (0, _aureliaFramework.inject)(_storage.Storage, _popup.Popup, _aureliaFetchClient.HttpClient, _baseConfig.BaseConfig)(OAuth1) || OAuth1;
   return OAuth1;
 })();
 
 exports.OAuth1 = OAuth1;
+
+function status(response) {
+  if (response.status >= 200 && response.status < 300) {
+    return Promise.resolve(response);
+  } else {
+    return Promise.reject(new Error(response.statusText));
+  }
+}
+
+function toJson(response) {
+  return response.json();
+}
