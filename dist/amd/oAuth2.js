@@ -1,4 +1,4 @@
-define(['exports', 'aurelia-framework', './authUtils', './storage', './popup', './baseConfig', 'aurelia-http-client'], function (exports, _aureliaFramework, _authUtils, _storage, _popup, _baseConfig, _aureliaHttpClient) {
+define(['exports', 'aurelia-framework', './authUtils', './storage', './popup', './baseConfig', 'aurelia-fetch-client'], function (exports, _aureliaFramework, _authUtils, _storage, _popup, _baseConfig, _aureliaFetchClient) {
   'use strict';
 
   Object.defineProperty(exports, '__esModule', {
@@ -89,7 +89,11 @@ define(['exports', 'aurelia-framework', './authUtils', './storage', './popup', '
 
         var exchangeForTokenUrl = this.config.baseUrl ? _authUtils2['default'].joinUrl(this.config.baseUrl, this.defaults.url) : this.defaults.url;
 
-        return this.http.createRequest(exchangeForTokenUrl).asPost().withContent(data).withCredentials(this.config.withCredentials).send().then(function (response) {
+        return this.http.fetch(exchangeForTokenUrl, {
+          method: 'post',
+          body: (0, _aureliaFetchClient.json)(data),
+          credentials: this.config.withCredentials
+        }).then(status).then(toJson).then(function (response) {
           return response;
         });
       }
@@ -130,9 +134,21 @@ define(['exports', 'aurelia-framework', './authUtils', './storage', './popup', '
     }]);
 
     var _OAuth2 = OAuth2;
-    OAuth2 = (0, _aureliaFramework.inject)(_storage.Storage, _popup.Popup, _aureliaHttpClient.HttpClient, _baseConfig.BaseConfig)(OAuth2) || OAuth2;
+    OAuth2 = (0, _aureliaFramework.inject)(_storage.Storage, _popup.Popup, _aureliaFetchClient.HttpClient, _baseConfig.BaseConfig)(OAuth2) || OAuth2;
     return OAuth2;
   })();
 
   exports.OAuth2 = OAuth2;
+
+  function status(response) {
+    if (response.status >= 200 && response.status < 300) {
+      return Promise.resolve(response);
+    } else {
+      return Promise.reject(new Error(response.statusText));
+    }
+  }
+
+  function toJson(response) {
+    return response.json();
+  }
 });

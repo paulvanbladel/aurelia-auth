@@ -1,3 +1,6 @@
+### 0.11.8 (2016-01-15)
+* Using Fetch client as http client by default
+
 ### 0.11.7 (2015-12-30)
 
 

@@ -1,17 +1,29 @@
-System.register(['aurelia-framework', 'aurelia-http-client', './authentication', './baseConfig', './oAuth1', './oAuth2', './authUtils'], function (_export) {
+System.register(['aurelia-framework', 'aurelia-fetch-client', './authentication', './baseConfig', './oAuth1', './oAuth2', './authUtils'], function (_export) {
   'use strict';
 
-  var inject, HttpClient, Authentication, BaseConfig, OAuth1, OAuth2, authUtils, AuthService;
+  var inject, HttpClient, json, Authentication, BaseConfig, OAuth1, OAuth2, authUtils, AuthService;
 
   var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
   function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
+  function status(response) {
+    if (response.status >= 200 && response.status < 300) {
+      return Promise.resolve(response);
+    } else {
+      return Promise.reject(new Error(response.statusText));
+    }
+  }
+
+  function toJson(response) {
+    return response.json();
+  }
   return {
     setters: [function (_aureliaFramework) {
       inject = _aureliaFramework.inject;
-    }, function (_aureliaHttpClient) {
-      HttpClient = _aureliaHttpClient.HttpClient;
+    }, function (_aureliaFetchClient) {
+      HttpClient = _aureliaFetchClient.HttpClient;
+      json = _aureliaFetchClient.json;
     }, function (_authentication) {
       Authentication = _authentication.Authentication;
     }, function (_baseConfig) {
@@ -39,8 +51,8 @@ System.register(['aurelia-framework', 'aurelia-http-client', './authentication',
           key: 'getMe',
           value: function getMe() {
             var profileUrl = this.auth.getProfileUrl();
-            return this.http.createRequest(profileUrl).asGet().send().then(function (response) {
-              return response.content;
+            return this.http.fetch(profileUrl).then(status).then(toJson).then(function (response) {
+              return response;
             });
           }
         }, {
@@ -69,7 +81,11 @@ System.register(['aurelia-framework', 'aurelia-http-client', './authentication',
                 'password': password
               };
             }
-            return this.http.createRequest(signupUrl).asPost().withContent(content).send().then(function (response) {
+
+            return this.http.fetch(signupUrl, {
+              method: 'post',
+              body: json(content)
+            }).then(status).then(toJson).then(function (response) {
               if (_this.config.loginOnSignup) {
                 _this.auth.setToken(response);
               } else if (_this.config.signupRedirect) {
@@ -94,7 +110,10 @@ System.register(['aurelia-framework', 'aurelia-http-client', './authentication',
               };
             }
 
-            return this.http.createRequest(loginUrl).asPost().withContent(content).send().then(function (response) {
+            return this.http.fetch(loginUrl, {
+              method: 'post',
+              body: json(content)
+            }).then(status).then(toJson).then(function (response) {
               _this2.auth.setToken(response);
               return response;
             });
@@ -125,11 +144,14 @@ System.register(['aurelia-framework', 'aurelia-http-client', './authentication',
             var unlinkUrl = this.config.baseUrl ? authUtils.joinUrl(this.config.baseUrl, this.config.unlinkUrl) : this.config.unlinkUrl;
 
             if (this.config.unlinkMethod === 'get') {
-              return this.http.createRequest(unlinkUrl + provider).asGet().send().then(function (response) {
+              return this.http.fetch(unlinkUrl + provider).then(status).then(toJson).then(function (response) {
                 return response;
               });
             } else if (this.config.unlinkMethod === 'post') {
-              return this.http.createRequest(unlinkUrl).asPost().withContent(provider).send().then(function (response) {
+              return this.http.fetch(unlinkUrl, {
+                method: 'post',
+                body: json(provider)
+              }).then(status).then(toJson).then(function (response) {
                 return response;
               });
             }

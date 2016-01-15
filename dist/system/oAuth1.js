@@ -1,12 +1,23 @@
-System.register(['aurelia-framework', './authUtils', './storage', './popup', './baseConfig', 'aurelia-http-client'], function (_export) {
+System.register(['aurelia-framework', './authUtils', './storage', './popup', './baseConfig', 'aurelia-fetch-client'], function (_export) {
   'use strict';
 
-  var inject, authUtils, Storage, Popup, BaseConfig, HttpClient, OAuth1;
+  var inject, authUtils, Storage, Popup, BaseConfig, HttpClient, json, OAuth1;
 
   var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
   function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
+  function status(response) {
+    if (response.status >= 200 && response.status < 300) {
+      return Promise.resolve(response);
+    } else {
+      return Promise.reject(new Error(response.statusText));
+    }
+  }
+
+  function toJson(response) {
+    return response.json();
+  }
   return {
     setters: [function (_aureliaFramework) {
       inject = _aureliaFramework.inject;
@@ -18,8 +29,9 @@ System.register(['aurelia-framework', './authUtils', './storage', './popup', './
       Popup = _popup.Popup;
     }, function (_baseConfig) {
       BaseConfig = _baseConfig.BaseConfig;
-    }, function (_aureliaHttpClient) {
-      HttpClient = _aureliaHttpClient.HttpClient;
+    }, function (_aureliaFetchClient) {
+      HttpClient = _aureliaFetchClient.HttpClient;
+      json = _aureliaFetchClient.json;
     }],
     execute: function () {
       OAuth1 = (function () {
@@ -50,7 +62,9 @@ System.register(['aurelia-framework', './authUtils', './storage', './popup', './
               this.popup = this.popup.open('', this.defaults.name, this.defaults.popupOptions, this.defaults.redirectUri);
             }
             var self = this;
-            return this.http.createRequest(serverUrl).asPost().send().then(function (response) {
+            return this.http.fetch(serverUrl, {
+              method: 'post'
+            }).then(status).then(toJson).then(function (response) {
               if (self.config.platform === 'mobile') {
                 self.popup = self.popup.open([self.defaults.authorizationEndpoint, self.buildQueryString(response.content)].join('?'), self.defaults.name, self.defaults.popupOptions, self.defaults.redirectUri);
               } else {
@@ -69,7 +83,11 @@ System.register(['aurelia-framework', './authUtils', './storage', './popup', './
           value: function exchangeForToken(oauthData, userData) {
             var data = authUtils.extend({}, userData, oauthData);
             var exchangeForTokenUrl = this.config.baseUrl ? authUtils.joinUrl(this.config.baseUrl, this.defaults.url) : this.defaults.url;
-            return this.http.createRequest(exchangeForTokenUrl).asPost().withCredentials(this.config.withCredentials).withContent(data).send().then(function (response) {
+            return this.http.fetch(exchangeForTokenUrl, {
+              method: 'post',
+              body: json(data),
+              credentials: this.config.withCredentials
+            }).then(status).then(toJson).then(function (response) {
               return response;
             });
           }
