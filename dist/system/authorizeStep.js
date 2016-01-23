@@ -1,7 +1,7 @@
 System.register(['aurelia-framework', './authentication', 'aurelia-router'], function (_export) {
   'use strict';
 
-  var inject, Authentication, Redirect, Router, AuthorizeStep;
+  var inject, Authentication, Router, Redirect, AuthorizeStep;
 
   var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
@@ -13,8 +13,8 @@ System.register(['aurelia-framework', './authentication', 'aurelia-router'], fun
     }, function (_authentication) {
       Authentication = _authentication.Authentication;
     }, function (_aureliaRouter) {
-      Redirect = _aureliaRouter.Redirect;
       Router = _aureliaRouter.Router;
+      Redirect = _aureliaRouter.Redirect;
     }],
     execute: function () {
       AuthorizeStep = (function () {

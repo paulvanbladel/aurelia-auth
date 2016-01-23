@@ -1,12 +1,13 @@
 import authUtils from './authUtils';
+
 export class BaseConfig {
   configure(incomingConfig) {
     authUtils.merge(this._current, incomingConfig);
-  };
+  }
 
   get current() {
     return this._current;
-  };
+  }
 
   constructor() {
     this._current = {
@@ -24,6 +25,7 @@ export class BaseConfig {
       tokenRoot: false,
       tokenName: 'token',
       tokenPrefix: 'aurelia',
+      responseTokenProp: 'access_token',
       unlinkUrl: '/auth/unlink/',
       unlinkMethod: 'get',
       authHeader: 'Authorization',
@@ -152,6 +154,5 @@ export class BaseConfig {
         }
       }
     };
-
   }
 }

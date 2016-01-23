@@ -43,6 +43,7 @@ System.register(['./authUtils'], function (_export) {
             tokenRoot: false,
             tokenName: 'token',
             tokenPrefix: 'aurelia',
+            responseTokenProp: 'access_token',
             unlinkUrl: '/auth/unlink/',
             unlinkMethod: 'get',
             authHeader: 'Authorization',

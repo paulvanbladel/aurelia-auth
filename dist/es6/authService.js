@@ -1,122 +1,141 @@
 import {inject} from 'aurelia-framework';
-import {HttpClient} from 'aurelia-http-client';
+import {HttpClient, json} from 'aurelia-fetch-client';
 import {Authentication} from './authentication';
 import {BaseConfig} from './baseConfig';
 import {OAuth1} from './oAuth1';
 import {OAuth2} from './oAuth2';
 import authUtils from './authUtils';
+
 @inject(HttpClient,Authentication, OAuth1, OAuth2, BaseConfig)
-export class AuthService  {
-	constructor( http, auth, oAuth1, oAuth2, config){
-		this.http = http;
-		this.auth = auth;
-		this.oAuth1 = oAuth1;
-		this.oAuth2 = oAuth2;
-		this.config = config.current;
-	};
+export class AuthService {
+  constructor(http, auth, oAuth1, oAuth2, config) {
+    this.http = http;
+    this.auth = auth;
+    this.oAuth1 = oAuth1;
+    this.oAuth2 = oAuth2;
+    this.config = config.current;
+  }
 
-	getMe(){
-		var profileUrl = this.auth.getProfileUrl();
-		return this.http.createRequest(profileUrl)
-		.asGet()
-		.send().then(response => {
-			return response.content;
-		});
-	};
+  getMe() {
+    var profileUrl = this.auth.getProfileUrl();
+    return this.http.fetch(profileUrl)
+      .then(status)
+      .then(toJson)
+      .then((response) => {
+        return response
+      });
+  }
 
-	isAuthenticated(){
-		return this.auth.isAuthenticated();
-	};
+  isAuthenticated() {
+    return this.auth.isAuthenticated();
+  }
 
-	getTokenPayload(){
-		return this.auth.getPayload();
-	};
+  getTokenPayload() {
+    return this.auth.getPayload();
+  }
 
-	signup(displayName, email, password){
-		var signupUrl = this.auth.getSignupUrl();
-		var content;
-		if (typeof arguments[0] === 'object') {
-			content = arguments[0];
-		} else {
-			content = {'displayName': displayName,'email': email, 'password':password};
-		}
-		return this.http.createRequest(signupUrl)
-			.asPost()
-			.withContent(content)
-			.send()
-			.then(response => {
-				if (this.config.loginOnSignup) {
-					this.auth.setToken(response);
-				} else if (this.config.signupRedirect) {
-					window.location.href = this.config.signupRedirect;
-				}
-				return response;
-			});
-	};
+  signup(displayName, email, password) {
+    var signupUrl = this.auth.getSignupUrl();
+    var content;
+    if (typeof arguments[0] === 'object') {
+      content = arguments[0];
+    } else {
+      content = {
+        'displayName': displayName,
+        'email': email,
+        'password': password
+      };
+    }
 
-	login(email, password){
-		var loginUrl = this.auth.getLoginUrl();
-		var content;
-		if (typeof arguments[1] !== 'string') {
-			content = arguments[0];
-		} else {
-			content = {'email': email, 'password':password};
-		}
+    return this.http.fetch(signupUrl, {
+      method: 'post',
+      body: json(content)
+    })
+      .then(status)
+      .then(toJson)
+      .then((response) => {
+        if (this.config.loginOnSignup) {
+          this.auth.setToken(response);
+        } else if (this.config.signupRedirect) {
+          window.location.href = this.config.signupRedirect;
+        }
+        return response;
+      });
+  }
 
-		return this.http.createRequest(loginUrl)
-		.asPost()
-		.withContent(content)
-		.send()
-		.then(response => {
-			this.auth.setToken(response);
-			return response;
-		});
+  login(email, password) {
+    var loginUrl = this.auth.getLoginUrl();
+    var content;
+    if (typeof arguments[1] !== 'string') {
+      content = arguments[0];
+    } else {
+      content = {
+        'email': email,
+        'password': password
+      };
+    }
 
-	};
+    return this.http.fetch(loginUrl, {
+      method: 'post',
+      body: json(content)
+    })
+      .then(status)
+      .then(toJson)
+      .then((response) => {
+        this.auth.setToken(response)
+        return response
+      });
+  }
 
-	logout(redirectUri){
-		return new Promise((resolve, reject)=>{
-			this.auth.logout(redirectUri)
-			.then(response=>{
+  logout(redirectUri) {
+    return this.auth.logout(redirectUri);
+  }
 
-			})
-		});
-	};
+  authenticate(name, redirect, userData) {
+    var provider = this.oAuth2;
+    if (this.config.providers[name].type === '1.0') {
+      provider = this.oAuth1;
+    };
 
+    return provider.open(this.config.providers[name], userData || {})
+      .then((response) => {
+        this.auth.setToken(response, redirect);
+        return response;
+      });
+  }
 
-	authenticate(name, redirect, userData) {
-		var provider = this.oAuth2;
-		if (this.config.providers[name].type === '1.0'){
-			provider = this.oAuth1;
-		};
+  unlink(provider) {
+    var unlinkUrl = this.config.baseUrl ? authUtils.joinUrl(this.config.baseUrl, this.config.unlinkUrl) : this.config.unlinkUrl;
 
-		return provider.open(this.config.providers[name], userData || {})
-		.then((response) => {
-			this.auth.setToken(response, redirect);
-			return response;
-		});
-	};
+    if (this.config.unlinkMethod === 'get') {
+      return this.http.fetch(unlinkUrl + provider)
+        .then(status)
+        .then(toJson)
+        .then((response) => {
+          return response;
+        });
+    } else if (this.config.unlinkMethod === 'post') {
+      return this.http.fetch(unlinkUrl, {
+        method: 'post',
+        body: json(provider)
+      })
+        .then(status)
+        .then(toJson)
+        .then((response) => {
+          return response;
+        });
+    }
+  }
+}
 
-	unlink(provider) {
-		var unlinkUrl =  this.config.baseUrl
-		? authUtils.joinUrl(this.config.baseUrl, this.config.unlinkUrl) : this.config.unlinkUrl;
+function status(response) {
+  if (response.status >= 200 && response.status < 300) {
+    return Promise.resolve(response)
+  } else {
+    return Promise.reject(new Error(response.statusText))
+  }
+}
 
-		if (this.config.unlinkMethod === 'get') {
-			return this.http.createRequest(unlinkUrl + provider)
-                .asGet()
-                .send()
-                .then(response => {
-                    return response;
-                });
-		}
-		else if (this.config.unlinkMethod === 'post') {
-			return this.http.createRequest(unlinkUrl)
-                .asPost()
-                .withContent(provider)
-                .send()
-                .then(response => {
-                    return response;
-                });
-		}
-	};
+function toJson(response) {
+  return response.json()
 }

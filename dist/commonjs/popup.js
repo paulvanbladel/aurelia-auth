@@ -64,7 +64,9 @@ var Popup = (function () {
             _authUtils2['default'].extend(qs, hash);
 
             if (qs.error) {
-              reject({ error: qs.error });
+              reject({
+                error: qs.error
+              });
             } else {
               resolve(qs);
             }
@@ -74,11 +76,15 @@ var Popup = (function () {
         });
 
         popupWindow.addEventListener('exit', function () {
-          reject({ data: 'Provider Popup was closed' });
+          reject({
+            data: 'Provider Popup was closed'
+          });
         });
 
         popupWindow.addEventListener('loaderror', function () {
-          deferred.reject({ data: 'Authorization Failed' });
+          deferred.reject({
+            data: 'Authorization Failed'
+          });
         });
       });
       return promise;
@@ -104,7 +110,9 @@ var Popup = (function () {
               _authUtils2['default'].extend(qs, hash);
 
               if (qs.error) {
-                reject({ error: qs.error });
+                reject({
+                  error: qs.error
+                });
               } else {
                 resolve(qs);
               }
@@ -116,10 +124,14 @@ var Popup = (function () {
 
           if (!self.popupWindow) {
             clearInterval(self.polling);
-            reject({ data: 'Provider Popup Blocked' });
+            reject({
+              data: 'Provider Popup Blocked'
+            });
           } else if (self.popupWindow.closed) {
             clearInterval(self.polling);
-            reject({ data: 'Problem poll popup' });
+            reject({
+              data: 'Problem poll popup'
+            });
           }
         }, 35);
       });
