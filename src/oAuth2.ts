@@ -2,13 +2,16 @@ import {inject} from 'aurelia-framework';
 import authUtils from './authUtils';
 import {Storage} from './storage';
 import {Popup} from './popup';
-import {BaseConfig} from './baseConfig';
+import {BaseConfig, IBaseConfig} from './baseConfig';
 import {HttpClient, json} from 'aurelia-fetch-client';
+
 
 @inject(Storage, Popup, HttpClient, BaseConfig)
 export class OAuth2 {
-  constructor(storage, popup, http, config) {
-    this.storage = storage;
+    config: IBaseConfig
+    defaults: IOAuthDefaults;
+    constructor(private storage: Storage, private popup: Popup, private http: HttpClient, config: BaseConfig) {
+        this.storage = storage;
     this.config = config.current;
     this.popup = popup;
     this.http = http;
@@ -84,7 +87,7 @@ export class OAuth2 {
     return this.http.fetch(exchangeForTokenUrl, {
       method: 'post',
       body: json(data),
-      credentials: this.config.withCredentials
+      credentials: <string>this.config.withCredentials
     })
       .then(status)
       .then(toJson)
@@ -137,3 +140,22 @@ function status(response) {
 function toJson(response) {
   return response.json()
 }
+
+export interface IOAuthDefaults {
+    url?: string;
+    name?: string;
+    state?: any;
+    scope?: any;
+    scopeDelimiter?: any;
+    redirectUri?: any;
+    popupOptions?: any;
+    authorizationEndpoint?: any;
+    responseParams?: any;
+    requiredUrlParams?: any;
+    optionalUrlParams?: any;
+    defaultUrlParams?: string[];
+    responseType?: string;
+    clientId?: string;
+    scopePrefix?: string;
+}
+    

@@ -44,8 +44,8 @@ var authUtils = {
   },
 
   parseQueryString: function(keyValue) {
-    var obj = {},
-        key, value;
+    var obj:any = {},
+      key, value;
     authUtils.forEach((keyValue || '').split('&'), function(keyValue) {
       if (keyValue) {
         value = keyValue.split('=');
@@ -99,13 +99,13 @@ var authUtils = {
   isWindow: function(obj) {
     return obj && obj.window === obj;
   },
-  extend: function(dst) {
+  extend: function(dst, ...args:any[]) {
     return baseExtend(dst, slice.call(arguments, 1), false);
   },
-  merge: function merge(dst) {
+  merge: function merge(dst, ...args: any[]) {
     return baseExtend(dst, slice.call(arguments, 1), true);
   },
-  forEach: function(obj, iterator, context) {
+  forEach: function(obj, iterator, context?) {
     var key, length;
     if (obj) {
       if (authUtils.isFunction(obj)) {
@@ -123,7 +123,7 @@ var authUtils = {
             iterator.call(context, obj[key], key, obj);
           }
         }
-      } else if (obj.forEach && obj.forEach !== forEach) {
+      } else if (obj.forEach && obj.forEach !== this.forEach) {
         obj.forEach(iterator, context, obj);
       } else if (authUtils.isBlankObject(obj)) {
         // createMap() fast path --- Safe to avoid hasOwnProperty check because prototype chain is empty
@@ -140,7 +140,7 @@ var authUtils = {
       } else {
         // Slow path for objects which do not have a method `hasOwnProperty`
         for (key in obj) {
-          if (hasOwnProperty.call(obj, key)) {
+          if (this.hasOwnProperty.call(obj, key)) {
             iterator.call(context, obj[key], key, obj);
           }
         }
@@ -149,6 +149,6 @@ var authUtils = {
     return obj;
   }
 
-};
+}
 
 export default authUtils;

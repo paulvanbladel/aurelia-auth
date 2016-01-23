@@ -1,10 +1,14 @@
+/* global deferred */
 import authUtils from './authUtils';
-import {BaseConfig}  from './baseConfig';
+import {BaseConfig, IBaseConfig}  from './baseConfig';
 import {inject} from 'aurelia-framework';
-
 @inject(BaseConfig)
 export class Popup {
-  constructor(config) {
+  config: IBaseConfig;
+  popupWindow: any;
+  polling: any;
+  url: string;
+  constructor(config: BaseConfig) {
     this.config = config.current;
     this.popupWindow = null;
     this.polling = null;
@@ -55,14 +59,14 @@ export class Popup {
         }
       });
 
-      popupWindow.addEventListener('exit', () => {
+      this.popupWindow.addEventListener('exit', () => {
         reject({
           data: 'Provider Popup was closed'
         });
       });
 
-      popupWindow.addEventListener('loaderror', () => {
-        deferred.reject({
+      this.popupWindow.addEventListener('loaderror', () => {
+        reject({
           data: 'Authorization Failed'
         });
       });
@@ -97,7 +101,7 @@ export class Popup {
             self.popupWindow.close();
             clearInterval(self.polling);
           }
-        } catch (error) {}
+        } catch (error) { }
 
         if (!self.popupWindow) {
           clearInterval(self.polling);

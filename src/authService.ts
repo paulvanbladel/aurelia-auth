@@ -1,20 +1,16 @@
 import {inject} from 'aurelia-framework';
 import {HttpClient, json} from 'aurelia-fetch-client';
 import {Authentication} from './authentication';
-import {BaseConfig} from './baseConfig';
+import {BaseConfig, IBaseConfig} from './baseConfig';
 import {OAuth1} from './oAuth1';
 import {OAuth2} from './oAuth2';
 import authUtils from './authUtils';
-
-@inject(HttpClient,Authentication, OAuth1, OAuth2, BaseConfig)
+@inject(HttpClient, Authentication, OAuth1, OAuth2, BaseConfig)
 export class AuthService {
-  constructor(http, auth, oAuth1, oAuth2, config) {
-		this.http = http;
-		this.auth = auth;
-		this.oAuth1 = oAuth1;
-		this.oAuth2 = oAuth2;
-		this.config = config.current;
-  }
+    config: IBaseConfig;
+    constructor(private http:HttpClient, private auth:Authentication, private oAuth1:OAuth1,private oAuth2:OAuth2, config:BaseConfig) {       
+        this.config = config.current;
+    }
 
     getMe() {
 		var profileUrl = this.auth.getProfileUrl();
@@ -82,12 +78,14 @@ export class AuthService {
             content = data.join('&');
 		}
 
-        return this.http.createRequest(loginUrl)
-            .asPost()
-            .withContent(content)
-            .send()
-            .then(response => {
-                if (this.config.useRefreshTokens) {
+        return this.http.fetch(loginUrl, {
+          method: 'post',
+          body: content
+        })
+          .then(status)
+          .then(toJson)
+          .then((response) => {
+                if (this.config.useRefreshToken) {
                     this.auth.setRefreshToken(response);
                 }
                 this.auth.setToken(response);
@@ -96,26 +94,12 @@ export class AuthService {
 
     };
 
-    logout(redirectUri) {
-        return new Promise((resolve, reject) => {
-            this.auth.logout(redirectUri)
-                .then(response=> {
-
-			})
-      .then(status)
-      .then(toJson)
-      .then((response) => {
-        this.auth.setToken(response)
-        return response
-		});
-  }
-
   logout(redirectUri) {
     return this.auth.logout(redirectUri);
   }
 
 	authenticate(name, redirect, userData) {
-		var provider = this.oAuth2;
+		var provider:OAuth1 | OAuth2 = this.oAuth2;
         if (this.config.providers[name].type === '1.0') {
 			provider = this.oAuth1;
 		};
