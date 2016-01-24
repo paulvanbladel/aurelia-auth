@@ -38,9 +38,7 @@ export class Authentication {
   getToken() {
     return this.storage.get(this.tokenName);
   };
-  getRefreshToken() {
-    return this.storage.get(this.refreshTokenName);
-  }
+  
   getPayload() {
     var token = this.storage.get(this.tokenName);
 
@@ -87,36 +85,6 @@ export class Authentication {
     } else if (redirect && authUtils.isString(redirect)) {
       window.location.href = encodeURI(redirect);
     }
-  }
-
-  setRefreshToken(response) {
-    var refreshTokenName = this.refreshTokenName;
-    var refreshToken = response && response.refresh_token;
-    var token;
-
-    if (refreshToken) {
-      if (authUtils.isObject(refreshToken) && authUtils.isObject(refreshToken.data)) {
-        response = refreshToken;
-      } else if (authUtils.isString(refreshToken)) {
-        token = refreshToken;
-      }
-    }
-
-    if (!token && response) {
-      token = this.config.refreshTokenRoot && response[<string>this.config.refreshTokenRoot]
-        ? response[<string>this.config.refreshTokenRoot][this.config.refreshTokenName]
-        : response[this.config.refreshTokenName];
-    }
-
-    if (!token) {
-      var refreshTokenPath = this.config.refreshTokenRoot
-        ? this.config.refreshTokenRoot + '.' + this.config.refreshTokenName
-        : this.config.refreshTokenName;
-
-      throw new Error('Expecting a refresh token named "' + refreshTokenPath + '" but instead got: ' + JSON.stringify(response.content));
-    }
-
-    this.storage.set(refreshTokenName, token);
   }
 
   removeToken() {

@@ -141,10 +141,6 @@ export interface IBaseConfig {
     logoutRedirect?: string;
     signupRedirect?: string;
     postContentType?: string;//option form|json
-    useRefreshToken?: boolean;
-    refreshTokenRoot?:string | boolean;
-    refreshTokenName?: string;
-    refreshTokenPrefix?: string;
     loginUrl?: string;
     signupUrl?: string;
     profileUrl?: string;
@@ -187,10 +183,6 @@ export class BaseConfig {
             loginRoute: '/login',
             signupRoute: '/signup',
             postContentType: 'json',//option form|json
-            useRefreshToken: false,
-            refreshTokenRoot: false,
-            refreshTokenName: 'refresh_token',
-            refreshTokenPrefix: 'aurelia',
             tokenRoot: false,
             tokenName: 'token',
             tokenPrefix: 'aurelia',
