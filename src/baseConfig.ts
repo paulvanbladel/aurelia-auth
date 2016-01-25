@@ -1,23 +1,175 @@
-'use strict';
+import authUtils from './authUtils';
+export interface PopupOptions {
+    width: number;
+    height: number;
+}
+export interface Google {
+    name: string;
+    url: string;
+    authorizationEndpoint: string;
+    redirectUri: string;
+    scope: string[];
+    scopePrefix: string;
+    scopeDelimiter: string;
+    requiredUrlParams: string[];
+    optionalUrlParams: string[];
+    display: string;
+    type: string;
+    popupOptions: PopupOptions;
+}
+export interface PopupOptions2 {
+    width: number;
+    height: number;
+}
+export interface Facebook {
+    name: string;
+    url: string;
+    authorizationEndpoint: string;
+    redirectUri: string;
+    scope: string[];
+    nonce: Function;
+    scopeDelimiter: string;
+    requiredUrlParams: string[];
+    display: string;
+    type: string;
+    popupOptions: PopupOptions2;
+}
+export interface PopupOptions3 {
+    width: number;
+    height: number;
+}
+export interface Linkedin {
+    name: string;
+    url: string;
+    authorizationEndpoint: string;
+    redirectUri: string;
+    requiredUrlParams: string[];
+    scope: string[];
+    scopeDelimiter: string;
+    state: string;
+    type: string;
+    popupOptions: PopupOptions3;
+}
+export interface PopupOptions4 {
+    width: number;
+    height: number;
+}
+export interface Github {
+    name: string;
+    url: string;
+    authorizationEndpoint: string;
+    redirectUri: string;
+    optionalUrlParams: string[];
+    scope: string[];
+    scopeDelimiter: string;
+    type: string;
+    popupOptions: PopupOptions4;
+}
+export interface PopupOptions5 {
+    width: number;
+    height: number;
+}
+export interface Yahoo {
+    name: string;
+    url: string;
+    authorizationEndpoint: string;
+    redirectUri: string;
+    scope: any[];
+    scopeDelimiter: string;
+    type: string;
+    popupOptions: PopupOptions5;
+}
+export interface PopupOptions6 {
+    width: number;
+    height: number;
+}
+export interface Twitter {
+    name: string;
+    url: string;
+    authorizationEndpoint: string;
+    type: string;
+    popupOptions: PopupOptions6;
+}
+export interface PopupOptions7 {
+    width: number;
+    height: number;
+}
+export interface Live {
+    name: string;
+    url: string;
+    authorizationEndpoint: string;
+    redirectUri: string;
+    scope: string[];
+    scopeDelimiter: string;
+    requiredUrlParams: string[];
+    display: string;
+    type: string;
+    popupOptions: PopupOptions7;
+}
+export interface PopupOptions8 {
+    width: number;
+    height: number;
+}
+export interface Instagram {
+    name: string;
+    url: string;
+    authorizationEndpoint: string;
+    redirectUri: string;
+    requiredUrlParams: string[];
+    scope: string[];
+    scopeDelimiter: string;
+    display: string;
+    type: string;
+    popupOptions: PopupOptions8;
+}
+export interface Providers {
+    google: Google;
+    facebook: Facebook;
+    linkedin: Linkedin;
+    github: Github;
+    yahoo: Yahoo;
+    twitter: Twitter;
+    live: Live;
+    instagram: Instagram;
+}
+export interface IBaseConfig {
+    httpInterceptor?: boolean;
+    loginOnSignup?: boolean;
+    baseUrl?: string;
+    clientId?: string;
+    loginRedirect?: string;
+    logoutRedirect?: string;
+    signupRedirect?: string;
+    postContentType?: string;//option form|json
+    loginUrl?: string;
+    signupUrl?: string;
+    profileUrl?: string;
+    loginRoute?: string;
+    signupRoute?: string;
+    tokenRoot?: string|boolean;
+    tokenName?: string;
+    tokenPrefix?: string;
+    unlinkUrl?: string;
+    unlinkMethod?: string;
+    authHeader?: string;
+    authToken?: string;
+    withCredentials?: boolean|string;
+    platform?: string;
+    storage?: string;
+    providers?: Providers;
+}
 
-Object.defineProperty(exports, '__esModule', {
-    value: true
-});
+export class BaseConfig {
+    _current: IBaseConfig;
+    configure(incomingConfig: any) {
+        authUtils.merge(this._current, incomingConfig);
+    };
 
-var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+    get current() {
+        return this._current;
+    };
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
-
-var _authUtils = require('./authUtils');
-
-var _authUtils2 = _interopRequireDefault(_authUtils);
-
-var BaseConfig = (function () {
-    function BaseConfig() {
-        _classCallCheck(this, BaseConfig);
-
+    constructor() {
         this._current = {
             httpInterceptor: true,
             loginOnSignup: true,
@@ -30,11 +182,7 @@ var BaseConfig = (function () {
             profileUrl: '/auth/me',
             loginRoute: '/login',
             signupRoute: '/signup',
-            postContentType: 'json',
-            useRefreshToken: false,
-            refreshTokenRoot: false,
-            refreshTokenName: 'refresh_token',
-            refreshTokenPrefix: 'aurelia',
+            postContentType: 'json',//option form|json
             tokenRoot: false,
             tokenName: 'token',
             tokenPrefix: 'aurelia',
@@ -58,6 +206,7 @@ var BaseConfig = (function () {
                     optionalUrlParams: ['display'],
                     display: 'popup',
                     type: '2.0',
+                    /*clientId: '239531826023-ibk10mb9p7ull54j55a61og5lvnjrff6.apps.googleusercontent.com',*/
                     popupOptions: {
                         width: 452,
                         height: 633
@@ -70,7 +219,7 @@ var BaseConfig = (function () {
                     redirectUri: window.location.origin + '/' || window.location.protocol + '//' + window.location.host + '/',
                     scope: ['email'],
                     scopeDelimiter: ',',
-                    nonce: function nonce() {
+                    nonce: function() {
                         return Math.random();
                     },
                     requiredUrlParams: ['nonce', 'display', 'scope'],
@@ -165,21 +314,6 @@ var BaseConfig = (function () {
                 }
             }
         };
+
     }
-
-    _createClass(BaseConfig, [{
-        key: 'configure',
-        value: function configure(incomingConfig) {
-            _authUtils2['default'].merge(this._current, incomingConfig);
-        }
-    }, {
-        key: 'current',
-        get: function get() {
-            return this._current;
-        }
-    }]);
-
-    return BaseConfig;
-})();
-
-exports.BaseConfig = BaseConfig;
+}

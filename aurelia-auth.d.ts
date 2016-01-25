@@ -1,19 +1,19 @@
 declare module 'aurelia-auth/authUtils' {
 	 var authUtils: {
-	    isDefined(value: any): boolean;
-	    camelCase(name: any): any;
-	    parseQueryString(keyValue: any): any;
-	    isString(value: any): boolean;
-	    isObject(value: any): boolean;
+	    isDefined: (value: any) => boolean;
+	    camelCase: (name: any) => any;
+	    parseQueryString: (keyValue: any) => any;
+	    isString: (value: any) => boolean;
+	    isObject: (value: any) => boolean;
 	    isArray: (arg: any) => arg is any[];
-	    isFunction(value: any): boolean;
-	    joinUrl(baseUrl: any, url: any): any;
-	    isBlankObject(value: any): boolean;
-	    isArrayLike(obj: any): boolean;
-	    isWindow(obj: any): boolean;
-	    extend(dst: any, ...input: any[]): any;
-	    merge(dst: any, ...input: any[]): any;
-	    forEach(obj: any, iterator: any, context?: any): any;
+	    isFunction: (value: any) => boolean;
+	    joinUrl: (baseUrl: any, url: any) => any;
+	    isBlankObject: (value: any) => boolean;
+	    isArrayLike: (obj: any) => boolean;
+	    isWindow: (obj: any) => boolean;
+	    extend: (dst: any, ...args: any[]) => any;
+	    merge: (dst: any, ...args: any[]) => any;
+	    forEach: (obj: any, iterator: any, context?: any) => any;
 	};
 	export default authUtils;
 
@@ -153,28 +153,34 @@ declare module 'aurelia-auth/baseConfig' {
 	    instagram: Instagram;
 	}
 	export interface IBaseConfig {
-	    httpInterceptor: boolean;
-	    loginOnSignup: boolean;
-	    baseUrl: string;
-	    loginRedirect: string;
-	    logoutRedirect: string;
-	    signupRedirect: string;
-	    loginUrl: string;
-	    signupUrl: string;
-	    profileUrl: string;
-	    loginRoute: string;
-	    signupRoute: string;
-	    tokenRoot: boolean;
-	    tokenName: string;
-	    tokenPrefix: string;
-	    unlinkUrl: string;
-	    unlinkMethod: string;
-	    authHeader: string;
-	    authToken: string;
-	    withCredentials: boolean;
-	    platform: string;
-	    storage: string;
-	    providers: Providers;
+	    httpInterceptor?: boolean;
+	    loginOnSignup?: boolean;
+	    baseUrl?: string;
+	    clientId?: string;
+	    loginRedirect?: string;
+	    logoutRedirect?: string;
+	    signupRedirect?: string;
+	    postContentType?: string;
+	    useRefreshToken?: boolean;
+	    refreshTokenRoot?: string | boolean;
+	    refreshTokenName?: string;
+	    refreshTokenPrefix?: string;
+	    loginUrl?: string;
+	    signupUrl?: string;
+	    profileUrl?: string;
+	    loginRoute?: string;
+	    signupRoute?: string;
+	    tokenRoot?: string | boolean;
+	    tokenName?: string;
+	    tokenPrefix?: string;
+	    unlinkUrl?: string;
+	    unlinkMethod?: string;
+	    authHeader?: string;
+	    authToken?: string;
+	    withCredentials?: boolean | string;
+	    platform?: string;
+	    storage?: string;
+	    providers?: Providers;
 	}
 	export class BaseConfig {
 	    _current: IBaseConfig;
@@ -185,10 +191,10 @@ declare module 'aurelia-auth/baseConfig' {
 
 }
 declare module 'aurelia-auth/storage' {
-	import { BaseConfig, IBaseConfig } from 'aurelia-auth/baseConfig';
+	import { IBaseConfig } from 'aurelia-auth/baseConfig';
 	export class Storage {
 	    config: IBaseConfig;
-	    constructor(config: BaseConfig);
+	    constructor(config: any);
 	    get(key: any): any;
 	    set(key: any, value: any): void;
 	    remove(key: any): void;
@@ -196,19 +202,24 @@ declare module 'aurelia-auth/storage' {
 
 }
 declare module 'aurelia-auth/authentication' {
+	import { BaseConfig, IBaseConfig } from 'aurelia-auth/baseConfig';
+	import { Storage } from 'aurelia-auth/storage';
 	export class Authentication {
-	    storage: any;
-	    config: any;
-	    tokenName: any;
-	    constructor(storage: any, config: any);
-	    getLoginRoute(): any;
-	    getLoginRedirect(): any;
+	    private storage;
+	    config: IBaseConfig;
+	    tokenName: string;
+	    refreshTokenName: string;
+	    constructor(storage: Storage, config: BaseConfig);
+	    getLoginRoute(): string;
+	    getLoginRedirect(): string;
 	    getLoginUrl(): any;
 	    getSignupUrl(): any;
 	    getProfileUrl(): any;
 	    getToken(): any;
+	    getRefreshToken(): any;
 	    getPayload(): any;
-	    setToken(response: any, redirect: any): void;
+	    setToken(response: any, redirect?: string): void;
+	    setRefreshToken(response: any): void;
 	    removeToken(): void;
 	    isAuthenticated(): boolean;
 	    logout(redirect: any): any;
@@ -216,30 +227,29 @@ declare module 'aurelia-auth/authentication' {
 
 }
 declare module 'aurelia-auth/app.fetch-httpClient.config' {
-	/// <reference path="baseConfig.d.ts" />
 	import { HttpClient } from 'aurelia-fetch-client';
 	import { Authentication } from 'aurelia-auth/authentication';
 	import { BaseConfig, IBaseConfig } from 'aurelia-auth/baseConfig';
 	import { Storage } from 'aurelia-auth/storage';
 	export class FetchConfig {
-	    httpClient: HttpClient;
-	    auth: Authentication;
-	    storage: Storage;
-	    config:IBaseConfig;
-	    constructor(httpClient: HttpClient, authService: Authentication, storage: Storage, config: BaseConfig);
+	    private httpClient;
+	    private auth;
+	    private storage;
+	    config: IBaseConfig;
+	    constructor(httpClient: HttpClient, auth: Authentication, storage: Storage, config: BaseConfig);
 	    configure(): void;
 	}
 
 }
 declare module 'aurelia-auth/app.httpClient.config' {
 	import { HttpClient } from 'aurelia-http-client';
-	import { BaseConfig } from 'aurelia-auth/baseConfig';
+	import { BaseConfig, IBaseConfig } from 'aurelia-auth/baseConfig';
 	import { Authentication } from 'aurelia-auth/authentication';
 	import { Storage } from 'aurelia-auth/storage';
-	export default class HttpCilentConfig {
-	    http: HttpClient;
-	    auth: Authentication;
-	    storage: Storage;
+	export default class  {
+	    private http;
+	    private auth;
+	    private storage;
 	    config: IBaseConfig;
 	    constructor(http: HttpClient, auth: Authentication, storage: Storage, config: BaseConfig);
 	    configure(): void;
@@ -254,7 +264,6 @@ declare module 'aurelia-auth/authFilter' {
 }
 declare module 'aurelia-auth/popup' {
 	import { BaseConfig, IBaseConfig } from 'aurelia-auth/baseConfig';
-	
 	export class Popup {
 	    config: IBaseConfig;
 	    popupWindow: any;
@@ -269,42 +278,25 @@ declare module 'aurelia-auth/popup' {
 	}
 
 }
-declare module 'aurelia-auth/oAuth1' {
-	import { Storage } from 'aurelia-auth/storage';
-	import { Popup } from 'aurelia-auth/popup';
-	import { HttpClient } from "aurelia-http-client";
-	export class OAuth1 {
-	    storage: Storage;
-	    config: any;
-	    popup: Popup;
-	    http: HttpClient;
-	    defaults: any;
-	    constructor(storage: any, popup: any, http: any, config: any);
-	    private open(options, userData);
-	    private exchangeForToken(oauthData, userData);
-	    buildQueryString(obj: any): string;
-	}
-
-}
-declare module 'aurelia-auth/oAuth2' {
+declare module 'aurelia-auth/OAuth2' {
 	import { Storage } from 'aurelia-auth/storage';
 	import { Popup } from 'aurelia-auth/popup';
 	import { BaseConfig, IBaseConfig } from 'aurelia-auth/baseConfig';
-	import { HttpClient } from "aurelia-http-client";
+	import { HttpClient } from 'aurelia-fetch-client';
 	export class OAuth2 {
-	    storage: Storage;
-	    config: BaseConfig;
-	    popup: Popup;
-	    http: HttpClient;
-	    defaults: IDefaults;
+	    private storage;
+	    private popup;
+	    private http;
+	    config: IBaseConfig;
+	    defaults: IOAuthDefaults;
 	    constructor(storage: Storage, popup: Popup, http: HttpClient, config: BaseConfig);
 	    open(options: any, userData: any): any;
-	    private exchangeForToken(oauthData, userData);
+	    exchangeForToken(oauthData: any, userData: any): any;
 	    buildQueryString(): string;
 	}
-	export interface IDefaults {
-	    url?: any;
-	    name?: any;
+	export interface IOAuthDefaults {
+	    url?: string;
+	    name?: string;
 	    state?: any;
 	    scope?: any;
 	    scopeDelimiter?: any;
@@ -314,23 +306,47 @@ declare module 'aurelia-auth/oAuth2' {
 	    responseParams?: any;
 	    requiredUrlParams?: any;
 	    optionalUrlParams?: any;
-	    defaultUrlParams: string[];
-	    responseType: string;
+	    defaultUrlParams?: string[];
+	    responseType?: string;
 	    clientId?: string;
 	    scopePrefix?: string;
 	}
 
 }
+declare module 'aurelia-auth/oAuth1' {
+	import { Storage } from 'aurelia-auth/storage';
+	import { Popup } from 'aurelia-auth/popup';
+	import { BaseConfig, IBaseConfig } from 'aurelia-auth/baseConfig';
+	import { HttpClient } from 'aurelia-fetch-client';
+	import { IOAuthDefaults } from 'aurelia-auth/OAuth2';
+	export class OAuth1 {
+	    private storage;
+	    private popup;
+	    private http;
+	    defaults: IOAuthDefaults;
+	    config: IBaseConfig;
+	    constructor(storage: Storage, popup: Popup, http: HttpClient, config: BaseConfig);
+	    open(options: any, userData: any): any;
+	    exchangeForToken(oauthData: any, userData: any): any;
+	    buildQueryString(obj: any): string;
+	}
+
+}
 declare module 'aurelia-auth/authService' {
+	import { HttpClient } from 'aurelia-fetch-client';
+	import { Authentication } from 'aurelia-auth/authentication';
+	import { BaseConfig, IBaseConfig } from 'aurelia-auth/baseConfig';
+	import { OAuth1 } from 'aurelia-auth/oAuth1';
+	import { OAuth2 } from 'aurelia-auth/oAuth2';
 	export class AuthService {
-	    http: any;
-	    auth: any;
-	    oAuth1: any;
-	    oAuth2: any;
-	    config: any;
-	    constructor(http: any, auth: any, oAuth1: any, oAuth2: any, config: any);
+	    private http;
+	    private auth;
+	    private oAuth1;
+	    private oAuth2;
+	    config: IBaseConfig;
+	    constructor(http: HttpClient, auth: Authentication, oAuth1: OAuth1, oAuth2: OAuth2, config: BaseConfig);
 	    getMe(): any;
-	    isAuthenticated(): any;
+	    isAuthenticated(): boolean;
 	    getTokenPayload(): any;
 	    signup(displayName: any, email: any, password: any): any;
 	    login(email: any, password: any): any;
@@ -343,16 +359,20 @@ declare module 'aurelia-auth/authService' {
 declare module 'aurelia-auth/authorizeStep' {
 	import { Authentication } from 'aurelia-auth/authentication';
 	export class AuthorizeStep {
+	    private auth;
 	    constructor(auth: Authentication);
 	    run(routingContext: any, next: any): any;
-	    auth: Authentication;
 	}
 
 }
-declare module 'aurelia-auth' {
+declare module 'aurelia-auth/index' {
 	export { AuthService } from 'aurelia-auth/authService';
 	export { AuthorizeStep } from 'aurelia-auth/authorizeStep';
 	export { FetchConfig } from 'aurelia-auth/app.fetch-httpClient.config';
 	export function configure(aurelia: any, configCallback: any): void;
 
+}
+declare module 'aurelia-auth' {
+	import main = require('aurelia-auth/index');
+	export = main;
 }

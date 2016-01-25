@@ -1,15 +1,12 @@
 import {HttpClient, RequestBuilder} from 'aurelia-http-client';
-import {BaseConfig}  from './baseConfig';
+import {BaseConfig, IBaseConfig}  from './baseConfig';
 import {Authentication} from './authentication';
 import {Storage} from './storage';
 import {inject} from 'aurelia-framework';
-
-@inject(HttpClient,Authentication,Storage, BaseConfig)
+@inject(HttpClient, Authentication, Storage, BaseConfig)
 export default class {
-  constructor(http, auth, storage, config) {
-    this.http = http;
-    this.auth = auth;
-    this.storage = storage;
+  config: IBaseConfig;
+  constructor(private http: HttpClient, private auth: Authentication, private storage: Storage, config: BaseConfig) {
     this.config = config.current;
   }
 
@@ -30,7 +27,7 @@ export default class {
     });
 
     this.http.configure(x => {
-      x.authTokenHandling();
+      (<any>x).authTokenHandling();
       x.withHeader('Accept', 'application/json');
     });
   }

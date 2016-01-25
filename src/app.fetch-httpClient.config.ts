@@ -1,15 +1,13 @@
-import {HttpClient} from 'aurelia-fetch-client';
+import {HttpClient} from 'aurelia-fetch-client'
 import {Authentication} from './authentication';
-import {BaseConfig} from './baseConfig';
+import {BaseConfig, IBaseConfig} from './baseConfig'
 import {inject} from 'aurelia-framework';
 import {Storage} from './storage';
 
 @inject(HttpClient, Authentication, Storage, BaseConfig)
 export class FetchConfig {
-  constructor(httpClient, authService, storage, config) {
-    this.httpClient = httpClient;
-    this.auth = authService;
-    this.storage = storage;
+  config: IBaseConfig;
+  constructor(private httpClient:HttpClient,private auth:Authentication,private storage:Storage, config:BaseConfig) {
     this.config = config.current;
   }
 
