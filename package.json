@@ -1,6 +1,6 @@
 {
   "name": "aurelia-auth",
-  "version": "0.11.8",
+  "version": "0.11.9",
   "description": "Plugin for social media authentication and local authentication together with other authentication utilities",
   "main": "dist/system/index.js",
   "scripts": {
@@ -27,6 +27,7 @@
     "browser-sync": "^1.8.1",
     "conventional-changelog": "0.0.11",
     "del": "^1.1.0",
+    "dts-generator": "^1.6.3",
     "gulp": "^3.8.10",
     "gulp-babel": "^5.1.0",
     "gulp-bump": "^0.3.1",
@@ -34,6 +35,7 @@
     "gulp-jshint": "^1.9.0",
     "gulp-plumber": "^0.6.6",
     "gulp-protractor": "^0.0.12",
+    "gulp-rename": "^1.2.2",
     "gulp-sourcemaps": "^1.3.0",
     "gulp-yuidoc": "^0.1.2",
     "jasmine-core": "^2.1.3",
