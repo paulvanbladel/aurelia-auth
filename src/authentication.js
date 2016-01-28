@@ -35,15 +35,23 @@ export class Authentication {
     return this.storage.get(this.tokenName);
   }
 
-  getPayload() {
-    var token = this.storage.get(this.tokenName);
-
-    if (token && token.split('.').length === 3) {
-      var base64Url = token.split('.')[1];
-      var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-      return JSON.parse(decodeURIComponent(escape(window.atob(base64))));
+ getPayload() {
+     let token = this.storage.get(this.tokenName);
+ 
+      if (token && token.split('.').length === 3) {
+        let base64Url = token.split('.')[1];
+        let base64    = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+ -      return JSON.parse(decodeURIComponent(escape(window.atob(base64))));
+ +
+ +      try {
+ +        let parsed = JSON.parse(decodeURIComponent(escape(window.atob(base64))));
+ +      } catch (error) {
+ +        return;
+ +      }
+ +
+ +      return parsed;
+      }
     }
-  }
 
   setToken(response, redirect) {
 
@@ -83,30 +91,36 @@ export class Authentication {
     this.storage.remove(this.tokenName);
   }
 
-  isAuthenticated() {
-    var token = this.storage.get(this.tokenName);
-
-    // There's no token, so user is not authenticated.
-    if (!token) {
-      return false;
-    }
-
-    // There is a token, but in a different format. Return true.
-    if (token.split('.').length !== 3) {
-      return true;
-    }
-
-    var base64Url = token.split('.')[1];
-    var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-    var exp = JSON.parse(window.atob(base64)).exp;
-
-    if (exp) {
-      return Math.round(new Date().getTime() / 1000) <= exp;
-    }
-
-    return true;
-  }
-
+   isAuthenticated() {
+     let token = this.storage.get(this.tokenName);
+ 
+     // There's no token, so user is not authenticated.
+     if (!token) {
+       return false;
+     }
+ 
+     // There is a token, but in a different format. Return true.
+     if (token.split('.').length !== 3) {
+        return true;
+      }
+  
+ -    let base64Url = token.split('.')[1];
+ -    let base64    = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+ -    let exp       = JSON.parse(window.atob(base64)).exp;
+ +    try {
+ +      let base64Url = token.split('.')[1];
+ +      let base64    = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+ +      let exp       = JSON.parse(window.atob(base64)).exp;
+ +    } catch (error) {
+ +      return false;
+ +    }
+  
+      if (exp) {
+        return Math.round(new Date().getTime() / 1000) <= exp;
+     }
+ 
+     return true;
+   }
   logout(redirect) {
     return new Promise(resolve => {
       this.storage.remove(this.tokenName);
