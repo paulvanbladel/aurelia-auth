@@ -67,7 +67,12 @@ var Authentication = (function () {
       if (token && token.split('.').length === 3) {
         var base64Url = token.split('.')[1];
         var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-        return JSON.parse(decodeURIComponent(escape(window.atob(base64))));
+
+        try {
+          return JSON.parse(decodeURIComponent(escape(window.atob(base64))));
+        } catch (error) {
+          return null;
+        }
       }
     }
   }, {
@@ -124,7 +129,13 @@ var Authentication = (function () {
 
       var base64Url = token.split('.')[1];
       var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-      var exp = JSON.parse(window.atob(base64)).exp;
+      var exp = undefined;
+
+      try {
+        exp = JSON.parse(window.atob(base64)).exp;
+      } catch (error) {
+        return false;
+      }
 
       if (exp) {
         return Math.round(new Date().getTime() / 1000) <= exp;
