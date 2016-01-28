@@ -112,7 +112,8 @@ System.register(['aurelia-framework', 'aurelia-fetch-client', './authentication'
 
             return this.http.fetch(loginUrl, {
               method: 'post',
-              body: json(content)
+              headers: typeof content === 'string' ? { 'Content-Type': 'application/x-www-form-urlencoded' } : {},
+              body: typeof content === 'string' ? content : json(content)
             }).then(status).then(toJson).then(function (response) {
               _this2.auth.setToken(response);
               return response;
