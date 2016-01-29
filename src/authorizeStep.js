@@ -13,7 +13,6 @@ export class AuthorizeStep {
 
     if (routingContext.getAllInstructions().some(i => i.config.auth)) {
       if (!isLoggedIn) {
-        console.log("login route : " + loginRoute);
         this.auth.setInitialUrl(window.location.href);
         return next.cancel(new Redirect(loginRoute));
       }
