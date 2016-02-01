@@ -34,7 +34,7 @@ System.register(['aurelia-framework', './authentication', 'aurelia-router'], fun
               return i.config.auth;
             })) {
               if (!isLoggedIn) {
-                console.log("login route : " + loginRoute);
+                this.auth.setInitialUrl(window.location.href);
                 return next.cancel(new Redirect(loginRoute));
               }
             } else if (isLoggedIn && routingContext.getAllInstructions().some(function (i) {
