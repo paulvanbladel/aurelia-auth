@@ -129,10 +129,11 @@ define(['exports', 'aurelia-framework', './baseConfig', './storage', './authUtil
                     return true;
                 }
 
+                var exp = undefined;
                 try {
                     var base64Url = token.split('.')[1];
                     var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-                    var _exp = JSON.parse(window.atob(base64)).exp;
+                    exp = JSON.parse(window.atob(base64)).exp;
                 } catch (error) {
                     return false;
                 }

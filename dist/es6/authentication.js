@@ -110,11 +110,11 @@ export class Authentication {
             return true;
         }
 
-
+        let exp;
         try {
             let base64Url = token.split('.')[1];
             let base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-            let exp = JSON.parse(window.atob(base64)).exp;
+            exp = JSON.parse(window.atob(base64)).exp;
         } catch (error) {
             return false;
         }
