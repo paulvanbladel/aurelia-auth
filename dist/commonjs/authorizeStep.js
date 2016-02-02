@@ -10,7 +10,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'd
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
-var _aureliaFramework = require('aurelia-framework');
+var _aureliaDependencyInjection = require('aurelia-dependency-injection');
 
 var _aureliaRouter = require('aurelia-router');
 
@@ -102,7 +102,7 @@ var AuthorizeStep = (function () {
   }]);
 
   var _AuthorizeStep = AuthorizeStep;
-  AuthorizeStep = (0, _aureliaFramework.inject)(_authentication.Authentication)(AuthorizeStep) || AuthorizeStep;
+  AuthorizeStep = (0, _aureliaDependencyInjection.inject)(_authentication.Authentication)(AuthorizeStep) || AuthorizeStep;
   return AuthorizeStep;
 })();
 

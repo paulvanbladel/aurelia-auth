@@ -1,7 +1,7 @@
 import {HttpClient} from 'aurelia-fetch-client';
 import {Authentication} from './authentication';
 import {BaseConfig} from './baseConfig';
-import {inject} from 'aurelia-framework';
+import {inject} from 'aurelia-dependency-injection';
 import {Storage} from './storage';
 
 @inject(HttpClient, Authentication, Storage, BaseConfig)

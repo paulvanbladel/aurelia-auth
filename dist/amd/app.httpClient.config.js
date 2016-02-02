@@ -1,4 +1,4 @@
-define(['exports', 'module', 'aurelia-http-client', './baseConfig', './authentication', './storage', 'aurelia-framework'], function (exports, module, _aureliaHttpClient, _baseConfig, _authentication, _storage, _aureliaFramework) {
+define(['exports', 'module', 'aurelia-http-client', './baseConfig', './authentication', './storage', 'aurelia-dependency-injection'], function (exports, module, _aureliaHttpClient, _baseConfig, _authentication, _storage, _aureliaDependencyInjection) {
   'use strict';
 
   var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -40,7 +40,7 @@ define(['exports', 'module', 'aurelia-http-client', './baseConfig', './authentic
     }]);
 
     var _default2 = _default;
-    _default = (0, _aureliaFramework.inject)(_aureliaHttpClient.HttpClient, _authentication.Authentication, _storage.Storage, _baseConfig.BaseConfig)(_default) || _default;
+    _default = (0, _aureliaDependencyInjection.inject)(_aureliaHttpClient.HttpClient, _authentication.Authentication, _storage.Storage, _baseConfig.BaseConfig)(_default) || _default;
     return _default;
   })();
 

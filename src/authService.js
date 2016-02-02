@@ -1,4 +1,4 @@
-import {inject, computedFrom, ObserverLocator} from 'aurelia-framework';
+import {inject} from 'aurelia-dependency-injection';
 import {HttpClient, json} from 'aurelia-fetch-client';
 import {Authentication} from './authentication';
 import {BaseConfig} from './baseConfig';
@@ -117,8 +117,7 @@ export class AuthService {
     var provider = this.oAuth2;
     if (this.config.providers[name].type === '1.0') {
       provider = this.oAuth1;
-    }
-    ;
+    };
 
     return provider.open(this.config.providers[name], userData || {})
                    .then((response) => {

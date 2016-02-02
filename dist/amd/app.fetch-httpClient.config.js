@@ -1,4 +1,4 @@
-define(['exports', 'aurelia-fetch-client', './authentication', './baseConfig', 'aurelia-framework', './storage'], function (exports, _aureliaFetchClient, _authentication, _baseConfig, _aureliaFramework, _storage) {
+define(['exports', 'aurelia-fetch-client', './authentication', './baseConfig', 'aurelia-dependency-injection', './storage'], function (exports, _aureliaFetchClient, _authentication, _baseConfig, _aureliaDependencyInjection, _storage) {
   'use strict';
 
   Object.defineProperty(exports, '__esModule', {
@@ -46,7 +46,7 @@ define(['exports', 'aurelia-fetch-client', './authentication', './baseConfig', '
     }]);
 
     var _FetchConfig = FetchConfig;
-    FetchConfig = (0, _aureliaFramework.inject)(_aureliaFetchClient.HttpClient, _authentication.Authentication, _storage.Storage, _baseConfig.BaseConfig)(FetchConfig) || FetchConfig;
+    FetchConfig = (0, _aureliaDependencyInjection.inject)(_aureliaFetchClient.HttpClient, _authentication.Authentication, _storage.Storage, _baseConfig.BaseConfig)(FetchConfig) || FetchConfig;
     return FetchConfig;
   })();
 

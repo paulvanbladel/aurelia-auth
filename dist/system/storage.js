@@ -1,4 +1,4 @@
-System.register(['aurelia-framework', './baseConfig'], function (_export) {
+System.register(['aurelia-dependency-injection', './baseConfig'], function (_export) {
   'use strict';
 
   var inject, BaseConfig, Storage;
@@ -8,8 +8,8 @@ System.register(['aurelia-framework', './baseConfig'], function (_export) {
   function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
   return {
-    setters: [function (_aureliaFramework) {
-      inject = _aureliaFramework.inject;
+    setters: [function (_aureliaDependencyInjection) {
+      inject = _aureliaDependencyInjection.inject;
     }, function (_baseConfig) {
       BaseConfig = _baseConfig.BaseConfig;
     }],
