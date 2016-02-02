@@ -22,21 +22,16 @@ var _popup = require('./popup');
 
 var _baseConfig = require('./baseConfig');
 
-var _authentication = require('./authentication');
-
 var _aureliaFetchClient = require('aurelia-fetch-client');
 
-require('fetch');
-
 var OAuth2 = (function () {
-  function OAuth2(storage, popup, http, config, auth) {
+  function OAuth2(storage, popup, http, config) {
     _classCallCheck(this, _OAuth2);
 
     this.storage = storage;
     this.config = config.current;
     this.popup = popup;
     this.http = http;
-    this.auth = auth;
     this.defaults = {
       url: null,
       name: null,
@@ -57,122 +52,85 @@ var OAuth2 = (function () {
   _createClass(OAuth2, [{
     key: 'open',
     value: function open(options, userData) {
-      var _this = this;
+      _authUtils2['default'].extend(this.defaults, options);
+      var stateName = this.defaults.name + '_state';
 
-      var current = _authUtils2['default'].extend({}, this.defaults, options);
-
-      var stateName = current.name + '_state';
-
-      if (_authUtils2['default'].isFunction(current.state)) {
-        this.storage.set(stateName, current.state());
-      } else if (_authUtils2['default'].isString(current.state)) {
-        this.storage.set(stateName, current.state);
+      if (_authUtils2['default'].isFunction(this.defaults.state)) {
+        this.storage.set(stateName, this.defaults.state());
+      } else if (_authUtils2['default'].isString(this.defaults.state)) {
+        this.storage.set(stateName, this.defaults.state);
       }
 
-      var nonceName = current.name + '_nonce';
+      var url = this.defaults.authorizationEndpoint + '?' + this.buildQueryString();
 
-      if (_authUtils2['default'].isFunction(current.nonce)) {
-        this.storage.set(nonceName, current.nonce());
-      } else if (_authUtils2['default'].isString(current.nonce)) {
-        this.storage.set(nonceName, current.nonce);
-      }
-
-      var url = current.authorizationEndpoint + '?' + this.buildQueryString(current);
-
-      var openPopup = undefined;
+      var openPopup;
       if (this.config.platform === 'mobile') {
-        openPopup = this.popup.open(url, current.name, current.popupOptions, current.redirectUri).eventListener(current.redirectUri);
+        openPopup = this.popup.open(url, this.defaults.name, this.defaults.popupOptions, this.defaults.redirectUri).eventListener(this.defaults.redirectUri);
       } else {
-        openPopup = this.popup.open(url, current.name, current.popupOptions, current.redirectUri).pollPopup();
+        openPopup = this.popup.open(url, this.defaults.name, this.defaults.popupOptions, this.defaults.redirectUri).pollPopup();
       }
 
+      var self = this;
       return openPopup.then(function (oauthData) {
-        if (oauthData.state && oauthData.state !== _this.storage.get(stateName)) {
-          return Promise.reject('OAuth 2.0 state parameter mismatch.');
-        }
-
-        if (current.responseType.toUpperCase().includes('TOKEN')) {
-          if (!_this.verifyIdToken(oauthData, current.name)) {
-            return Promise.reject('OAuth 2.0 Nonce parameter mismatch.');
-          };
+        if (self.defaults.responseType === 'token' || self.defaults.responseType === 'id_token%20token' || self.defaults.responseType === 'token%20id_token') {
           return oauthData;
         }
-
-        return _this.exchangeForToken(oauthData, userData, current);
+        if (oauthData.state && oauthData.state !== self.storage.get(stateName)) {
+          return Promise.reject('OAuth 2.0 state parameter mismatch.');
+        }
+        return self.exchangeForToken(oauthData, userData);
       });
     }
   }, {
-    key: 'verifyIdToken',
-    value: function verifyIdToken(oauthData, providerName) {
-
-      var idToken = oauthData && oauthData[this.config.responseIdTokenProp];
-      if (!idToken) return true;
-      var idTokenObject = this.auth.decomposeToken(idToken);
-      if (!idTokenObject) return true;
-      var nonceFromToken = idTokenObject.nonce;
-      if (!nonceFromToken) return true;
-      var nonceInStorage = this.storage.get(providerName + '_nonce');
-      if (nonceFromToken !== nonceInStorage) {
-        return false;
-      }
-      return true;
-    }
-  }, {
     key: 'exchangeForToken',
-    value: function exchangeForToken(oauthData, userData, current) {
+    value: function exchangeForToken(oauthData, userData) {
       var data = _authUtils2['default'].extend({}, userData, {
         code: oauthData.code,
-        clientId: current.clientId,
-        redirectUri: current.redirectUri
+        clientId: this.defaults.clientId,
+        redirectUri: this.defaults.redirectUri
       });
 
       if (oauthData.state) {
         data.state = oauthData.state;
       }
 
-      _authUtils2['default'].forEach(current.responseParams, function (param) {
-        return data[param] = oauthData[param];
+      _authUtils2['default'].forEach(this.defaults.responseParams, function (param) {
+        data[param] = oauthData[param];
       });
 
-      var exchangeForTokenUrl = this.config.baseUrl ? _authUtils2['default'].joinUrl(this.config.baseUrl, current.url) : current.url;
-      var credentials = this.config.withCredentials ? 'include' : 'same-origin';
+      var exchangeForTokenUrl = this.config.baseUrl ? _authUtils2['default'].joinUrl(this.config.baseUrl, this.defaults.url) : this.defaults.url;
 
       return this.http.fetch(exchangeForTokenUrl, {
         method: 'post',
         body: (0, _aureliaFetchClient.json)(data),
-        credentials: credentials
-      }).then(_authUtils2['default'].status).then(function (response) {
+        credentials: this.config.withCredentials
+      }).then(status).then(toJson).then(function (response) {
         return response;
       });
     }
   }, {
     key: 'buildQueryString',
-    value: function buildQueryString(current) {
-      var _this2 = this;
+    value: function buildQueryString() {
+      var _this = this;
 
       var keyValuePairs = [];
       var urlParams = ['defaultUrlParams', 'requiredUrlParams', 'optionalUrlParams'];
-
       _authUtils2['default'].forEach(urlParams, function (params) {
-        _authUtils2['default'].forEach(current[params], function (paramName) {
+
+        _authUtils2['default'].forEach(_this.defaults[params], function (paramName) {
           var camelizedName = _authUtils2['default'].camelCase(paramName);
-          var paramValue = _authUtils2['default'].isFunction(current[paramName]) ? current[paramName]() : current[camelizedName];
+          var paramValue = _authUtils2['default'].isFunction(_this.defaults[paramName]) ? _this.defaults[paramName]() : _this.defaults[camelizedName];
 
           if (paramName === 'state') {
-            var stateName = current.name + '_state';
-            paramValue = encodeURIComponent(_this2.storage.get(stateName));
-          }
-
-          if (paramName === 'nonce') {
-            var nonceName = current.name + '_nonce';
-            paramValue = encodeURIComponent(_this2.storage.get(nonceName));
+            var stateName = _this.defaults.name + '_state';
+            paramValue = encodeURIComponent(_this.storage.get(stateName));
           }
 
           if (paramName === 'scope' && Array.isArray(paramValue)) {
-            paramValue = paramValue.join(current.scopeDelimiter);
+            paramValue = paramValue.join(_this.defaults.scopeDelimiter);
 
-            if (current.scopePrefix) {
-              paramValue = [current.scopePrefix, paramValue].join(current.scopeDelimiter);
+            if (_this.defaults.scopePrefix) {
+              paramValue = [_this.defaults.scopePrefix, paramValue].join(_this.defaults.scopeDelimiter);
             }
           }
 
@@ -187,8 +145,20 @@ var OAuth2 = (function () {
   }]);
 
   var _OAuth2 = OAuth2;
-  OAuth2 = (0, _aureliaDependencyInjection.inject)(_storage.Storage, _popup.Popup, _aureliaFetchClient.HttpClient, _baseConfig.BaseConfig, _authentication.Authentication)(OAuth2) || OAuth2;
+  OAuth2 = (0, _aureliaDependencyInjection.inject)(_storage.Storage, _popup.Popup, _aureliaFetchClient.HttpClient, _baseConfig.BaseConfig)(OAuth2) || OAuth2;
   return OAuth2;
 })();
 
 exports.OAuth2 = OAuth2;
+
+function status(response) {
+  if (response.status >= 200 && response.status < 300) {
+    return Promise.resolve(response);
+  } else {
+    return Promise.reject(new Error(response.statusText));
+  }
+}
+
+function toJson(response) {
+  return response.json();
+}
