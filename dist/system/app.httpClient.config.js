@@ -1,4 +1,4 @@
-System.register(['aurelia-http-client', './baseConfig', './authentication', './storage', 'aurelia-framework'], function (_export) {
+System.register(['aurelia-http-client', './baseConfig', './authentication', './storage', 'aurelia-dependency-injection'], function (_export) {
   'use strict';
 
   var HttpClient, RequestBuilder, BaseConfig, Authentication, Storage, inject, _default;
@@ -17,8 +17,8 @@ System.register(['aurelia-http-client', './baseConfig', './authentication', './s
       Authentication = _authentication.Authentication;
     }, function (_storage) {
       Storage = _storage.Storage;
-    }, function (_aureliaFramework) {
-      inject = _aureliaFramework.inject;
+    }, function (_aureliaDependencyInjection) {
+      inject = _aureliaDependencyInjection.inject;
     }],
     execute: function () {
       _default = (function () {

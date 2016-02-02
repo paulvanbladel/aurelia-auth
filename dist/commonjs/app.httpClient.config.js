@@ -16,7 +16,7 @@ var _authentication = require('./authentication');
 
 var _storage = require('./storage');
 
-var _aureliaFramework = require('aurelia-framework');
+var _aureliaDependencyInjection = require('aurelia-dependency-injection');
 
 var _default = (function () {
   function _default(http, auth, storage, config) {
@@ -56,7 +56,7 @@ var _default = (function () {
   }]);
 
   var _default2 = _default;
-  _default = (0, _aureliaFramework.inject)(_aureliaHttpClient.HttpClient, _authentication.Authentication, _storage.Storage, _baseConfig.BaseConfig)(_default) || _default;
+  _default = (0, _aureliaDependencyInjection.inject)(_aureliaHttpClient.HttpClient, _authentication.Authentication, _storage.Storage, _baseConfig.BaseConfig)(_default) || _default;
   return _default;
 })();
 

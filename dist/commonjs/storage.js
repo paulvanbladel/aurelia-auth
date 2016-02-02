@@ -8,7 +8,7 @@ var _createClass = (function () { function defineProperties(target, props) { for
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
-var _aureliaFramework = require('aurelia-framework');
+var _aureliaDependencyInjection = require('aurelia-dependency-injection');
 
 var _baseConfig = require('./baseConfig');
 
@@ -91,7 +91,7 @@ var Storage = (function () {
   }]);
 
   var _Storage = Storage;
-  Storage = (0, _aureliaFramework.inject)(_baseConfig.BaseConfig)(Storage) || Storage;
+  Storage = (0, _aureliaDependencyInjection.inject)(_baseConfig.BaseConfig)(Storage) || Storage;
   return Storage;
 })();
 

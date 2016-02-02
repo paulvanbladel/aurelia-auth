@@ -1,4 +1,4 @@
-define(['exports', 'aurelia-framework', './baseConfig', './storage', './authUtils'], function (exports, _aureliaFramework, _baseConfig, _storage, _authUtils) {
+define(['exports', 'aurelia-dependency-injection', './baseConfig', './storage', './authUtils'], function (exports, _aureliaDependencyInjection, _baseConfig, _storage, _authUtils) {
     'use strict';
 
     Object.defineProperty(exports, '__esModule', {
@@ -164,7 +164,7 @@ define(['exports', 'aurelia-framework', './baseConfig', './storage', './authUtil
         }]);
 
         var _Authentication = Authentication;
-        Authentication = (0, _aureliaFramework.inject)(_storage.Storage, _baseConfig.BaseConfig)(Authentication) || Authentication;
+        Authentication = (0, _aureliaDependencyInjection.inject)(_storage.Storage, _baseConfig.BaseConfig)(Authentication) || Authentication;
         return Authentication;
     })();
 

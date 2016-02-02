@@ -1,4 +1,4 @@
-define(['exports', 'aurelia-framework', './baseConfig'], function (exports, _aureliaFramework, _baseConfig) {
+define(['exports', 'aurelia-dependency-injection', './baseConfig'], function (exports, _aureliaDependencyInjection, _baseConfig) {
   'use strict';
 
   Object.defineProperty(exports, '__esModule', {
@@ -88,7 +88,7 @@ define(['exports', 'aurelia-framework', './baseConfig'], function (exports, _aur
     }]);
 
     var _Storage = Storage;
-    Storage = (0, _aureliaFramework.inject)(_baseConfig.BaseConfig)(Storage) || Storage;
+    Storage = (0, _aureliaDependencyInjection.inject)(_baseConfig.BaseConfig)(Storage) || Storage;
     return Storage;
   })();
 

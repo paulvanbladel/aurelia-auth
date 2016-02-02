@@ -1,4 +1,4 @@
-import {inject} from 'aurelia-framework';
+import {inject} from 'aurelia-dependency-injection';
 import {HttpClient, json} from 'aurelia-fetch-client';
 import {Authentication} from './authentication';
 import {BaseConfig} from './baseConfig';

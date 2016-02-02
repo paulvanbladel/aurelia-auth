@@ -14,7 +14,7 @@ var _authentication = require('./authentication');
 
 var _baseConfig = require('./baseConfig');
 
-var _aureliaFramework = require('aurelia-framework');
+var _aureliaDependencyInjection = require('aurelia-dependency-injection');
 
 var _storage = require('./storage');
 
@@ -61,7 +61,7 @@ var FetchConfig = (function () {
   }]);
 
   var _FetchConfig = FetchConfig;
-  FetchConfig = (0, _aureliaFramework.inject)(_aureliaFetchClient.HttpClient, _authentication.Authentication, _storage.Storage, _baseConfig.BaseConfig)(FetchConfig) || FetchConfig;
+  FetchConfig = (0, _aureliaDependencyInjection.inject)(_aureliaFetchClient.HttpClient, _authentication.Authentication, _storage.Storage, _baseConfig.BaseConfig)(FetchConfig) || FetchConfig;
   return FetchConfig;
 })();
 

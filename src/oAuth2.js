@@ -1,4 +1,4 @@
-import {inject} from 'aurelia-framework';
+import {inject} from 'aurelia-dependency-injection';
 import authUtils from './authUtils';
 import {Storage} from './storage';
 import {Popup} from './popup';
