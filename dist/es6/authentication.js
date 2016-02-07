@@ -44,13 +44,10 @@ export class Authentication {
             let base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
 
             try {
-                let parsed = JSON.parse(decodeURIComponent(escape(window.atob(base64))));
+                return JSON.parse(decodeURIComponent(escape(window.atob(base64))));
             } catch (error) {
-                return;
+                return null;
             }
-
-            return parsed;
-
         }
     }
 

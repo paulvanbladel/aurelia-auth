@@ -63,12 +63,10 @@ define(['exports', 'aurelia-dependency-injection', './baseConfig', './storage', 
                     var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
 
                     try {
-                        var _parsed = JSON.parse(decodeURIComponent(escape(window.atob(base64))));
+                        return JSON.parse(decodeURIComponent(escape(window.atob(base64))));
                     } catch (error) {
-                        return;
+                        return null;
                     }
-
-                    return parsed;
                 }
             }
         }, {
