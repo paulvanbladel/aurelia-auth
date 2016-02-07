@@ -63,7 +63,7 @@ define(['exports', 'aurelia-dependency-injection', './baseConfig', './storage', 
                     try {
                         return JSON.parse(decodeURIComponent(escape(window.atob(base64))));
                     } catch (error) {
-                        return;
+                        return null;
                     }
                 }
             }
