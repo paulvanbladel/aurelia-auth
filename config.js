@@ -17,6 +17,7 @@ System.config({
   map: {
     "aurelia-dependency-injection": "npm:aurelia-dependency-injection@1.0.0-beta.1.1.2",
     "aurelia-fetch-client": "npm:aurelia-fetch-client@1.0.0-beta.1.1.0",
+    "aurelia-pal-browser": "npm:aurelia-pal-browser@1.0.0-beta.1.1.3",
     "aurelia-router": "npm:aurelia-router@1.0.0-beta.1.1.0",
     "babel": "npm:babel-core@5.8.35",
     "babel-runtime": "npm:babel-runtime@5.8.35",
@@ -50,6 +51,10 @@ System.config({
       "core-js": "npm:core-js@2.0.3"
     },
     "npm:aurelia-metadata@1.0.0-beta.1.1.3": {
+      "aurelia-pal": "npm:aurelia-pal@1.0.0-beta.1.1.1",
+      "core-js": "npm:core-js@2.0.3"
+    },
+    "npm:aurelia-pal-browser@1.0.0-beta.1.1.3": {
       "aurelia-pal": "npm:aurelia-pal@1.0.0-beta.1.1.1",
       "core-js": "npm:core-js@2.0.3"
     },
