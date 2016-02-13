@@ -168,14 +168,14 @@ var AuthService = (function () {
       var unlinkUrl = this.config.baseUrl ? _authUtils2['default'].joinUrl(this.config.baseUrl, this.config.unlinkUrl) : this.config.unlinkUrl;
 
       if (this.config.unlinkMethod === 'get') {
-        return this.http.fetch(unlinkUrl + provider).then(status).then(toJson).then(function (response) {
+        return this.http.fetch(unlinkUrl + provider).then(toJson).then(function (response) {
           return response;
         });
       } else if (this.config.unlinkMethod === 'post') {
         return this.http.fetch(unlinkUrl, {
           method: 'post',
           body: (0, _aureliaFetchClient.json)(provider)
-        }).then(status).then(toJson).then(function (response) {
+        }).then(toJson).then(function (response) {
           return response;
         });
       }
