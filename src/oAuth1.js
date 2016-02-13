@@ -22,67 +22,59 @@ export class OAuth1 {
   }
 
   open(options, userData) {
-    authUtils.extend(this.defaults, options);
+    let current = authUtils.extend({}, this.defaults, options);
 
-    var serverUrl = this.config.baseUrl ? authUtils.joinUrl(this.config.baseUrl, this.defaults.url) : this.defaults.url;
+    let serverUrl = this.config.baseUrl ? authUtils.joinUrl(this.config.baseUrl, current.url) : current.url;
 
     if (this.config.platform !== 'mobile') {
-      this.popup = this.popup.open('', this.defaults.name, this.defaults.popupOptions, this.defaults.redirectUri);
+      this.popup = this.popup.open('', current.name, current.popupOptions, current.redirectUri);
     }
-    var self = this;
     return this.http.fetch(serverUrl, {
       method: 'post'
     })
       .then(status)
       .then(toJson)
       .then(response => {
-        if (self.config.platform === 'mobile') {
-          self.popup = self.popup.open(
+        if (this.config.platform === 'mobile') {
+          this.popup = this.popup.open(
             [
-              self.defaults.authorizationEndpoint,
-              self.buildQueryString(response.content)
+              current.authorizationEndpoint,
+              this.buildQueryString(response.content)
             ].join('?'),
-            self.defaults.name,
-            self.defaults.popupOptions,
-            self.defaults.redirectUri);
+            current.name,
+            current.popupOptions,
+            current.redirectUri);
         } else {
-          self.popup.popupWindow.location = [
-            self.defaults.authorizationEndpoint,
-            self.buildQueryString(response.content)
+          this.popup.popupWindow.location = [
+            current.authorizationEndpoint,
+            this.buildQueryString(response.content)
           ].join('?');
         }
 
-        var popupListener = self.config.platform === 'mobile' ? self.popup.eventListener(self.defaults.redirectUri) : self.popup.pollPopup();
+        let popupListener = this.config.platform === 'mobile' ? this.popup.eventListener(current.redirectUri) : this.popup.pollPopup();
 
-
-        return popupListener.then((response) => {
-          return self.exchangeForToken(response, userData);
-        });
+        return popupListener.then(result => this.exchangeForToken(result, userData, current));
       });
   }
 
-  exchangeForToken(oauthData, userData) {
-    var data = authUtils.extend({}, userData, oauthData);
-    var exchangeForTokenUrl = this.config.baseUrl ? authUtils.joinUrl(this.config.baseUrl, this.defaults.url) : this.defaults.url;
-    return this.http.fetch(exchangeForTokenUrl, {
+  exchangeForToken(oauthData, userData, current) {
+    let data                = authUtils.extend({}, userData, oauthData);
+    let exchangeForTokenUrl = this.config.baseUrl ? authUtils.joinUrl(this.config.baseUrl, current.url) : current.url;
+    let credentials         = this.config.withCredentials ? 'include' : 'same-origin';
+
+  return this.http.fetch(exchangeForTokenUrl, {
       method: 'post',
       body: json(data),
-      credentials: this.config.withCredentials
+      credentials: credentials
     })
       .then(status)
-      .then(toJson)
-      .then(response => {
-        return response;
-      });
-
+      .then(toJson);
   }
 
   buildQueryString(obj) {
-    var str = [];
+    let str = [];
 
-    authUtils.forEach(obj, function(value, key) {
-      str.push(encodeURIComponent(key) + '=' + encodeURIComponent(value));
-    });
+    authUtils.forEach(obj, (value, key) => str.push(encodeURIComponent(key) + '=' + encodeURIComponent(value)));
 
     return str.join('&');
   }
