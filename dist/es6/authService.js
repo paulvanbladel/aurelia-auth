@@ -110,7 +110,7 @@ export class AuthService {
 
     if (this.config.unlinkMethod === 'get') {
       return this.http.fetch(unlinkUrl + provider)
-        .then(status)
+        //.then(status)
         .then(toJson)
         .then((response) => {
           return response;
@@ -120,7 +120,7 @@ export class AuthService {
         method: 'post',
         body: json(provider)
       })
-        .then(status)
+        //.then(status)
         .then(toJson)
         .then((response) => {
           return response;

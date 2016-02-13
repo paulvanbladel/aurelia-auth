@@ -88,7 +88,7 @@ declare module 'aurelia-auth/oAuth1' {
 	export class OAuth1 {
 	    constructor(storage: any, popup: any, http: any, config: any);
 	    open(options: any, userData: any): any;
-	    exchangeForToken(oauthData: any, userData: any): any;
+	    exchangeForToken(oauthData: any, userData: any, current: any): any;
 	    buildQueryString(obj: any): string;
 	}
 
@@ -97,8 +97,8 @@ declare module 'aurelia-auth/oAuth2' {
 	export class OAuth2 {
 	    constructor(storage: any, popup: any, http: any, config: any);
 	    open(options: any, userData: any): any;
-	    exchangeForToken(oauthData: any, userData: any): any;
-	    buildQueryString(): string;
+	    exchangeForToken(oauthData: any, userData: any, current: any): any;
+	    buildQueryString(current: any): string;
 	}
 
 }

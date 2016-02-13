@@ -33,42 +33,43 @@ define(['exports', 'aurelia-dependency-injection', './authUtils', './storage', '
     _createClass(OAuth1, [{
       key: 'open',
       value: function open(options, userData) {
-        _authUtils2['default'].extend(this.defaults, options);
+        var _this = this;
 
-        var serverUrl = this.config.baseUrl ? _authUtils2['default'].joinUrl(this.config.baseUrl, this.defaults.url) : this.defaults.url;
+        var current = _authUtils2['default'].extend({}, this.defaults, options);
+
+        var serverUrl = this.config.baseUrl ? _authUtils2['default'].joinUrl(this.config.baseUrl, current.url) : current.url;
 
         if (this.config.platform !== 'mobile') {
-          this.popup = this.popup.open('', this.defaults.name, this.defaults.popupOptions, this.defaults.redirectUri);
+          this.popup = this.popup.open('', current.name, current.popupOptions, current.redirectUri);
         }
-        var self = this;
         return this.http.fetch(serverUrl, {
           method: 'post'
         }).then(status).then(toJson).then(function (response) {
-          if (self.config.platform === 'mobile') {
-            self.popup = self.popup.open([self.defaults.authorizationEndpoint, self.buildQueryString(response.content)].join('?'), self.defaults.name, self.defaults.popupOptions, self.defaults.redirectUri);
+          if (_this.config.platform === 'mobile') {
+            _this.popup = _this.popup.open([current.authorizationEndpoint, _this.buildQueryString(response.content)].join('?'), current.name, current.popupOptions, current.redirectUri);
           } else {
-            self.popup.popupWindow.location = [self.defaults.authorizationEndpoint, self.buildQueryString(response.content)].join('?');
+            _this.popup.popupWindow.location = [current.authorizationEndpoint, _this.buildQueryString(response.content)].join('?');
           }
 
-          var popupListener = self.config.platform === 'mobile' ? self.popup.eventListener(self.defaults.redirectUri) : self.popup.pollPopup();
+          var popupListener = _this.config.platform === 'mobile' ? _this.popup.eventListener(current.redirectUri) : _this.popup.pollPopup();
 
-          return popupListener.then(function (response) {
-            return self.exchangeForToken(response, userData);
+          return popupListener.then(function (result) {
+            return _this.exchangeForToken(result, userData, current);
           });
         });
       }
     }, {
       key: 'exchangeForToken',
-      value: function exchangeForToken(oauthData, userData) {
+      value: function exchangeForToken(oauthData, userData, current) {
         var data = _authUtils2['default'].extend({}, userData, oauthData);
-        var exchangeForTokenUrl = this.config.baseUrl ? _authUtils2['default'].joinUrl(this.config.baseUrl, this.defaults.url) : this.defaults.url;
+        var exchangeForTokenUrl = this.config.baseUrl ? _authUtils2['default'].joinUrl(this.config.baseUrl, current.url) : current.url;
+        var credentials = this.config.withCredentials ? 'include' : 'same-origin';
+
         return this.http.fetch(exchangeForTokenUrl, {
           method: 'post',
           body: (0, _aureliaFetchClient.json)(data),
-          credentials: this.config.withCredentials
-        }).then(status).then(toJson).then(function (response) {
-          return response;
-        });
+          credentials: credentials
+        }).then(status).then(toJson);
       }
     }, {
       key: 'buildQueryString',
@@ -76,7 +77,7 @@ define(['exports', 'aurelia-dependency-injection', './authUtils', './storage', '
         var str = [];
 
         _authUtils2['default'].forEach(obj, function (value, key) {
-          str.push(encodeURIComponent(key) + '=' + encodeURIComponent(value));
+          return str.push(encodeURIComponent(key) + '=' + encodeURIComponent(value));
         });
 
         return str.join('&');
