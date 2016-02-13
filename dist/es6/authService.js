@@ -132,21 +132,21 @@ export class AuthService {
 
     if (this.config.unlinkMethod === 'get') {
       return this.http.fetch(unlinkUrl + provider)
-                 .then(status)
-                 .then(toJson)
-                 .then((response) => {
-                   return response;
-                 });
+        //.then(status)
+        //.then(toJson)
+        .then((response) => {
+          return response;
+        });
     } else if (this.config.unlinkMethod === 'post') {
       return this.http.fetch(unlinkUrl, {
-                   method: 'post',
-                   body: json(provider)
-                 })
-                 .then(status)
-                 .then(toJson)
-                 .then((response) => {
-                   return response;
-                 });
+        method: 'post',
+        body: json(provider)
+      })
+        //.then(status)
+        //.then(toJson)
+        .then((response) => {
+          return response;
+        });
     }
   }
 }
