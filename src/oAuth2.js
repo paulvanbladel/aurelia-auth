@@ -50,16 +50,13 @@ export class OAuth2 {
 
     return openPopup
       .then(oauthData => {
-        if (current.responseType === 'token' ||
-          current.responseType === 'id_token%20token' ||
-          current.responseType === 'token%20id_token'
-        ) {
+        if (current.responseType.toUpperCase().includes('TOKEN')) { //meaning implicit flow or hybrid flow
           return oauthData;
         }
         if (oauthData.state && oauthData.state !== this.storage.get(stateName)) {
           return Promise.reject('OAuth 2.0 state parameter mismatch.');
         }
-        return this.exchangeForToken(oauthData, userData, current);
+        return this.exchangeForToken(oauthData, userData, current); //responseType is authorization code only (no token nor id_token)
       });
   }
 
