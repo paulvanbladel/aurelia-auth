@@ -83,7 +83,7 @@ System.register(['aurelia-dependency-injection', './authUtils', './storage', './
             }
 
             return openPopup.then(function (oauthData) {
-              if (current.responseType === 'token' || current.responseType === 'id_token%20token' || current.responseType === 'token%20id_token') {
+              if (current.responseType.toUpperCase().includes('TOKEN')) {
                 return oauthData;
               }
               if (oauthData.state && oauthData.state !== _this.storage.get(stateName)) {
