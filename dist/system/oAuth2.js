@@ -62,85 +62,87 @@ System.register(['aurelia-dependency-injection', './authUtils', './storage', './
         _createClass(OAuth2, [{
           key: 'open',
           value: function open(options, userData) {
-            authUtils.extend(this.defaults, options);
-            var stateName = this.defaults.name + '_state';
+            var _this = this;
 
-            if (authUtils.isFunction(this.defaults.state)) {
-              this.storage.set(stateName, this.defaults.state());
-            } else if (authUtils.isString(this.defaults.state)) {
-              this.storage.set(stateName, this.defaults.state);
+            var current = authUtils.extend({}, this.defaults, options);
+            var stateName = current.name + '_state';
+
+            if (authUtils.isFunction(current.state)) {
+              this.storage.set(stateName, current.state());
+            } else if (authUtils.isString(current.state)) {
+              this.storage.set(stateName, current.state);
             }
 
-            var url = this.defaults.authorizationEndpoint + '?' + this.buildQueryString();
+            var url = current.authorizationEndpoint + '?' + this.buildQueryString(current);
 
-            var openPopup;
+            var openPopup = undefined;
             if (this.config.platform === 'mobile') {
-              openPopup = this.popup.open(url, this.defaults.name, this.defaults.popupOptions, this.defaults.redirectUri).eventListener(this.defaults.redirectUri);
+              openPopup = this.popup.open(url, current.name, current.popupOptions, current.redirectUri).eventListener(current.redirectUri);
             } else {
-              openPopup = this.popup.open(url, this.defaults.name, this.defaults.popupOptions, this.defaults.redirectUri).pollPopup();
+              openPopup = this.popup.open(url, current.name, current.popupOptions, current.redirectUri).pollPopup();
             }
 
-            var self = this;
             return openPopup.then(function (oauthData) {
-              if (self.defaults.responseType === 'token' || self.defaults.responseType === 'id_token%20token' || self.defaults.responseType === 'token%20id_token') {
+              if (current.responseType === 'token' || current.responseType === 'id_token%20token' || current.responseType === 'token%20id_token') {
                 return oauthData;
               }
-              if (oauthData.state && oauthData.state !== self.storage.get(stateName)) {
+              if (oauthData.state && oauthData.state !== _this.storage.get(stateName)) {
                 return Promise.reject('OAuth 2.0 state parameter mismatch.');
               }
-              return self.exchangeForToken(oauthData, userData);
+              return _this.exchangeForToken(oauthData, userData, current);
             });
           }
         }, {
           key: 'exchangeForToken',
-          value: function exchangeForToken(oauthData, userData) {
+          value: function exchangeForToken(oauthData, userData, current) {
             var data = authUtils.extend({}, userData, {
               code: oauthData.code,
-              clientId: this.defaults.clientId,
-              redirectUri: this.defaults.redirectUri
+              clientId: current.clientId,
+              redirectUri: current.redirectUri
             });
 
             if (oauthData.state) {
               data.state = oauthData.state;
             }
 
-            authUtils.forEach(this.defaults.responseParams, function (param) {
-              data[param] = oauthData[param];
+            authUtils.forEach(current.responseParams, function (param) {
+              return data[param] = oauthData[param];
             });
 
-            var exchangeForTokenUrl = this.config.baseUrl ? authUtils.joinUrl(this.config.baseUrl, this.defaults.url) : this.defaults.url;
+            var exchangeForTokenUrl = this.config.baseUrl ? authUtils.joinUrl(this.config.baseUrl, current.url) : current.url;
+            var credentials = this.config.withCredentials ? 'include' : 'same-origin';
 
             return this.http.fetch(exchangeForTokenUrl, {
               method: 'post',
               body: json(data),
-              credentials: this.config.withCredentials
+              credentials: credentials
             }).then(status).then(toJson).then(function (response) {
               return response;
             });
           }
         }, {
           key: 'buildQueryString',
-          value: function buildQueryString() {
-            var _this = this;
+          value: function buildQueryString(current) {
+            var _this2 = this;
 
             var keyValuePairs = [];
             var urlParams = ['defaultUrlParams', 'requiredUrlParams', 'optionalUrlParams'];
-            authUtils.forEach(urlParams, function (params) {
 
-              authUtils.forEach(_this.defaults[params], function (paramName) {
+            authUtils.forEach(urlParams, function (params) {
+              authUtils.forEach(current[params], function (paramName) {
                 var camelizedName = authUtils.camelCase(paramName);
-                var paramValue = authUtils.isFunction(_this.defaults[paramName]) ? _this.defaults[paramName]() : _this.defaults[camelizedName];
+                var paramValue = authUtils.isFunction(current[paramName]) ? current[paramName]() : current[camelizedName];
 
                 if (paramName === 'state') {
-                  var stateName = _this.defaults.name + '_state';
-                  paramValue = encodeURIComponent(_this.storage.get(stateName));
+                  var stateName = current.name + '_state';
+                  paramValue = encodeURIComponent(_this2.storage.get(stateName));
                 }
 
                 if (paramName === 'scope' && Array.isArray(paramValue)) {
-                  paramValue = paramValue.join(_this.defaults.scopeDelimiter);
+                  paramValue = paramValue.join(current.scopeDelimiter);
 
-                  if (_this.defaults.scopePrefix) {
-                    paramValue = [_this.defaults.scopePrefix, paramValue].join(_this.defaults.scopeDelimiter);
+                  if (current.scopePrefix) {
+                    paramValue = [current.scopePrefix, paramValue].join(current.scopeDelimiter);
                   }
                 }
 

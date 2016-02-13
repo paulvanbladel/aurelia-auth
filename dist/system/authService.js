@@ -180,14 +180,14 @@ System.register(['aurelia-framework', 'aurelia-fetch-client', './authentication'
             var unlinkUrl = this.config.baseUrl ? authUtils.joinUrl(this.config.baseUrl, this.config.unlinkUrl) : this.config.unlinkUrl;
 
             if (this.config.unlinkMethod === 'get') {
-              return this.http.fetch(unlinkUrl + provider).then(status).then(toJson).then(function (response) {
+              return this.http.fetch(unlinkUrl + provider).then(toJson).then(function (response) {
                 return response;
               });
             } else if (this.config.unlinkMethod === 'post') {
               return this.http.fetch(unlinkUrl, {
                 method: 'post',
                 body: json(provider)
-              }).then(status).then(toJson).then(function (response) {
+              }).then(toJson).then(function (response) {
                 return response;
               });
             }
