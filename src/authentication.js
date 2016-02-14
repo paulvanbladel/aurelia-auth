@@ -65,7 +65,6 @@ export class Authentication {
 
     setToken(response, redirect) {
 
-
         //access token handling
 
             let accessToken = response && response[this.config.responseTokenProp];
@@ -84,7 +83,7 @@ export class Authentication {
             }
 
             if (tokenToStore) {
-                this.token = token;
+                this.token = tokenToStore;
                 this.storage.set(this.tokenName, tokenToStore);
             }
 
