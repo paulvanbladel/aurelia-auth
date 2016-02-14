@@ -9,6 +9,7 @@ export class Authentication {
         this.storage = storage;
         this.config = config.current;
         this.tokenName = this.config.tokenPrefix ? this.config.tokenPrefix + '_' + this.config.tokenName : this.config.tokenName;
+        this.idTokenName = this.config.tokenPrefix ? this.config.tokenPrefix + '_' + this.config.idTokenName : this.config.idTokenName;
         this.token = storage.get(this.tokenName);
     }
 
@@ -36,6 +37,10 @@ export class Authentication {
         return this.config.baseUrl ? authUtils.joinUrl(this.config.baseUrl, this.config.profileUrl) : this.config.profileUrl;
     }
 
+    getToken() {
+        return this.token;
+    }
+
     getPayload() {
         if (this.token && this.token.split('.').length === 3) {
             let base64Url = this.token.split('.')[1];
@@ -56,29 +61,56 @@ export class Authentication {
 
     setToken(response, redirect) {
 
-        let accessToken = response && response[this.config.responseTokenProp];
-        let token;
 
-        if (accessToken) {
-            if (authUtils.isObject(accessToken) && authUtils.isObject(accessToken.data)) {
-                response = accessToken;
-            } else if (authUtils.isString(accessToken)) {
-                token = accessToken;
+        //access token handling
+
+            let accessToken = response && response[this.config.responseTokenProp];
+            let tokenToStore;
+
+            if (accessToken) {
+                if (authUtils.isObject(accessToken) && authUtils.isObject(accessToken.data)) {
+                    response = accessToken;
+                } else if (authUtils.isString(accessToken)) {
+                    tokenToStore = accessToken;
+                }
             }
-        }
 
-        if (!token && response) {
-            token = this.config.tokenRoot && response[this.config.tokenRoot] ? response[this.config.tokenRoot][this.config.tokenName] : response[this.config.tokenName];
-        }
+            if (!tokenToStore && response) {
+                tokenToStore = this.config.tokenRoot && response[this.config.tokenRoot] ? response[this.config.tokenRoot][this.config.tokenName] : response[this.config.tokenName];
+            }
 
-        if (!token) {
-            let tokenPath = this.config.tokenRoot ? this.config.tokenRoot + '.' + this.config.tokenName : this.config.tokenName;
+            if (tokenToStore) {
+                this.token = tokenToStore;
+                this.storage.set(this.tokenName, tokenToStore);
+            }
 
-            throw new Error('Expecting a token named "' + tokenPath + '" but instead got: ' + JSON.stringify(response));
-        }
 
-        this.token = token;
-        this.storage.set(this.tokenName, token);
+
+
+        //id token handling
+
+            let idToken = response && response[this.config.responseIdTokenProp];
+            let idTokenToStore;
+
+            if (idToken) {
+                if (authUtils.isObject(idToken) && authUtils.isObject(idToken.data)) {
+                    response = idToken;
+                } else if (authUtils.isString(idToken)) {
+                    idTokenToStore = idToken;
+                }
+            }
+
+            if (!idTokenToStore && response) {
+                idTokenToStore = this.config.tokenRoot && response[this.config.tokenRoot] ? response[this.config.tokenRoot][this.config.idTokenName] : response[this.config.IdTokenName];
+            }
+
+            if (idTokenToStore) {
+            this.storage.set(this.idTokenName, idTokenToStore);
+            }
+
+
+
+
 
         if (this.config.loginRedirect && !redirect) {
             window.location.href = this.getLoginRedirect();
