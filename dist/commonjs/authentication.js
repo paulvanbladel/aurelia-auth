@@ -27,6 +27,7 @@ var Authentication = (function () {
         this.storage = storage;
         this.config = config.current;
         this.tokenName = this.config.tokenPrefix ? this.config.tokenPrefix + '_' + this.config.tokenName : this.config.tokenName;
+        this.idTokenName = this.config.tokenPrefix ? this.config.tokenPrefix + '_' + this.config.idTokenName : this.config.idTokenName;
     }
 
     _createClass(Authentication, [{
@@ -85,29 +86,43 @@ var Authentication = (function () {
         key: 'setToken',
         value: function setToken(response, redirect) {
 
-            var tokenName = this.tokenName;
             var accessToken = response && response[this.config.responseTokenProp];
-            var token;
+            var tokenToStore = undefined;
 
             if (accessToken) {
                 if (_authUtils2['default'].isObject(accessToken) && _authUtils2['default'].isObject(accessToken.data)) {
                     response = accessToken;
                 } else if (_authUtils2['default'].isString(accessToken)) {
-                    token = accessToken;
+                    tokenToStore = accessToken;
                 }
             }
 
-            if (!token && response) {
-                token = this.config.tokenRoot && response[this.config.tokenRoot] ? response[this.config.tokenRoot][this.config.tokenName] : response[this.config.tokenName];
+            if (!tokenToStore && response) {
+                tokenToStore = this.config.tokenRoot && response[this.config.tokenRoot] ? response[this.config.tokenRoot][this.config.tokenName] : response[this.config.tokenName];
             }
 
-            if (!token) {
-                var tokenPath = this.config.tokenRoot ? this.config.tokenRoot + '.' + this.config.tokenName : this.config.tokenName;
-
-                throw new Error('Expecting a token named "' + tokenPath + '" but instead got: ' + JSON.stringify(response));
+            if (tokenToStore) {
+                this.storage.set(this.tokenName, tokenToStore);
             }
 
-            this.storage.set(tokenName, token);
+            var idToken = response && response[this.config.responseIdTokenProp];
+            var idTokenToStore = undefined;
+
+            if (idToken) {
+                if (_authUtils2['default'].isObject(idToken) && _authUtils2['default'].isObject(idToken.data)) {
+                    response = idToken;
+                } else if (_authUtils2['default'].isString(idToken)) {
+                    idTokenToStore = idToken;
+                }
+            }
+
+            if (!idTokenToStore && response) {
+                idTokenToStore = this.config.tokenRoot && response[this.config.tokenRoot] ? response[this.config.tokenRoot][this.config.idTokenName] : response[this.config.IdTokenName];
+            }
+
+            if (idTokenToStore) {
+                this.storage.set(this.idTokenName, idTokenToStore);
+            }
 
             if (this.config.loginRedirect && !redirect) {
                 window.location.href = this.getLoginRedirect();
