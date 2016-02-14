@@ -118,7 +118,7 @@ export class OAuth2 {
     })
       .then(authUtils.status)
       .then((response) => {
-        return response
+        return response;
       });
   }
 
