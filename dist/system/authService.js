@@ -8,15 +8,13 @@ System.register(['aurelia-dependency-injection', 'aurelia-fetch-client', './auth
   function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
   function status(response) {
-    if (response.status >= 200 && response.status < 300) {
-      return Promise.resolve(response);
-    } else {
-      return Promise.reject(new Error(response.statusText));
+    if (response.status >= 200 && response.status < 400) {
+      return response.json()['catch'](function (error) {
+        return null;
+      });
     }
-  }
 
-  function toJson(response) {
-    return response.json();
+    throw response;
   }
   return {
     setters: [function (_aureliaDependencyInjection) {
@@ -51,7 +49,7 @@ System.register(['aurelia-dependency-injection', 'aurelia-fetch-client', './auth
           key: 'getMe',
           value: function getMe() {
             var profileUrl = this.auth.getProfileUrl();
-            return this.http.fetch(profileUrl).then(status).then(toJson).then(function (response) {
+            return this.http.fetch(profileUrl).then(status).then(function (response) {
               return response;
             });
           }
@@ -85,7 +83,7 @@ System.register(['aurelia-dependency-injection', 'aurelia-fetch-client', './auth
             return this.http.fetch(signupUrl, {
               method: 'post',
               body: json(content)
-            }).then(status).then(toJson).then(function (response) {
+            }).then(status).then(function (response) {
               if (_this.config.loginOnSignup) {
                 _this.auth.setToken(response);
               } else if (_this.config.signupRedirect) {
@@ -114,7 +112,7 @@ System.register(['aurelia-dependency-injection', 'aurelia-fetch-client', './auth
               method: 'post',
               headers: typeof content === 'string' ? { 'Content-Type': 'application/x-www-form-urlencoded' } : {},
               body: typeof content === 'string' ? content : json(content)
-            }).then(status).then(toJson).then(function (response) {
+            }).then(status).then(function (response) {
               _this2.auth.setToken(response);
               return response;
             });
@@ -145,14 +143,14 @@ System.register(['aurelia-dependency-injection', 'aurelia-fetch-client', './auth
             var unlinkUrl = this.config.baseUrl ? authUtils.joinUrl(this.config.baseUrl, this.config.unlinkUrl) : this.config.unlinkUrl;
 
             if (this.config.unlinkMethod === 'get') {
-              return this.http.fetch(unlinkUrl + provider).then(function (response) {
+              return this.http.fetch(unlinkUrl + provider).then(status).then(function (response) {
                 return response;
               });
             } else if (this.config.unlinkMethod === 'post') {
               return this.http.fetch(unlinkUrl, {
                 method: 'post',
                 body: json(provider)
-              }).then(function (response) {
+              }).then(status).then(function (response) {
                 return response;
               });
             }
