@@ -82,7 +82,7 @@ export class OAuth2 {
       credentials: credentials
     })
       .then(status)
-      .then(toJson)
+      //.then(toJson)
       .then((response) => {
         return response;
       });
@@ -119,13 +119,13 @@ export class OAuth2 {
 }
 
 function status(response) {
-  if (response.status >= 200 && response.status < 300) {
-    return Promise.resolve(response)
-  } else {
-    return Promise.reject(new Error(response.statusText))
-  }
+  if (response.status >= 200 && response.status < 400) {
+        return response.json().catch(error => null);
+      }
+
+      throw response;
 }
 
-function toJson(response) {
-  return response.json()
-}
+
+
+

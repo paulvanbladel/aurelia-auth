@@ -8,15 +8,13 @@ System.register(['aurelia-dependency-injection', './authUtils', './storage', './
   function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
   function status(response) {
-    if (response.status >= 200 && response.status < 300) {
-      return Promise.resolve(response);
-    } else {
-      return Promise.reject(new Error(response.statusText));
+    if (response.status >= 200 && response.status < 400) {
+      return response.json()['catch'](function (error) {
+        return null;
+      });
     }
-  }
 
-  function toJson(response) {
-    return response.json();
+    throw response;
   }
   return {
     setters: [function (_aureliaDependencyInjection) {
@@ -116,7 +114,7 @@ System.register(['aurelia-dependency-injection', './authUtils', './storage', './
               method: 'post',
               body: json(data),
               credentials: credentials
-            }).then(status).then(toJson).then(function (response) {
+            }).then(status).then(function (response) {
               return response;
             });
           }

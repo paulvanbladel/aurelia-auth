@@ -106,7 +106,7 @@ var OAuth2 = (function () {
         method: 'post',
         body: (0, _aureliaFetchClient.json)(data),
         credentials: credentials
-      }).then(status).then(toJson).then(function (response) {
+      }).then(status).then(function (response) {
         return response;
       });
     }
@@ -154,13 +154,11 @@ var OAuth2 = (function () {
 exports.OAuth2 = OAuth2;
 
 function status(response) {
-  if (response.status >= 200 && response.status < 300) {
-    return Promise.resolve(response);
-  } else {
-    return Promise.reject(new Error(response.statusText));
+  if (response.status >= 200 && response.status < 400) {
+    return response.json()['catch'](function (error) {
+      return null;
+    });
   }
-}
 
-function toJson(response) {
-  return response.json();
+  throw response;
 }

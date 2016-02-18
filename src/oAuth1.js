@@ -33,7 +33,7 @@ export class OAuth1 {
       method: 'post'
     })
       .then(status)
-      .then(toJson)
+      //.then(toJson)
       .then(response => {
         if (this.config.platform === 'mobile') {
           this.popup = this.popup.open(
@@ -68,7 +68,7 @@ export class OAuth1 {
       credentials: credentials
     })
       .then(status)
-      .then(toJson);
+      //.then(toJson);
   }
 
   buildQueryString(obj) {
@@ -81,13 +81,11 @@ export class OAuth1 {
 }
 
 function status(response) {
-  if (response.status >= 200 && response.status < 300) {
-    return Promise.resolve(response)
-  } else {
-    return Promise.reject(new Error(response.statusText))
-  }
+  if (response.status >= 200 && response.status < 400) {
+        return response.json().catch(error => null);
+      }
+
+      throw response;
 }
 
-function toJson(response) {
-  return response.json()
-}
+
