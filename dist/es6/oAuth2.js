@@ -84,7 +84,7 @@ export class OAuth2 {
       .then(status)
       //.then(toJson)
       .then((response) => {
-        return response
+        return response;
       });
   }
 
