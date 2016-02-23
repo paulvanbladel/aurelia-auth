@@ -108,7 +108,6 @@ export class AuthService {
     if (this.config.unlinkMethod === 'get') {
       return this.http.fetch(unlinkUrl + provider)
         .then(status)
-        //.then(toJson)
         .then((response) => {
           return response;
         });
@@ -118,7 +117,6 @@ export class AuthService {
         body: json(provider)
       })
         .then(status)
-        //.then(toJson)
         .then((response) => {
           return response;
         });
