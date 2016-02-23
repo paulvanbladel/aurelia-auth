@@ -135,7 +135,6 @@ export class AuthService {
     if (this.config.unlinkMethod === 'get') {
       return this.http.fetch(unlinkUrl + provider)
         .then(status)
-        .then(toJson)
         .then((response) => {
           return response;
         });
@@ -145,7 +144,6 @@ export class AuthService {
         body: json(provider)
       })
         .then(status)
-        .then(toJson)
         .then((response) => {
           return response;
         });
@@ -154,13 +152,9 @@ export class AuthService {
 }
 
 function status(response) {
-  if (response.status >= 200 && response.status < 300) {
-    return Promise.resolve(response)
-  } else {
-    return Promise.reject(new Error(response.statusText))
+  if (response.status >= 200 && response.status < 400) {
+    return response.json().catch(error => null);
   }
-}
 
-function toJson(response) {
-  return response.json()
+  throw response;
 }
