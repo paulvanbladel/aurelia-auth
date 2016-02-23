@@ -19,7 +19,7 @@ export class AuthService {
   getMe() {
     var profileUrl = this.auth.getProfileUrl();
     return this.http.fetch(profileUrl)
-      .then(status)
+      .then(authUtils.status)
       .then((response) => {
         return response
       });
@@ -50,7 +50,7 @@ export class AuthService {
       method: 'post',
       body: json(content)
     })
-      .then(status)
+      .then(authUtils.status)
       .then((response) => {
         if (this.config.loginOnSignup) {
           this.auth.setToken(response);
@@ -78,7 +78,7 @@ export class AuthService {
       headers: typeof(content)==='string' ? {'Content-Type': 'application/x-www-form-urlencoded'} : {},
       body: typeof(content)==='string' ? content : json(content)
     })
-      .then(status)
+      .then(authUtils.status)
       .then((response) => {
         this.auth.setToken(response)
         return response
@@ -107,7 +107,7 @@ export class AuthService {
 
     if (this.config.unlinkMethod === 'get') {
       return this.http.fetch(unlinkUrl + provider)
-        .then(status)
+        .then(authUtils.status)
         .then((response) => {
           return response;
         });
@@ -116,7 +116,7 @@ export class AuthService {
         method: 'post',
         body: json(provider)
       })
-        .then(status)
+        .then(authUtils.status)
         .then((response) => {
           return response;
         });
@@ -124,10 +124,4 @@ export class AuthService {
   }
 }
 
-function status(response) {
-  if (response.status >= 200 && response.status < 400) {
-        return response.json().catch(error => null);
-      }
 
-      throw response;
-}

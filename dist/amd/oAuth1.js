@@ -44,7 +44,7 @@ define(['exports', 'aurelia-dependency-injection', './authUtils', './storage', '
         }
         return this.http.fetch(serverUrl, {
           method: 'post'
-        }).then(status).then(function (response) {
+        }).then(_authUtils2['default'].status).then(function (response) {
           if (_this.config.platform === 'mobile') {
             _this.popup = _this.popup.open([current.authorizationEndpoint, _this.buildQueryString(response.content)].join('?'), current.name, current.popupOptions, current.redirectUri);
           } else {
@@ -69,7 +69,7 @@ define(['exports', 'aurelia-dependency-injection', './authUtils', './storage', '
           method: 'post',
           body: (0, _aureliaFetchClient.json)(data),
           credentials: credentials
-        }).then(status);
+        }).then(_authUtils2['default'].status);
       }
     }, {
       key: 'buildQueryString',
@@ -90,14 +90,4 @@ define(['exports', 'aurelia-dependency-injection', './authUtils', './storage', '
   })();
 
   exports.OAuth1 = OAuth1;
-
-  function status(response) {
-    if (response.status >= 200 && response.status < 400) {
-      return response.json()['catch'](function (error) {
-        return null;
-      });
-    }
-
-    throw response;
-  }
 });

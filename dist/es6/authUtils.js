@@ -33,6 +33,15 @@ function baseExtend(dst, objs, deep) {
 }
 
 var authUtils = {
+    
+  status: function status(response) {
+    if (response.status >= 200 && response.status < 400) {
+            return response.json().catch(error => null);
+        }
+
+    throw response;
+    },  
+    
   isDefined: function(value) {
     return typeof value !== 'undefined';
   },
