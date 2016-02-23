@@ -1,5 +1,6 @@
 declare module 'aurelia-auth/authUtils' {
 	 var authUtils: {
+	    status: (response: any) => any;
 	    isDefined: (value: any) => boolean;
 	    camelCase: (name: any) => any;
 	    parseQueryString: (keyValue: any) => {};
