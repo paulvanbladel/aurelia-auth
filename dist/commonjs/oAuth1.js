@@ -55,7 +55,7 @@ var OAuth1 = (function () {
       }
       return this.http.fetch(serverUrl, {
         method: 'post'
-      }).then(status).then(function (response) {
+      }).then(_authUtils2['default'].status).then(function (response) {
         if (_this.config.platform === 'mobile') {
           _this.popup = _this.popup.open([current.authorizationEndpoint, _this.buildQueryString(response.content)].join('?'), current.name, current.popupOptions, current.redirectUri);
         } else {
@@ -80,7 +80,7 @@ var OAuth1 = (function () {
         method: 'post',
         body: (0, _aureliaFetchClient.json)(data),
         credentials: credentials
-      }).then(status);
+      }).then(_authUtils2['default'].status);
     }
   }, {
     key: 'buildQueryString',
@@ -101,13 +101,3 @@ var OAuth1 = (function () {
 })();
 
 exports.OAuth1 = OAuth1;
-
-function status(response) {
-  if (response.status >= 200 && response.status < 400) {
-    return response.json()['catch'](function (error) {
-      return null;
-    });
-  }
-
-  throw response;
-}

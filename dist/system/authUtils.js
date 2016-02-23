@@ -40,6 +40,17 @@ System.register([], function (_export) {
     execute: function () {
       slice = [].slice;
       authUtils = {
+
+        status: function status(response) {
+          if (response.status >= 200 && response.status < 400) {
+            return response.json()['catch'](function (error) {
+              return null;
+            });
+          }
+
+          throw response;
+        },
+
         isDefined: function isDefined(value) {
           return typeof value !== 'undefined';
         },

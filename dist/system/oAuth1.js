@@ -7,15 +7,6 @@ System.register(['aurelia-dependency-injection', './authUtils', './storage', './
 
   function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
-  function status(response) {
-    if (response.status >= 200 && response.status < 400) {
-      return response.json()['catch'](function (error) {
-        return null;
-      });
-    }
-
-    throw response;
-  }
   return {
     setters: [function (_aureliaDependencyInjection) {
       inject = _aureliaDependencyInjection.inject;
@@ -63,7 +54,7 @@ System.register(['aurelia-dependency-injection', './authUtils', './storage', './
             }
             return this.http.fetch(serverUrl, {
               method: 'post'
-            }).then(status).then(function (response) {
+            }).then(authUtils.status).then(function (response) {
               if (_this.config.platform === 'mobile') {
                 _this.popup = _this.popup.open([current.authorizationEndpoint, _this.buildQueryString(response.content)].join('?'), current.name, current.popupOptions, current.redirectUri);
               } else {
@@ -88,7 +79,7 @@ System.register(['aurelia-dependency-injection', './authUtils', './storage', './
               method: 'post',
               body: json(data),
               credentials: credentials
-            }).then(status);
+            }).then(authUtils.status);
           }
         }, {
           key: 'buildQueryString',

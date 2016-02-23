@@ -81,10 +81,9 @@ export class OAuth2 {
       body: json(data),
       credentials: credentials
     })
-      .then(status)
-      //.then(toJson)
+      .then(authUtils.status)
       .then((response) => {
-        return response;
+        return response
       });
   }
 
@@ -118,13 +117,7 @@ export class OAuth2 {
   }
 }
 
-function status(response) {
-  if (response.status >= 200 && response.status < 400) {
-        return response.json().catch(error => null);
-      }
 
-      throw response;
-}
 
 
 
