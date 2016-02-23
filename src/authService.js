@@ -28,6 +28,7 @@ export class AuthService {
     var profileUrl = this.auth.getProfileUrl();
     return this.http.fetch(profileUrl)
       .then(status)
+      .then(toJson)
       .then((response) => {
         return response
       });
@@ -75,6 +76,7 @@ export class AuthService {
       body: json(content)
     })
       .then(status)
+      .then(toJson)
       .then((response) => {
         if (this.config.loginOnSignup) {
           this.auth.setToken(response);
@@ -103,6 +105,7 @@ export class AuthService {
       body: typeof(content)==='string' ? content : json(content)
     })
       .then(status)
+      .then(toJson)
       .then((response) => {
         this.auth.setToken(response)
         return response
@@ -132,7 +135,7 @@ export class AuthService {
     if (this.config.unlinkMethod === 'get') {
       return this.http.fetch(unlinkUrl + provider)
         .then(status)
-        //.then(toJson)
+        .then(toJson)
         .then((response) => {
           return response;
         });
@@ -142,7 +145,7 @@ export class AuthService {
         body: json(provider)
       })
         .then(status)
-        //.then(toJson)
+        .then(toJson)
         .then((response) => {
           return response;
         });
@@ -151,9 +154,13 @@ export class AuthService {
 }
 
 function status(response) {
-  if (response.status >= 200 && response.status < 400) {
-        return response.json().catch(error => null);
-      }
+  if (response.status >= 200 && response.status < 300) {
+    return Promise.resolve(response);
+  } else {
+    return Promise.reject(response);
+  }
+}
 
-      throw response;
+function toJson(response) {
+  return response.json()
 }
