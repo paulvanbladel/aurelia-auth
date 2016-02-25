@@ -22,7 +22,7 @@ System.config({
     "babel": "npm:babel-core@5.8.35",
     "babel-runtime": "npm:babel-runtime@5.8.35",
     "core-js": "npm:core-js@2.0.3",
-    "fetch": "github:github/fetch@0.10.1",
+    "fetch": "github:github/fetch@0.11.0",
     "github:jspm/nodelibs-assert@0.1.0": {
       "assert": "npm:assert@1.3.0"
     },

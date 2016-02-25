@@ -24,6 +24,8 @@ var _baseConfig = require('./baseConfig');
 
 var _aureliaFetchClient = require('aurelia-fetch-client');
 
+require('fetch');
+
 var OAuth2 = (function () {
   function OAuth2(storage, popup, http, config) {
     _classCallCheck(this, _OAuth2);
