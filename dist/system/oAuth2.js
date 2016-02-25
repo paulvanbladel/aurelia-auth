@@ -1,4 +1,4 @@
-System.register(['aurelia-dependency-injection', './authUtils', './storage', './popup', './baseConfig', 'aurelia-fetch-client'], function (_export) {
+System.register(['aurelia-dependency-injection', './authUtils', './storage', './popup', './baseConfig', 'aurelia-fetch-client', 'fetch'], function (_export) {
   'use strict';
 
   var inject, authUtils, Storage, Popup, BaseConfig, HttpClient, json, OAuth2;
@@ -21,7 +21,7 @@ System.register(['aurelia-dependency-injection', './authUtils', './storage', './
     }, function (_aureliaFetchClient) {
       HttpClient = _aureliaFetchClient.HttpClient;
       json = _aureliaFetchClient.json;
-    }],
+    }, function (_fetch) {}],
     execute: function () {
       OAuth2 = (function () {
         function OAuth2(storage, popup, http, config) {

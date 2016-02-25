@@ -1,4 +1,4 @@
-define(['exports', 'aurelia-dependency-injection', './authUtils', './storage', './popup', './baseConfig', 'aurelia-fetch-client'], function (exports, _aureliaDependencyInjection, _authUtils, _storage, _popup, _baseConfig, _aureliaFetchClient) {
+define(['exports', 'aurelia-dependency-injection', './authUtils', './storage', './popup', './baseConfig', 'aurelia-fetch-client', 'fetch'], function (exports, _aureliaDependencyInjection, _authUtils, _storage, _popup, _baseConfig, _aureliaFetchClient, _fetch) {
   'use strict';
 
   Object.defineProperty(exports, '__esModule', {

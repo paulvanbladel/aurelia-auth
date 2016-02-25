@@ -10,6 +10,8 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 var _aureliaHttpClient = require('aurelia-http-client');
 
+require('fetch');
+
 var _baseConfig = require('./baseConfig');
 
 var _authentication = require('./authentication');
