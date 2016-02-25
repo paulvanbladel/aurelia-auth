@@ -1,4 +1,4 @@
-System.register(['aurelia-fetch-client', './authentication', './baseConfig', 'aurelia-dependency-injection', './storage'], function (_export) {
+System.register(['aurelia-fetch-client', 'fetch', './authentication', './baseConfig', 'aurelia-dependency-injection', './storage'], function (_export) {
   'use strict';
 
   var HttpClient, Authentication, BaseConfig, inject, Storage, FetchConfig;
@@ -10,7 +10,7 @@ System.register(['aurelia-fetch-client', './authentication', './baseConfig', 'au
   return {
     setters: [function (_aureliaFetchClient) {
       HttpClient = _aureliaFetchClient.HttpClient;
-    }, function (_authentication) {
+    }, function (_fetch) {}, function (_authentication) {
       Authentication = _authentication.Authentication;
     }, function (_baseConfig) {
       BaseConfig = _baseConfig.BaseConfig;
