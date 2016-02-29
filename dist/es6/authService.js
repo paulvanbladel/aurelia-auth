@@ -1,5 +1,6 @@
-import {inject, computedFrom, ObserverLocator} from 'aurelia-framework';
+import {inject} from 'aurelia-dependency-injection';
 import {HttpClient, json} from 'aurelia-fetch-client';
+import 'fetch';
 import {Authentication} from './authentication';
 import {BaseConfig} from './baseConfig';
 import {OAuth1} from './oAuth1';
@@ -27,11 +28,10 @@ export class AuthService {
   getMe() {
     var profileUrl = this.auth.getProfileUrl();
     return this.http.fetch(profileUrl)
-               .then(status)
-               .then(toJson)
-               .then((response) => {
-                 return response
-               });
+      .then(authUtils.status)
+      .then((response) => {
+        return response
+      });
   }
 
   withRoles(roles = []) {
@@ -71,17 +71,19 @@ export class AuthService {
       };
     }
 
-    return this.http.fetch(signupUrl, {method: 'post', body: json(content)})
-               .then(status)
-               .then(toJson)
-               .then((response) => {
-                 if (this.config.loginOnSignup) {
-                   this.auth.setToken(response);
-                 } else if (this.config.signupRedirect) {
-                   window.location.href = this.config.signupRedirect;
-                 }
-                 return response;
-               });
+    return this.http.fetch(signupUrl, {
+      method: 'post',
+      body: json(content)
+    })
+      .then(authUtils.status)
+      .then((response) => {
+        if (this.config.loginOnSignup) {
+          this.auth.setToken(response);
+        } else if (this.config.signupRedirect) {
+          window.location.href = this.config.signupRedirect;
+        }
+        return response;
+      });
   }
 
   login(email, password) {
@@ -97,16 +99,15 @@ export class AuthService {
     }
 
     return this.http.fetch(loginUrl, {
-                 method: 'post',
-                 headers: typeof(content) === 'string' ? {'Content-Type': 'application/x-www-form-urlencoded'} : {},
-                 body: typeof(content) === 'string' ? content : json(content)
-               })
-               .then(status)
-               .then(toJson)
-               .then((response) => {
-                 this.auth.setToken(response)
-                 return response
-               });
+      method: 'post',
+      headers: typeof(content)==='string' ? {'Content-Type': 'application/x-www-form-urlencoded'} : {},
+      body: typeof(content)==='string' ? content : json(content)
+    })
+      .then(authUtils.status)
+      .then((response) => {
+        this.auth.setToken(response)
+        return response
+      });
   }
 
   logout(redirectUri) {
@@ -117,14 +118,13 @@ export class AuthService {
     var provider = this.oAuth2;
     if (this.config.providers[name].type === '1.0') {
       provider = this.oAuth1;
-    }
-    ;
+    };
 
     return provider.open(this.config.providers[name], userData || {})
-                   .then((response) => {
-                     this.auth.setToken(response, redirect);
-                     return response;
-                   });
+      .then((response) => {
+        this.auth.setToken(response, redirect);
+        return response;
+      });
   }
 
   unlink(provider) {
@@ -132,8 +132,7 @@ export class AuthService {
 
     if (this.config.unlinkMethod === 'get') {
       return this.http.fetch(unlinkUrl + provider)
-        //.then(status)
-        //.then(toJson)
+        .then(authUtils.status)
         .then((response) => {
           return response;
         });
@@ -142,23 +141,10 @@ export class AuthService {
         method: 'post',
         body: json(provider)
       })
-        //.then(status)
-        //.then(toJson)
+        .then(authUtils.status)
         .then((response) => {
           return response;
         });
     }
   }
-}
-
-function status(response) {
-  if (response.status >= 200 && response.status < 300) {
-    return Promise.resolve(response)
-  } else {
-    return Promise.reject(new Error(response.statusText))
-  }
-}
-
-function toJson(response) {
-  return response.json()
 }

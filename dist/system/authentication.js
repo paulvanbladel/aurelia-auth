@@ -25,6 +25,7 @@ System.register(['aurelia-dependency-injection', './baseConfig', './storage', '.
                     this.storage = storage;
                     this.config = config.current;
                     this.tokenName = this.config.tokenPrefix ? this.config.tokenPrefix + '_' + this.config.tokenName : this.config.tokenName;
+                    this.idTokenName = this.config.tokenPrefix ? this.config.tokenPrefix + '_' + this.config.idTokenName : this.config.idTokenName;
                     this.token = storage.get(this.tokenName);
                 }
 
@@ -59,6 +60,11 @@ System.register(['aurelia-dependency-injection', './baseConfig', './storage', '.
                         return this.config.baseUrl ? authUtils.joinUrl(this.config.baseUrl, this.config.profileUrl) : this.config.profileUrl;
                     }
                 }, {
+                    key: 'getToken',
+                    value: function getToken() {
+                        return this.token;
+                    }
+                }, {
                     key: 'getPayload',
                     value: function getPayload() {
                         if (this.token && this.token.split('.').length === 3) {
@@ -83,28 +89,43 @@ System.register(['aurelia-dependency-injection', './baseConfig', './storage', '.
                     value: function setToken(response, redirect) {
 
                         var accessToken = response && response[this.config.responseTokenProp];
-                        var token = undefined;
+                        var tokenToStore = undefined;
 
                         if (accessToken) {
                             if (authUtils.isObject(accessToken) && authUtils.isObject(accessToken.data)) {
                                 response = accessToken;
                             } else if (authUtils.isString(accessToken)) {
-                                token = accessToken;
+                                tokenToStore = accessToken;
                             }
                         }
 
-                        if (!token && response) {
-                            token = this.config.tokenRoot && response[this.config.tokenRoot] ? response[this.config.tokenRoot][this.config.tokenName] : response[this.config.tokenName];
+                        if (!tokenToStore && response) {
+                            tokenToStore = this.config.tokenRoot && response[this.config.tokenRoot] ? response[this.config.tokenRoot][this.config.tokenName] : response[this.config.tokenName];
                         }
 
-                        if (!token) {
-                            var tokenPath = this.config.tokenRoot ? this.config.tokenRoot + '.' + this.config.tokenName : this.config.tokenName;
-
-                            throw new Error('Expecting a token named "' + tokenPath + '" but instead got: ' + JSON.stringify(response));
+                        if (tokenToStore) {
+                            this.token = tokenToStore;
+                            this.storage.set(this.tokenName, tokenToStore);
                         }
 
-                        this.token = token;
-                        this.storage.set(this.tokenName, token);
+                        var idToken = response && response[this.config.responseIdTokenProp];
+                        var idTokenToStore = undefined;
+
+                        if (idToken) {
+                            if (authUtils.isObject(idToken) && authUtils.isObject(idToken.data)) {
+                                response = idToken;
+                            } else if (authUtils.isString(idToken)) {
+                                idTokenToStore = idToken;
+                            }
+                        }
+
+                        if (!idTokenToStore && response) {
+                            idTokenToStore = this.config.tokenRoot && response[this.config.tokenRoot] ? response[this.config.tokenRoot][this.config.idTokenName] : response[this.config.IdTokenName];
+                        }
+
+                        if (idTokenToStore) {
+                            this.storage.set(this.idTokenName, idTokenToStore);
+                        }
 
                         if (this.config.loginRedirect && !redirect) {
                             window.location.href = this.getLoginRedirect();

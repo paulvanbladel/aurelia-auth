@@ -1,4 +1,4 @@
-define(['exports', 'aurelia-framework', 'aurelia-router', './authentication', './authUtils'], function (exports, _aureliaFramework, _aureliaRouter, _authentication, _authUtils) {
+define(['exports', 'aurelia-dependency-injection', './authentication', 'aurelia-router', './authUtils'], function (exports, _aureliaDependencyInjection, _authentication, _aureliaRouter, _authUtils) {
   'use strict';
 
   Object.defineProperty(exports, '__esModule', {
@@ -95,7 +95,7 @@ define(['exports', 'aurelia-framework', 'aurelia-router', './authentication', '.
     }]);
 
     var _AuthorizeStep = AuthorizeStep;
-    AuthorizeStep = (0, _aureliaFramework.inject)(_authentication.Authentication)(AuthorizeStep) || AuthorizeStep;
+    AuthorizeStep = (0, _aureliaDependencyInjection.inject)(_authentication.Authentication)(AuthorizeStep) || AuthorizeStep;
     return AuthorizeStep;
   })();
 

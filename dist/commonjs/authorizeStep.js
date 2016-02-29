@@ -12,9 +12,9 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 var _aureliaDependencyInjection = require('aurelia-dependency-injection');
 
-var _aureliaRouter = require('aurelia-router');
-
 var _authentication = require('./authentication');
+
+var _aureliaRouter = require('aurelia-router');
 
 var _authUtils = require('./authUtils');
 
