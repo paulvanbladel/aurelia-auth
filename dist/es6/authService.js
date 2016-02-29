@@ -7,22 +7,15 @@ import {OAuth1} from './oAuth1';
 import {OAuth2} from './oAuth2';
 import authUtils from './authUtils';
 
-@inject(ObserverLocator, HttpClient, Authentication, OAuth1, OAuth2, BaseConfig)
+
+@inject(HttpClient,Authentication, OAuth1, OAuth2, BaseConfig)
 export class AuthService {
-  constructor(observerLocator, http, auth, oAuth1, oAuth2, config) {
+  constructor(http, auth, oAuth1, oAuth2, config) {
     this.http = http;
     this.auth = auth;
     this.oAuth1 = oAuth1;
     this.oAuth2 = oAuth2;
     this.config = config.current;
-    this.roleAuthenticator = {};
-    this.token = this.auth.token;
-    observerLocator.getObserver(this.auth, 'token').subscribe(newToken => {
-      this.token = newToken;
-      Object.keys(this.roleAuthenticator).forEach(kra => {
-        this.roleAuthenticator[kra].token = newToken;
-      });
-    });
   }
 
   getMe() {
@@ -34,27 +27,11 @@ export class AuthService {
       });
   }
 
-  withRoles(roles = []) {
-    var key = JSON.stringify(authUtils.isArray(roles) ? roles.sort() : roles);
-    if (!this.roleAuthenticator[key]) {
-      let self = this;
-      this.roleAuthenticator[key] = {
-        token: self.auth.token,
-        @computedFrom('token')
-          get isAuthenticated() {
-            return self.auth.isAuthenticated(roles);
-          },
-        @computedFrom('token')
-          get isAuthorised() {
-            return self.auth.isAuthorised(roles);
-          }
-      };
-    }
-    return this.roleAuthenticator[key];
+  isAuthenticated() {
+    return this.auth.isAuthenticated();
   }
 
-  @computedFrom('token')
-  get tokenPayload() {
+  getTokenPayload() {
     return this.auth.getPayload();
   }
 
@@ -148,3 +125,5 @@ export class AuthService {
     }
   }
 }
+
+

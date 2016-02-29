@@ -10,7 +10,6 @@ export class Authentication {
         this.config = config.current;
         this.tokenName = this.config.tokenPrefix ? this.config.tokenPrefix + '_' + this.config.tokenName : this.config.tokenName;
         this.idTokenName = this.config.tokenPrefix ? this.config.tokenPrefix + '_' + this.config.idTokenName : this.config.idTokenName;
-        this.token = storage.get(this.tokenName);
     }
 
     getLoginRoute() {
@@ -19,10 +18,6 @@ export class Authentication {
 
     getLoginRedirect() {
         return this.initialUrl || this.config.loginRedirect;
-    }
-
-    getRequiredRoles() {
-        return this.requiredRoles || [];
     }
 
     getLoginUrl() {
@@ -38,12 +33,15 @@ export class Authentication {
     }
 
     getToken() {
-        return this.token;
+        return this.storage.get(this.tokenName);
     }
 
     getPayload() {
-        if (this.token && this.token.split('.').length === 3) {
-            let base64Url = this.token.split('.')[1];
+
+        let token = this.storage.get(this.tokenName);
+
+        if (token && token.split('.').length === 3) {
+            let base64Url = token.split('.')[1];
             let base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
 
             try {
@@ -54,15 +52,15 @@ export class Authentication {
         }
     }
 
-    setInitialUrl(url, roles) {
+    setInitialUrl(url) {
         this.initialUrl = url;
-        this.requiredRoles = roles;
     }
 
     setToken(response, redirect) {
 
+         
         //access token handling
-
+              
             let accessToken = response && response[this.config.responseTokenProp];
             let tokenToStore;
 
@@ -79,15 +77,14 @@ export class Authentication {
             }
 
             if (tokenToStore) {
-                this.token = tokenToStore;
                 this.storage.set(this.tokenName, tokenToStore);
             }
 
 
-
+            
 
         //id token handling
-
+         
             let idToken = response && response[this.config.responseIdTokenProp];
             let idTokenToStore;
 
@@ -104,13 +101,13 @@ export class Authentication {
             }
 
             if (idTokenToStore) {
-                this.storage.set(this.idTokenName, idTokenToStore);
+            this.storage.set(this.idTokenName, idTokenToStore);
             }
 
-
-
-
-
+            
+        
+        
+        
         if (this.config.loginRedirect && !redirect) {
             window.location.href = this.getLoginRedirect();
         } else if (redirect && authUtils.isString(redirect)) {
@@ -119,53 +116,43 @@ export class Authentication {
     }
 
     removeToken() {
-        this.token = undefined;
         this.storage.remove(this.tokenName);
     }
 
-  /**
-   * Checks if user is authenticated.
-   * If @auth is provided, also validates if user has at least one of the required roles.
-   *
-   * @param auth - it is string[] with roles names as elements
-   */
-    isAuthenticated(auth) {
+    isAuthenticated() {
+
+        let token = this.storage.get(this.tokenName);
 
         // There's no token, so user is not authenticated.
-        if (!this.token) {
+        if (!token) {
             return false;
         }
 
-        // There is a token, but in a different format.
-        if (this.token.split('.').length !== 3) {
-            return authUtils.isArray(auth) ? auth.length === 0 : true; //if the roles are required then the token needs to be in good format
-        }
-        let payload = this.getPayload();
-        if (!payload) {
-            return false;
-        }
-        if (payload.exp && Math.round(new Date().getTime() / 1000) > payload.exp) {
-            return false;
-        }
-        if (authUtils.isArray(auth) && auth.length > 0) {
-            if(!payload.roles) {
-                return false;
-            }
-            return auth.some(r => payload.roles.some(rp => r === rp));
-        }
-        return true;
-    }
-
-    isAuthorised(auth) {
-        if(!auth || (authUtils.isArray(auth) && auth.length === 0)) {
+        // There is a token, but in a different format. Return true.
+        if (token.split('.').length !== 3) {
             return true;
         }
-        return this.isAuthenticated(auth);
+
+        let exp;
+        try {
+            let base64Url = token.split('.')[1];
+            let base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+            exp = JSON.parse(window.atob(base64)).exp;
+        } catch (error) {
+            return false;
+        }
+
+        if (exp) {
+            return Math.round(new Date().getTime() / 1000) <= exp;
+        }
+
+        return true;
     }
 
     logout(redirect) {
         return new Promise(resolve => {
-            this.removeToken();
+            this.storage.remove(this.tokenName);
+
             if (this.config.logoutRedirect && !redirect) {
                 window.location.href = this.config.logoutRedirect;
             } else if (authUtils.isString(redirect)) {

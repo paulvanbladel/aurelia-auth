@@ -21,7 +21,6 @@ define(['exports', 'aurelia-dependency-injection', './baseConfig', './storage', 
             this.config = config.current;
             this.tokenName = this.config.tokenPrefix ? this.config.tokenPrefix + '_' + this.config.tokenName : this.config.tokenName;
             this.idTokenName = this.config.tokenPrefix ? this.config.tokenPrefix + '_' + this.config.idTokenName : this.config.idTokenName;
-            this.token = storage.get(this.tokenName);
         }
 
         _createClass(Authentication, [{
@@ -33,11 +32,6 @@ define(['exports', 'aurelia-dependency-injection', './baseConfig', './storage', 
             key: 'getLoginRedirect',
             value: function getLoginRedirect() {
                 return this.initialUrl || this.config.loginRedirect;
-            }
-        }, {
-            key: 'getRequiredRoles',
-            value: function getRequiredRoles() {
-                return this.requiredRoles || [];
             }
         }, {
             key: 'getLoginUrl',
@@ -57,13 +51,16 @@ define(['exports', 'aurelia-dependency-injection', './baseConfig', './storage', 
         }, {
             key: 'getToken',
             value: function getToken() {
-                return this.token;
+                return this.storage.get(this.tokenName);
             }
         }, {
             key: 'getPayload',
             value: function getPayload() {
-                if (this.token && this.token.split('.').length === 3) {
-                    var base64Url = this.token.split('.')[1];
+
+                var token = this.storage.get(this.tokenName);
+
+                if (token && token.split('.').length === 3) {
+                    var base64Url = token.split('.')[1];
                     var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
 
                     try {
@@ -75,9 +72,8 @@ define(['exports', 'aurelia-dependency-injection', './baseConfig', './storage', 
             }
         }, {
             key: 'setInitialUrl',
-            value: function setInitialUrl(url, roles) {
+            value: function setInitialUrl(url) {
                 this.initialUrl = url;
-                this.requiredRoles = roles;
             }
         }, {
             key: 'setToken',
@@ -99,7 +95,6 @@ define(['exports', 'aurelia-dependency-injection', './baseConfig', './storage', 
                 }
 
                 if (tokenToStore) {
-                    this.token = tokenToStore;
                     this.storage.set(this.tokenName, tokenToStore);
                 }
 
@@ -131,45 +126,36 @@ define(['exports', 'aurelia-dependency-injection', './baseConfig', './storage', 
         }, {
             key: 'removeToken',
             value: function removeToken() {
-                this.token = undefined;
                 this.storage.remove(this.tokenName);
             }
         }, {
             key: 'isAuthenticated',
-            value: function isAuthenticated(auth) {
-                if (!this.token) {
+            value: function isAuthenticated() {
+
+                var token = this.storage.get(this.tokenName);
+
+                if (!token) {
                     return false;
                 }
 
-                if (this.token.split('.').length !== 3) {
-                    return _authUtils2['default'].isArray(auth) ? auth.length === 0 : true;
-                }
-                var payload = this.getPayload();
-                if (!payload) {
-                    return false;
-                }
-                if (payload.exp && Math.round(new Date().getTime() / 1000) > payload.exp) {
-                    return false;
-                }
-                if (_authUtils2['default'].isArray(auth) && auth.length > 0) {
-                    if (!payload.roles) {
-                        return false;
-                    }
-                    return auth.some(function (r) {
-                        return payload.roles.some(function (rp) {
-                            return r === rp;
-                        });
-                    });
-                }
-                return true;
-            }
-        }, {
-            key: 'isAuthorised',
-            value: function isAuthorised(auth) {
-                if (!auth || _authUtils2['default'].isArray(auth) && auth.length === 0) {
+                if (token.split('.').length !== 3) {
                     return true;
                 }
-                return this.isAuthenticated(auth);
+
+                var exp = undefined;
+                try {
+                    var base64Url = token.split('.')[1];
+                    var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+                    exp = JSON.parse(window.atob(base64)).exp;
+                } catch (error) {
+                    return false;
+                }
+
+                if (exp) {
+                    return Math.round(new Date().getTime() / 1000) <= exp;
+                }
+
+                return true;
             }
         }, {
             key: 'logout',
@@ -177,7 +163,8 @@ define(['exports', 'aurelia-dependency-injection', './baseConfig', './storage', 
                 var _this = this;
 
                 return new Promise(function (resolve) {
-                    _this.removeToken();
+                    _this.storage.remove(_this.tokenName);
+
                     if (_this.config.logoutRedirect && !redirect) {
                         window.location.href = _this.config.logoutRedirect;
                     } else if (_authUtils2['default'].isString(redirect)) {
