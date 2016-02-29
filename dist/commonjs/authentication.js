@@ -28,6 +28,7 @@ var Authentication = (function () {
         this.config = config.current;
         this.tokenName = this.config.tokenPrefix ? this.config.tokenPrefix + '_' + this.config.tokenName : this.config.tokenName;
         this.idTokenName = this.config.tokenPrefix ? this.config.tokenPrefix + '_' + this.config.idTokenName : this.config.idTokenName;
+        this.token = storage.get(this.tokenName);
     }
 
     _createClass(Authentication, [{
@@ -39,6 +40,11 @@ var Authentication = (function () {
         key: 'getLoginRedirect',
         value: function getLoginRedirect() {
             return this.initialUrl || this.config.loginRedirect;
+        }
+    }, {
+        key: 'getRequiredRoles',
+        value: function getRequiredRoles() {
+            return this.requiredRoles || [];
         }
     }, {
         key: 'getLoginUrl',
@@ -58,16 +64,13 @@ var Authentication = (function () {
     }, {
         key: 'getToken',
         value: function getToken() {
-            return this.storage.get(this.tokenName);
+            return this.token;
         }
     }, {
         key: 'getPayload',
         value: function getPayload() {
-
-            var token = this.storage.get(this.tokenName);
-
-            if (token && token.split('.').length === 3) {
-                var base64Url = token.split('.')[1];
+            if (this.token && this.token.split('.').length === 3) {
+                var base64Url = this.token.split('.')[1];
                 var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
 
                 try {
@@ -79,8 +82,9 @@ var Authentication = (function () {
         }
     }, {
         key: 'setInitialUrl',
-        value: function setInitialUrl(url) {
+        value: function setInitialUrl(url, roles) {
             this.initialUrl = url;
+            this.requiredRoles = roles;
         }
     }, {
         key: 'setToken',
@@ -102,6 +106,7 @@ var Authentication = (function () {
             }
 
             if (tokenToStore) {
+                this.token = tokenToStore;
                 this.storage.set(this.tokenName, tokenToStore);
             }
 
@@ -133,36 +138,45 @@ var Authentication = (function () {
     }, {
         key: 'removeToken',
         value: function removeToken() {
+            this.token = undefined;
             this.storage.remove(this.tokenName);
         }
     }, {
         key: 'isAuthenticated',
-        value: function isAuthenticated() {
-
-            var token = this.storage.get(this.tokenName);
-
-            if (!token) {
+        value: function isAuthenticated(auth) {
+            if (!this.token) {
                 return false;
             }
 
-            if (token.split('.').length !== 3) {
+            if (this.token.split('.').length !== 3) {
+                return _authUtils2['default'].isArray(auth) ? auth.length === 0 : true;
+            }
+            var payload = this.getPayload();
+            if (!payload) {
+                return false;
+            }
+            if (payload.exp && Math.round(new Date().getTime() / 1000) > payload.exp) {
+                return false;
+            }
+            if (_authUtils2['default'].isArray(auth) && auth.length > 0) {
+                if (!payload.roles) {
+                    return false;
+                }
+                return auth.some(function (r) {
+                    return payload.roles.some(function (rp) {
+                        return r === rp;
+                    });
+                });
+            }
+            return true;
+        }
+    }, {
+        key: 'isAuthorised',
+        value: function isAuthorised(auth) {
+            if (!auth || _authUtils2['default'].isArray(auth) && auth.length === 0) {
                 return true;
             }
-
-            var exp = undefined;
-            try {
-                var base64Url = token.split('.')[1];
-                var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-                exp = JSON.parse(window.atob(base64)).exp;
-            } catch (error) {
-                return false;
-            }
-
-            if (exp) {
-                return Math.round(new Date().getTime() / 1000) <= exp;
-            }
-
-            return true;
+            return this.isAuthenticated(auth);
         }
     }, {
         key: 'logout',
@@ -170,8 +184,7 @@ var Authentication = (function () {
             var _this = this;
 
             return new Promise(function (resolve) {
-                _this.storage.remove(_this.tokenName);
-
+                _this.removeToken();
                 if (_this.config.logoutRedirect && !redirect) {
                     window.location.href = _this.config.logoutRedirect;
                 } else if (_authUtils2['default'].isString(redirect)) {
