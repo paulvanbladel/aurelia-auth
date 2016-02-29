@@ -5,8 +5,6 @@ System.register(['aurelia-framework', 'aurelia-router', './authentication', './a
 
   var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
-  function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) arr2[i] = arr[i]; return arr2; } else { return Array.from(arr); } }
-
   function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
   return {
@@ -38,9 +36,7 @@ System.register(['aurelia-framework', 'aurelia-router', './authentication', './a
             if (routingContext.getAllInstructions().some(function (i) {
               return !_this.auth.isAuthorised(i.config.auth);
             })) {
-              var _auth;
-
-              var auth = new Set();
+              var auth = [];
               var _iteratorNormalCompletion = true;
               var _didIteratorError = false;
               var _iteratorError = undefined;
@@ -58,7 +54,7 @@ System.register(['aurelia-framework', 'aurelia-router', './authentication', './a
                       for (var _iterator2 = i.config.auth[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
                         var a = _step2.value;
 
-                        auth.add(a);
+                        auth.push(a);
                       }
                     } catch (err) {
                       _didIteratorError2 = true;
@@ -91,11 +87,11 @@ System.register(['aurelia-framework', 'aurelia-router', './authentication', './a
                 }
               }
 
-              (_auth = this.auth).setInitialUrl.apply(_auth, [window.location.href].concat(_toConsumableArray(auth)));
+              this.auth.setInitialUrl(window.location.href, auth);
               return next.cancel(new Redirect(loginRoute));
             } else if (this.auth.isAuthenticated() && this.auth.isAuthorised(this.auth.getRequiredRoles()) && routingContext.getAllInstructions().some(function (i) {
-              return i.fragment;
-            }) == loginRoute) {
+              return i.fragment === loginRoute;
+            })) {
               var loginRedirect = this.auth.getLoginRedirect();
               return next.cancel(new Redirect(loginRedirect));
             }
