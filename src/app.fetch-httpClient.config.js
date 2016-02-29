@@ -14,10 +14,7 @@ export class FetchConfig {
     this.config = config.current;
   }
 
-  configure() {
-    var auth = this.auth;
-    var config = this.config;
-    var storage = this.storage;
+  configure(){
 
     this.httpClient.configure(httpConfig => {
       httpConfig
@@ -27,18 +24,14 @@ export class FetchConfig {
           }
         })
         .withInterceptor({
-          request(request) {
-            if (auth.isAuthenticated() && config.httpInterceptor) {
-              var tokenName = config.tokenPrefix ? `${config.tokenPrefix}_${config.tokenName}` : config.tokenName;
-              var token = storage.get(tokenName);
-
-              if (config.authHeader && config.authToken) {
-                token = `${config.authToken} ${token}`;
+          request: (request) => {
+            if (this.auth.isAuthenticated() && this.config.httpInterceptor) {
+              let token = this.auth.token;
+              if (this.config.authHeader && this.config.authToken) {
+                token = `${this.config.authToken} ${this.auth.token}`;
               }
-
-              request.headers.append(config.authHeader, token);
+              request.headers.append(this.config.authHeader, token);
             }
-
             return request;
           }
         });

@@ -1,4 +1,4 @@
-import {inject} from 'aurelia-dependency-injection';
+import {inject} from 'aurelia-framework';
 import {BaseConfig}  from './baseConfig';
 import {Storage} from './storage';
 import authUtils from './authUtils';
@@ -9,7 +9,7 @@ export class Authentication {
         this.storage = storage;
         this.config = config.current;
         this.tokenName = this.config.tokenPrefix ? this.config.tokenPrefix + '_' + this.config.tokenName : this.config.tokenName;
-        this.idTokenName = this.config.tokenPrefix ? this.config.tokenPrefix + '_' + this.config.idTokenName : this.config.idTokenName;
+        this.token = storage.get(this.tokenName);
     }
 
     getLoginRoute() {
@@ -18,6 +18,10 @@ export class Authentication {
 
     getLoginRedirect() {
         return this.initialUrl || this.config.loginRedirect;
+    }
+
+    getRequiredRoles() {
+        return this.requiredRoles || [];
     }
 
     getLoginUrl() {
@@ -32,68 +36,50 @@ export class Authentication {
         return this.config.baseUrl ? authUtils.joinUrl(this.config.baseUrl, this.config.profileUrl) : this.config.profileUrl;
     }
 
-    getToken() {
-        return this.storage.get(this.tokenName);
-    }
-
     getPayload() {
-
-        let token = this.storage.get(this.tokenName);
-        return decomposeToken(token);
-    }
-
-    decomposeToken(token){
-        if (token && token.split('.').length === 3) {
-            let base64Url = token.split('.')[1];
+        if (this.token && this.token.split('.').length === 3) {
+            let base64Url = this.token.split('.')[1];
             let base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
 
             try {
                 return JSON.parse(decodeURIComponent(escape(window.atob(base64))));
             } catch (error) {
-                return null;
+                return;
             }
         }
     }
 
-    setInitialUrl(url) {
+    setInitialUrl(url, roles) {
         this.initialUrl = url;
+        this.requiredRoles = roles;
     }
 
     setToken(response, redirect) {
 
-         
-        //access token handling
-              
-            let accessToken = response && response[this.config.responseTokenProp];
-            let tokenToStore;
+        let accessToken = response && response[this.config.responseTokenProp];
+        let token;
 
-            if (accessToken) {
-                if (authUtils.isObject(accessToken) && authUtils.isObject(accessToken.data)) {
-                    response = accessToken;
-                } else if (authUtils.isString(accessToken)) {
-                    tokenToStore = accessToken;
-                }
+        if (accessToken) {
+            if (authUtils.isObject(accessToken) && authUtils.isObject(accessToken.data)) {
+                response = accessToken;
+            } else if (authUtils.isString(accessToken)) {
+                token = accessToken;
             }
+        }
 
-            if (!tokenToStore && response) {
-                tokenToStore = this.config.tokenRoot && response[this.config.tokenRoot] ? response[this.config.tokenRoot][this.config.tokenName] : response[this.config.tokenName];
-            }
+        if (!token && response) {
+            token = this.config.tokenRoot && response[this.config.tokenRoot] ? response[this.config.tokenRoot][this.config.tokenName] : response[this.config.tokenName];
+        }
 
-            if (tokenToStore) {
-                this.storage.set(this.tokenName, tokenToStore);
-            }
-            
+        if (!token) {
+            let tokenPath = this.config.tokenRoot ? this.config.tokenRoot + '.' + this.config.tokenName : this.config.tokenName;
 
-        //id token handling
-         
-            let idToken = response && response[this.config.responseIdTokenProp];
-            
-            if (idToken) {
-                    this.storage.set(this.idTokenName, idToken);
-            }
+            throw new Error('Expecting a token named "' + tokenPath + '" but instead got: ' + JSON.stringify(response));
+        }
 
-        
-        
+        this.token = token;
+        this.storage.set(this.tokenName, token);
+
         if (this.config.loginRedirect && !redirect) {
             window.location.href = this.getLoginRedirect();
         } else if (redirect && authUtils.isString(redirect)) {
@@ -101,47 +87,54 @@ export class Authentication {
         }
     }
 
-    
-
-
     removeToken() {
+        this.token = undefined;
         this.storage.remove(this.tokenName);
     }
 
-    isAuthenticated() {
-
-        let token = this.storage.get(this.tokenName);
+  /**
+   * Checks if user is authenticated.
+   * If @auth is provided, also validates if user has at least one of the required roles.
+   *
+   * @param auth - it is string[] with roles names as elements
+   */
+    isAuthenticated(auth) {
 
         // There's no token, so user is not authenticated.
-        if (!token) {
+        if (!this.token) {
             return false;
         }
 
-        // There is a token, but in a different format. Return true.
-        if (token.split('.').length !== 3) {
+        // There is a token, but in a different format.
+        if (this.token.split('.').length !== 3) {
+            return authUtils.isArray(auth) ? auth.length === 0 : true; //if the roles are required then the token needs to be in good format
+        }
+        let payload = this.getPayload();
+        if (!payload) {
+            return false;
+        }
+        if (payload.exp && Math.round(new Date().getTime() / 1000) > payload.exp) {
+            return false;
+        }
+        if (authUtils.isArray(auth) && auth.length > 0) {
+            if(!payload.roles) {
+                return false;
+            }
+            return auth.some(r => payload.roles.some(rp => r === rp));
+        }
+        return true;
+    }
+
+    isAuthorised(auth) {
+        if(!auth || (authUtils.isArray(auth) && auth.length === 0)) {
             return true;
         }
-
-        let exp;
-        try {
-            let base64Url = token.split('.')[1];
-            let base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-            exp = JSON.parse(window.atob(base64)).exp;
-        } catch (error) {
-            return false;
-        }
-
-        if (exp) {
-            return Math.round(new Date().getTime() / 1000) <= exp;
-        }
-
-        return true;
+        return this.isAuthenticated(auth);
     }
 
     logout(redirect) {
         return new Promise(resolve => {
-            this.storage.remove(this.tokenName);
-
+            this.removeToken();
             if (this.config.logoutRedirect && !redirect) {
                 window.location.href = this.config.logoutRedirect;
             } else if (authUtils.isString(redirect)) {

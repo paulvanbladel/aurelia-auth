@@ -1,6 +1,5 @@
 declare module 'aurelia-auth/authUtils' {
 	 var authUtils: {
-	    status: (response: any) => any;
 	    isDefined: (value: any) => boolean;
 	    camelCase: (name: any) => any;
 	    parseQueryString: (keyValue: any) => {};
@@ -41,16 +40,22 @@ declare module 'aurelia-auth/authentication' {
 	    constructor(storage: any, config: any);
 	    getLoginRoute(): any;
 	    getLoginRedirect(): any;
+	    getRequiredRoles(): any;
 	    getLoginUrl(): any;
 	    getSignupUrl(): any;
 	    getProfileUrl(): any;
-	    getToken(): any;
 	    getPayload(): any;
-	    decomposeToken(token: any): any;
-	    setInitialUrl(url: any): void;
+	    setInitialUrl(url: any, roles: any): void;
 	    setToken(response: any, redirect: any): void;
 	    removeToken(): void;
-	    isAuthenticated(): boolean;
+	    /**
+	     * Checks if user is authenticated.
+	     * If @auth is provided, also validates if user has at least one of the required roles.
+	     *
+	     * @param auth - it is string[] with roles names as elements
+	     */
+	    isAuthenticated(auth: any): any;
+	    isAuthorised(auth: any): any;
 	    logout(redirect: any): any;
 	}
 
@@ -71,7 +76,8 @@ declare module 'aurelia-auth/app.httpClient.config' {
 }
 declare module 'aurelia-auth/authFilter' {
 	export class AuthFilterValueConverter {
-	    toView(routes: any, isAuthenticated: any): any;
+	    constructor(auth: any);
+	    toView(routes: any): any;
 	}
 
 }
@@ -90,32 +96,25 @@ declare module 'aurelia-auth/oAuth1' {
 	export class OAuth1 {
 	    constructor(storage: any, popup: any, http: any, config: any);
 	    open(options: any, userData: any): any;
-	    exchangeForToken(oauthData: any, userData: any, current: any): any;
+	    exchangeForToken(oauthData: any, userData: any): any;
 	    buildQueryString(obj: any): string;
 	}
 
 }
 declare module 'aurelia-auth/oAuth2' {
 	export class OAuth2 {
-	    constructor(storage: any, popup: any, http: any, config: any, auth: any);
+	    constructor(storage: any, popup: any, http: any, config: any);
 	    open(options: any, userData: any): any;
-	    verifyIdToken(oauthData: any, providerName: any): boolean;
-	    exchangeForToken(oauthData: any, userData: any, current: any): any;
-	    buildQueryString(current: any): string;
+	    exchangeForToken(oauthData: any, userData: any): any;
+	    buildQueryString(): string;
 	}
 
 }
 declare module 'aurelia-auth/authService' {
 	export class AuthService {
-	    constructor(http: any, auth: any, oAuth1: any, oAuth2: any, config: any);
+	    constructor(observerLocator: any, http: any, auth: any, oAuth1: any, oAuth2: any, config: any);
 	    getMe(): any;
-	    isAuthenticated(): any;
-	    getTokenPayload(): any;
-	    signup(displayName: any, email: any, password: any): any;
-	    login(email: any, password: any): any;
-	    logout(redirectUri: any): any;
-	    authenticate(name: any, redirect: any, userData: any): any;
-	    unlink(provider: any): any;
+	    withRoles(roles?: any[]): any;
 	}
 
 }

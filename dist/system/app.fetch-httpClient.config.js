@@ -33,9 +33,7 @@ System.register(['aurelia-fetch-client', 'fetch', './authentication', './baseCon
         _createClass(FetchConfig, [{
           key: 'configure',
           value: function configure() {
-            var auth = this.auth;
-            var config = this.config;
-            var storage = this.storage;
+            var _this = this;
 
             this.httpClient.configure(function (httpConfig) {
               httpConfig.withDefaults({
@@ -44,17 +42,13 @@ System.register(['aurelia-fetch-client', 'fetch', './authentication', './baseCon
                 }
               }).withInterceptor({
                 request: function request(_request) {
-                  if (auth.isAuthenticated() && config.httpInterceptor) {
-                    var tokenName = config.tokenPrefix ? config.tokenPrefix + '_' + config.tokenName : config.tokenName;
-                    var token = storage.get(tokenName);
-
-                    if (config.authHeader && config.authToken) {
-                      token = config.authToken + ' ' + token;
+                  if (_this.auth.isAuthenticated() && _this.config.httpInterceptor) {
+                    var token = _this.auth.token;
+                    if (_this.config.authHeader && _this.config.authToken) {
+                      token = _this.config.authToken + ' ' + _this.auth.token;
                     }
-
-                    _request.headers.append(config.authHeader, token);
+                    _request.headers.append(_this.config.authHeader, token);
                   }
-
                   return _request;
                 }
               });

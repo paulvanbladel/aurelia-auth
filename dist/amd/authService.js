@@ -1,20 +1,24 @@
-define(['exports', 'aurelia-dependency-injection', 'aurelia-fetch-client', 'fetch', './authentication', './baseConfig', './oAuth1', './oAuth2', './authUtils'], function (exports, _aureliaDependencyInjection, _aureliaFetchClient, _fetch, _authentication, _baseConfig, _oAuth1, _oAuth2, _authUtils) {
+define(['exports', 'aurelia-framework', 'aurelia-fetch-client', './authentication', './baseConfig', './oAuth1', './oAuth2', './authUtils'], function (exports, _aureliaFramework, _aureliaFetchClient, _authentication, _baseConfig, _oAuth1, _oAuth2, _authUtils) {
   'use strict';
 
   Object.defineProperty(exports, '__esModule', {
     value: true
   });
 
-  var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+  var _createDecoratedClass = (function () { function defineProperties(target, descriptors, initializers) { for (var i = 0; i < descriptors.length; i++) { var descriptor = descriptors[i]; var decorators = descriptor.decorators; var key = descriptor.key; delete descriptor.key; delete descriptor.decorators; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor || descriptor.initializer) descriptor.writable = true; if (decorators) { for (var f = 0; f < decorators.length; f++) { var decorator = decorators[f]; if (typeof decorator === 'function') { descriptor = decorator(target, key, descriptor) || descriptor; } else { throw new TypeError('The decorator for method ' + descriptor.key + ' is of the invalid type ' + typeof decorator); } } if (descriptor.initializer !== undefined) { initializers[key] = descriptor; continue; } } Object.defineProperty(target, key, descriptor); } } return function (Constructor, protoProps, staticProps, protoInitializers, staticInitializers) { if (protoProps) defineProperties(Constructor.prototype, protoProps, protoInitializers); if (staticProps) defineProperties(Constructor, staticProps, staticInitializers); return Constructor; }; })();
 
   function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+  function _createDecoratedObject(descriptors) { var target = {}; for (var i = 0; i < descriptors.length; i++) { var descriptor = descriptors[i]; var decorators = descriptor.decorators; var key = descriptor.key; delete descriptor.key; delete descriptor.decorators; descriptor.enumerable = true; descriptor.configurable = true; if ('value' in descriptor || descriptor.initializer) descriptor.writable = true; if (decorators) { for (var f = 0; f < decorators.length; f++) { var decorator = decorators[f]; if (typeof decorator === 'function') { descriptor = decorator(target, key, descriptor) || descriptor; } else { throw new TypeError('The decorator for method ' + descriptor.key + ' is of the invalid type ' + typeof decorator); } } } if (descriptor.initializer) { descriptor.value = descriptor.initializer.call(target); } Object.defineProperty(target, key, descriptor); } return target; }
 
   function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
   var _authUtils2 = _interopRequireDefault(_authUtils);
 
   var AuthService = (function () {
-    function AuthService(http, auth, oAuth1, oAuth2, config) {
+    function AuthService(observerLocator, http, auth, oAuth1, oAuth2, config) {
+      var _this = this;
+
       _classCallCheck(this, _AuthService);
 
       this.http = http;
@@ -22,30 +26,61 @@ define(['exports', 'aurelia-dependency-injection', 'aurelia-fetch-client', 'fetc
       this.oAuth1 = oAuth1;
       this.oAuth2 = oAuth2;
       this.config = config.current;
+      this.roleAuthenticator = {};
+      this.token = this.auth.token;
+      observerLocator.getObserver(this.auth, 'token').subscribe(function (newToken) {
+        _this.token = newToken;
+        Object.keys(_this.roleAuthenticator).forEach(function (kra) {
+          _this.roleAuthenticator[kra].token = newToken;
+        });
+      });
     }
 
-    _createClass(AuthService, [{
+    _createDecoratedClass(AuthService, [{
       key: 'getMe',
       value: function getMe() {
         var profileUrl = this.auth.getProfileUrl();
-        return this.http.fetch(profileUrl).then(_authUtils2['default'].status).then(function (response) {
+        return this.http.fetch(profileUrl).then(status).then(toJson).then(function (response) {
           return response;
         });
       }
     }, {
-      key: 'isAuthenticated',
-      value: function isAuthenticated() {
-        return this.auth.isAuthenticated();
-      }
-    }, {
-      key: 'getTokenPayload',
-      value: function getTokenPayload() {
-        return this.auth.getPayload();
+      key: 'withRoles',
+      value: function withRoles() {
+        var _this2 = this;
+
+        var roles = arguments.length <= 0 || arguments[0] === undefined ? [] : arguments[0];
+
+        var key = JSON.stringify(_authUtils2['default'].isArray(roles) ? roles.sort() : roles);
+        if (!this.roleAuthenticator[key]) {
+          (function () {
+            var self = _this2;
+            _this2.roleAuthenticator[key] = _createDecoratedObject([{
+              key: 'token',
+              initializer: function initializer() {
+                return self.auth.token;
+              }
+            }, {
+              key: 'isAuthenticated',
+              decorators: [(0, _aureliaFramework.computedFrom)('token')],
+              get: function get() {
+                return self.auth.isAuthenticated(roles);
+              }
+            }, {
+              key: 'isAuthorised',
+              decorators: [(0, _aureliaFramework.computedFrom)('token')],
+              get: function get() {
+                return self.auth.isAuthorised(roles);
+              }
+            }]);
+          })();
+        }
+        return this.roleAuthenticator[key];
       }
     }, {
       key: 'signup',
       value: function signup(displayName, email, password) {
-        var _this = this;
+        var _this3 = this;
 
         var signupUrl = this.auth.getSignupUrl();
         var content;
@@ -59,14 +94,11 @@ define(['exports', 'aurelia-dependency-injection', 'aurelia-fetch-client', 'fetc
           };
         }
 
-        return this.http.fetch(signupUrl, {
-          method: 'post',
-          body: (0, _aureliaFetchClient.json)(content)
-        }).then(_authUtils2['default'].status).then(function (response) {
-          if (_this.config.loginOnSignup) {
-            _this.auth.setToken(response);
-          } else if (_this.config.signupRedirect) {
-            window.location.href = _this.config.signupRedirect;
+        return this.http.fetch(signupUrl, { method: 'post', body: (0, _aureliaFetchClient.json)(content) }).then(status).then(toJson).then(function (response) {
+          if (_this3.config.loginOnSignup) {
+            _this3.auth.setToken(response);
+          } else if (_this3.config.signupRedirect) {
+            window.location.href = _this3.config.signupRedirect;
           }
           return response;
         });
@@ -74,7 +106,7 @@ define(['exports', 'aurelia-dependency-injection', 'aurelia-fetch-client', 'fetc
     }, {
       key: 'login',
       value: function login(email, password) {
-        var _this2 = this;
+        var _this4 = this;
 
         var loginUrl = this.auth.getLoginUrl();
         var content;
@@ -91,8 +123,8 @@ define(['exports', 'aurelia-dependency-injection', 'aurelia-fetch-client', 'fetc
           method: 'post',
           headers: typeof content === 'string' ? { 'Content-Type': 'application/x-www-form-urlencoded' } : {},
           body: typeof content === 'string' ? content : (0, _aureliaFetchClient.json)(content)
-        }).then(_authUtils2['default'].status).then(function (response) {
-          _this2.auth.setToken(response);
+        }).then(status).then(toJson).then(function (response) {
+          _this4.auth.setToken(response);
           return response;
         });
       }
@@ -104,15 +136,16 @@ define(['exports', 'aurelia-dependency-injection', 'aurelia-fetch-client', 'fetc
     }, {
       key: 'authenticate',
       value: function authenticate(name, redirect, userData) {
-        var _this3 = this;
+        var _this5 = this;
 
         var provider = this.oAuth2;
         if (this.config.providers[name].type === '1.0') {
           provider = this.oAuth1;
-        };
+        }
+        ;
 
         return provider.open(this.config.providers[name], userData || {}).then(function (response) {
-          _this3.auth.setToken(response, redirect);
+          _this5.auth.setToken(response, redirect);
           return response;
         });
       }
@@ -122,24 +155,42 @@ define(['exports', 'aurelia-dependency-injection', 'aurelia-fetch-client', 'fetc
         var unlinkUrl = this.config.baseUrl ? _authUtils2['default'].joinUrl(this.config.baseUrl, this.config.unlinkUrl) : this.config.unlinkUrl;
 
         if (this.config.unlinkMethod === 'get') {
-          return this.http.fetch(unlinkUrl + provider).then(_authUtils2['default'].status).then(function (response) {
+          return this.http.fetch(unlinkUrl + provider).then(status).then(toJson).then(function (response) {
             return response;
           });
         } else if (this.config.unlinkMethod === 'post') {
           return this.http.fetch(unlinkUrl, {
             method: 'post',
             body: (0, _aureliaFetchClient.json)(provider)
-          }).then(_authUtils2['default'].status).then(function (response) {
+          }).then(status).then(toJson).then(function (response) {
             return response;
           });
         }
       }
+    }, {
+      key: 'tokenPayload',
+      decorators: [(0, _aureliaFramework.computedFrom)('token')],
+      get: function get() {
+        return this.auth.getPayload();
+      }
     }]);
 
     var _AuthService = AuthService;
-    AuthService = (0, _aureliaDependencyInjection.inject)(_aureliaFetchClient.HttpClient, _authentication.Authentication, _oAuth1.OAuth1, _oAuth2.OAuth2, _baseConfig.BaseConfig)(AuthService) || AuthService;
+    AuthService = (0, _aureliaFramework.inject)(_aureliaFramework.ObserverLocator, _aureliaFetchClient.HttpClient, _authentication.Authentication, _oAuth1.OAuth1, _oAuth2.OAuth2, _baseConfig.BaseConfig)(AuthService) || AuthService;
     return AuthService;
   })();
 
   exports.AuthService = AuthService;
+
+  function status(response) {
+    if (response.status >= 200 && response.status < 300) {
+      return Promise.resolve(response);
+    } else {
+      return Promise.reject(response);
+    }
+  }
+
+  function toJson(response) {
+    return response.json();
+  }
 });

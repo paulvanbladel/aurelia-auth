@@ -18,13 +18,10 @@ export default class {
     RequestBuilder.addHelper('authTokenHandling', () => {
       return (client, processor, message) => {
         if (this.auth.isAuthenticated() && this.config.httpInterceptor) {
-          var tokenName = (this.config.tokenPrefix ? `${this.config.tokenPrefix}_` : '') + this.config.tokenName;
-          var token = this.storage.get(tokenName);
-
+          let token = this.auth.token;
           if (this.config.authHeader && this.config.authToken) {
-            token = `${this.config.authToken} ${token}`;
+            token = `${this.config.authToken} ${this.auth.token}`;
           }
-
           message.headers.add(this.config.authHeader, token);
         }
       };

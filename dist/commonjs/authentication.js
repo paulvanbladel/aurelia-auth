@@ -10,7 +10,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'd
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
-var _aureliaDependencyInjection = require('aurelia-dependency-injection');
+var _aureliaFramework = require('aurelia-framework');
 
 var _baseConfig = require('./baseConfig');
 
@@ -27,7 +27,7 @@ var Authentication = (function () {
         this.storage = storage;
         this.config = config.current;
         this.tokenName = this.config.tokenPrefix ? this.config.tokenPrefix + '_' + this.config.tokenName : this.config.tokenName;
-        this.idTokenName = this.config.tokenPrefix ? this.config.tokenPrefix + '_' + this.config.idTokenName : this.config.idTokenName;
+        this.token = storage.get(this.tokenName);
     }
 
     _createClass(Authentication, [{
@@ -39,6 +39,11 @@ var Authentication = (function () {
         key: 'getLoginRedirect',
         value: function getLoginRedirect() {
             return this.initialUrl || this.config.loginRedirect;
+        }
+    }, {
+        key: 'getRequiredRoles',
+        value: function getRequiredRoles() {
+            return this.requiredRoles || [];
         }
     }, {
         key: 'getLoginUrl',
@@ -56,64 +61,52 @@ var Authentication = (function () {
             return this.config.baseUrl ? _authUtils2['default'].joinUrl(this.config.baseUrl, this.config.profileUrl) : this.config.profileUrl;
         }
     }, {
-        key: 'getToken',
-        value: function getToken() {
-            return this.storage.get(this.tokenName);
-        }
-    }, {
         key: 'getPayload',
         value: function getPayload() {
-
-            var token = this.storage.get(this.tokenName);
-            return decomposeToken(token);
-        }
-    }, {
-        key: 'decomposeToken',
-        value: function decomposeToken(token) {
-            if (token && token.split('.').length === 3) {
-                var base64Url = token.split('.')[1];
+            if (this.token && this.token.split('.').length === 3) {
+                var base64Url = this.token.split('.')[1];
                 var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
 
                 try {
                     return JSON.parse(decodeURIComponent(escape(window.atob(base64))));
                 } catch (error) {
-                    return null;
+                    return;
                 }
             }
         }
     }, {
         key: 'setInitialUrl',
-        value: function setInitialUrl(url) {
+        value: function setInitialUrl(url, roles) {
             this.initialUrl = url;
+            this.requiredRoles = roles;
         }
     }, {
         key: 'setToken',
         value: function setToken(response, redirect) {
 
             var accessToken = response && response[this.config.responseTokenProp];
-            var tokenToStore = undefined;
+            var token = undefined;
 
             if (accessToken) {
                 if (_authUtils2['default'].isObject(accessToken) && _authUtils2['default'].isObject(accessToken.data)) {
                     response = accessToken;
                 } else if (_authUtils2['default'].isString(accessToken)) {
-                    tokenToStore = accessToken;
+                    token = accessToken;
                 }
             }
 
-            if (!tokenToStore && response) {
-                tokenToStore = this.config.tokenRoot && response[this.config.tokenRoot] ? response[this.config.tokenRoot][this.config.tokenName] : response[this.config.tokenName];
+            if (!token && response) {
+                token = this.config.tokenRoot && response[this.config.tokenRoot] ? response[this.config.tokenRoot][this.config.tokenName] : response[this.config.tokenName];
             }
 
-            if (tokenToStore) {
-                this.storage.set(this.tokenName, tokenToStore);
+            if (!token) {
+                var tokenPath = this.config.tokenRoot ? this.config.tokenRoot + '.' + this.config.tokenName : this.config.tokenName;
+
+                throw new Error('Expecting a token named "' + tokenPath + '" but instead got: ' + JSON.stringify(response));
             }
 
-            var idToken = response && response[this.config.responseIdTokenProp];
-
-            if (idToken) {
-                this.storage.set(this.idTokenName, idToken);
-            }
+            this.token = token;
+            this.storage.set(this.tokenName, token);
 
             if (this.config.loginRedirect && !redirect) {
                 window.location.href = this.getLoginRedirect();
@@ -124,36 +117,45 @@ var Authentication = (function () {
     }, {
         key: 'removeToken',
         value: function removeToken() {
+            this.token = undefined;
             this.storage.remove(this.tokenName);
         }
     }, {
         key: 'isAuthenticated',
-        value: function isAuthenticated() {
-
-            var token = this.storage.get(this.tokenName);
-
-            if (!token) {
+        value: function isAuthenticated(auth) {
+            if (!this.token) {
                 return false;
             }
 
-            if (token.split('.').length !== 3) {
+            if (this.token.split('.').length !== 3) {
+                return _authUtils2['default'].isArray(auth) ? auth.length === 0 : true;
+            }
+            var payload = this.getPayload();
+            if (!payload) {
+                return false;
+            }
+            if (payload.exp && Math.round(new Date().getTime() / 1000) > payload.exp) {
+                return false;
+            }
+            if (_authUtils2['default'].isArray(auth) && auth.length > 0) {
+                if (!payload.roles) {
+                    return false;
+                }
+                return auth.some(function (r) {
+                    return payload.roles.some(function (rp) {
+                        return r === rp;
+                    });
+                });
+            }
+            return true;
+        }
+    }, {
+        key: 'isAuthorised',
+        value: function isAuthorised(auth) {
+            if (!auth || _authUtils2['default'].isArray(auth) && auth.length === 0) {
                 return true;
             }
-
-            var exp = undefined;
-            try {
-                var base64Url = token.split('.')[1];
-                var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-                exp = JSON.parse(window.atob(base64)).exp;
-            } catch (error) {
-                return false;
-            }
-
-            if (exp) {
-                return Math.round(new Date().getTime() / 1000) <= exp;
-            }
-
-            return true;
+            return this.isAuthenticated(auth);
         }
     }, {
         key: 'logout',
@@ -161,8 +163,7 @@ var Authentication = (function () {
             var _this = this;
 
             return new Promise(function (resolve) {
-                _this.storage.remove(_this.tokenName);
-
+                _this.removeToken();
                 if (_this.config.logoutRedirect && !redirect) {
                     window.location.href = _this.config.logoutRedirect;
                 } else if (_authUtils2['default'].isString(redirect)) {
@@ -175,7 +176,7 @@ var Authentication = (function () {
     }]);
 
     var _Authentication = Authentication;
-    Authentication = (0, _aureliaDependencyInjection.inject)(_storage.Storage, _baseConfig.BaseConfig)(Authentication) || Authentication;
+    Authentication = (0, _aureliaFramework.inject)(_storage.Storage, _baseConfig.BaseConfig)(Authentication) || Authentication;
     return Authentication;
 })();
 
