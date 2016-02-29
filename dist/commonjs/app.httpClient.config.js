@@ -36,13 +36,10 @@ var _default = (function () {
       _aureliaHttpClient.RequestBuilder.addHelper('authTokenHandling', function () {
         return function (client, processor, message) {
           if (_this.auth.isAuthenticated() && _this.config.httpInterceptor) {
-            var tokenName = (_this.config.tokenPrefix ? _this.config.tokenPrefix + '_' : '') + _this.config.tokenName;
-            var token = _this.storage.get(tokenName);
-
+            var token = _this.auth.token;
             if (_this.config.authHeader && _this.config.authToken) {
-              token = _this.config.authToken + ' ' + token;
+              token = _this.config.authToken + ' ' + _this.auth.token;
             }
-
             message.headers.add(_this.config.authHeader, token);
           }
         };
