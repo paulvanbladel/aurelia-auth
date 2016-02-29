@@ -1,7 +1,7 @@
-System.register(['aurelia-framework', 'aurelia-fetch-client', './authentication', './baseConfig', './oAuth1', './oAuth2', './authUtils'], function (_export) {
+System.register(['aurelia-dependency-injection', 'aurelia-fetch-client', 'fetch', './authentication', './baseConfig', './oAuth1', './oAuth2', './authUtils'], function (_export) {
   'use strict';
 
-  var inject, computedFrom, ObserverLocator, HttpClient, json, Authentication, BaseConfig, OAuth1, OAuth2, authUtils, AuthService;
+  var inject, HttpClient, json, Authentication, BaseConfig, OAuth1, OAuth2, authUtils, AuthService;
 
   var _createDecoratedClass = (function () { function defineProperties(target, descriptors, initializers) { for (var i = 0; i < descriptors.length; i++) { var descriptor = descriptors[i]; var decorators = descriptor.decorators; var key = descriptor.key; delete descriptor.key; delete descriptor.decorators; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor || descriptor.initializer) descriptor.writable = true; if (decorators) { for (var f = 0; f < decorators.length; f++) { var decorator = decorators[f]; if (typeof decorator === 'function') { descriptor = decorator(target, key, descriptor) || descriptor; } else { throw new TypeError('The decorator for method ' + descriptor.key + ' is of the invalid type ' + typeof decorator); } } if (descriptor.initializer !== undefined) { initializers[key] = descriptor; continue; } } Object.defineProperty(target, key, descriptor); } } return function (Constructor, protoProps, staticProps, protoInitializers, staticInitializers) { if (protoProps) defineProperties(Constructor.prototype, protoProps, protoInitializers); if (staticProps) defineProperties(Constructor, staticProps, staticInitializers); return Constructor; }; })();
 
@@ -9,26 +9,13 @@ System.register(['aurelia-framework', 'aurelia-fetch-client', './authentication'
 
   function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
-  function status(response) {
-    if (response.status >= 200 && response.status < 300) {
-      return Promise.resolve(response);
-    } else {
-      return Promise.reject(new Error(response.statusText));
-    }
-  }
-
-  function toJson(response) {
-    return response.json();
-  }
   return {
-    setters: [function (_aureliaFramework) {
-      inject = _aureliaFramework.inject;
-      computedFrom = _aureliaFramework.computedFrom;
-      ObserverLocator = _aureliaFramework.ObserverLocator;
+    setters: [function (_aureliaDependencyInjection) {
+      inject = _aureliaDependencyInjection.inject;
     }, function (_aureliaFetchClient) {
       HttpClient = _aureliaFetchClient.HttpClient;
       json = _aureliaFetchClient.json;
-    }, function (_authentication) {
+    }, function (_fetch) {}, function (_authentication) {
       Authentication = _authentication.Authentication;
     }, function (_baseConfig) {
       BaseConfig = _baseConfig.BaseConfig;
@@ -65,7 +52,7 @@ System.register(['aurelia-framework', 'aurelia-fetch-client', './authentication'
           key: 'getMe',
           value: function getMe() {
             var profileUrl = this.auth.getProfileUrl();
-            return this.http.fetch(profileUrl).then(status).then(toJson).then(function (response) {
+            return this.http.fetch(profileUrl).then(authUtils.status).then(function (response) {
               return response;
             });
           }
@@ -119,7 +106,10 @@ System.register(['aurelia-framework', 'aurelia-fetch-client', './authentication'
               };
             }
 
-            return this.http.fetch(signupUrl, { method: 'post', body: json(content) }).then(status).then(toJson).then(function (response) {
+            return this.http.fetch(signupUrl, {
+              method: 'post',
+              body: json(content)
+            }).then(authUtils.status).then(function (response) {
               if (_this3.config.loginOnSignup) {
                 _this3.auth.setToken(response);
               } else if (_this3.config.signupRedirect) {
@@ -148,7 +138,7 @@ System.register(['aurelia-framework', 'aurelia-fetch-client', './authentication'
               method: 'post',
               headers: typeof content === 'string' ? { 'Content-Type': 'application/x-www-form-urlencoded' } : {},
               body: typeof content === 'string' ? content : json(content)
-            }).then(status).then(toJson).then(function (response) {
+            }).then(authUtils.status).then(function (response) {
               _this4.auth.setToken(response);
               return response;
             });
@@ -166,8 +156,7 @@ System.register(['aurelia-framework', 'aurelia-fetch-client', './authentication'
             var provider = this.oAuth2;
             if (this.config.providers[name].type === '1.0') {
               provider = this.oAuth1;
-            }
-            ;
+            };
 
             return provider.open(this.config.providers[name], userData || {}).then(function (response) {
               _this5.auth.setToken(response, redirect);
@@ -180,14 +169,14 @@ System.register(['aurelia-framework', 'aurelia-fetch-client', './authentication'
             var unlinkUrl = this.config.baseUrl ? authUtils.joinUrl(this.config.baseUrl, this.config.unlinkUrl) : this.config.unlinkUrl;
 
             if (this.config.unlinkMethod === 'get') {
-              return this.http.fetch(unlinkUrl + provider).then(function (response) {
+              return this.http.fetch(unlinkUrl + provider).then(authUtils.status).then(function (response) {
                 return response;
               });
             } else if (this.config.unlinkMethod === 'post') {
               return this.http.fetch(unlinkUrl, {
                 method: 'post',
                 body: json(provider)
-              }).then(function (response) {
+              }).then(authUtils.status).then(function (response) {
                 return response;
               });
             }

@@ -1,6 +1,6 @@
-import {inject} from 'aurelia-framework';
-import {Router, Redirect} from 'aurelia-router';
+import {inject} from 'aurelia-dependency-injection';
 import {Authentication} from './authentication';
+import {Router, Redirect} from 'aurelia-router';
 import authUtils from './authUtils';
 
 @inject(Authentication)

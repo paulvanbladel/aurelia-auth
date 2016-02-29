@@ -45,6 +45,7 @@ declare module 'aurelia-auth/authentication' {
 	    getLoginUrl(): any;
 	    getSignupUrl(): any;
 	    getProfileUrl(): any;
+	    getToken(): any;
 	    getPayload(): any;
 	    setInitialUrl(url: any, roles: any): void;
 	    setToken(response: any, redirect: any): void;

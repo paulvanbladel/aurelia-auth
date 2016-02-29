@@ -1,4 +1,4 @@
-define(['exports', 'aurelia-framework', 'aurelia-fetch-client', './authentication', './baseConfig', './oAuth1', './oAuth2', './authUtils'], function (exports, _aureliaFramework, _aureliaFetchClient, _authentication, _baseConfig, _oAuth1, _oAuth2, _authUtils) {
+define(['exports', 'aurelia-dependency-injection', 'aurelia-fetch-client', 'fetch', './authentication', './baseConfig', './oAuth1', './oAuth2', './authUtils'], function (exports, _aureliaDependencyInjection, _aureliaFetchClient, _fetch, _authentication, _baseConfig, _oAuth1, _oAuth2, _authUtils) {
   'use strict';
 
   Object.defineProperty(exports, '__esModule', {
@@ -40,7 +40,7 @@ define(['exports', 'aurelia-framework', 'aurelia-fetch-client', './authenticatio
       key: 'getMe',
       value: function getMe() {
         var profileUrl = this.auth.getProfileUrl();
-        return this.http.fetch(profileUrl).then(status).then(toJson).then(function (response) {
+        return this.http.fetch(profileUrl).then(_authUtils2['default'].status).then(function (response) {
           return response;
         });
       }
@@ -62,13 +62,13 @@ define(['exports', 'aurelia-framework', 'aurelia-fetch-client', './authenticatio
               }
             }, {
               key: 'isAuthenticated',
-              decorators: [(0, _aureliaFramework.computedFrom)('token')],
+              decorators: [computedFrom('token')],
               get: function get() {
                 return self.auth.isAuthenticated(roles);
               }
             }, {
               key: 'isAuthorised',
-              decorators: [(0, _aureliaFramework.computedFrom)('token')],
+              decorators: [computedFrom('token')],
               get: function get() {
                 return self.auth.isAuthorised(roles);
               }
@@ -94,7 +94,10 @@ define(['exports', 'aurelia-framework', 'aurelia-fetch-client', './authenticatio
           };
         }
 
-        return this.http.fetch(signupUrl, { method: 'post', body: (0, _aureliaFetchClient.json)(content) }).then(status).then(toJson).then(function (response) {
+        return this.http.fetch(signupUrl, {
+          method: 'post',
+          body: (0, _aureliaFetchClient.json)(content)
+        }).then(_authUtils2['default'].status).then(function (response) {
           if (_this3.config.loginOnSignup) {
             _this3.auth.setToken(response);
           } else if (_this3.config.signupRedirect) {
@@ -123,7 +126,7 @@ define(['exports', 'aurelia-framework', 'aurelia-fetch-client', './authenticatio
           method: 'post',
           headers: typeof content === 'string' ? { 'Content-Type': 'application/x-www-form-urlencoded' } : {},
           body: typeof content === 'string' ? content : (0, _aureliaFetchClient.json)(content)
-        }).then(status).then(toJson).then(function (response) {
+        }).then(_authUtils2['default'].status).then(function (response) {
           _this4.auth.setToken(response);
           return response;
         });
@@ -141,8 +144,7 @@ define(['exports', 'aurelia-framework', 'aurelia-fetch-client', './authenticatio
         var provider = this.oAuth2;
         if (this.config.providers[name].type === '1.0') {
           provider = this.oAuth1;
-        }
-        ;
+        };
 
         return provider.open(this.config.providers[name], userData || {}).then(function (response) {
           _this5.auth.setToken(response, redirect);
@@ -155,42 +157,30 @@ define(['exports', 'aurelia-framework', 'aurelia-fetch-client', './authenticatio
         var unlinkUrl = this.config.baseUrl ? _authUtils2['default'].joinUrl(this.config.baseUrl, this.config.unlinkUrl) : this.config.unlinkUrl;
 
         if (this.config.unlinkMethod === 'get') {
-          return this.http.fetch(unlinkUrl + provider).then(function (response) {
+          return this.http.fetch(unlinkUrl + provider).then(_authUtils2['default'].status).then(function (response) {
             return response;
           });
         } else if (this.config.unlinkMethod === 'post') {
           return this.http.fetch(unlinkUrl, {
             method: 'post',
             body: (0, _aureliaFetchClient.json)(provider)
-          }).then(function (response) {
+          }).then(_authUtils2['default'].status).then(function (response) {
             return response;
           });
         }
       }
     }, {
       key: 'tokenPayload',
-      decorators: [(0, _aureliaFramework.computedFrom)('token')],
+      decorators: [computedFrom('token')],
       get: function get() {
         return this.auth.getPayload();
       }
     }]);
 
     var _AuthService = AuthService;
-    AuthService = (0, _aureliaFramework.inject)(_aureliaFramework.ObserverLocator, _aureliaFetchClient.HttpClient, _authentication.Authentication, _oAuth1.OAuth1, _oAuth2.OAuth2, _baseConfig.BaseConfig)(AuthService) || AuthService;
+    AuthService = (0, _aureliaDependencyInjection.inject)(ObserverLocator, _aureliaFetchClient.HttpClient, _authentication.Authentication, _oAuth1.OAuth1, _oAuth2.OAuth2, _baseConfig.BaseConfig)(AuthService) || AuthService;
     return AuthService;
   })();
 
   exports.AuthService = AuthService;
-
-  function status(response) {
-    if (response.status >= 200 && response.status < 300) {
-      return Promise.resolve(response);
-    } else {
-      return Promise.reject(new Error(response.statusText));
-    }
-  }
-
-  function toJson(response) {
-    return response.json();
-  }
 });
