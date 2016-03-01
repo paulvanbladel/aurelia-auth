@@ -1,4 +1,4 @@
-define(['exports', 'aurelia-dependency-injection', './authUtils', './storage', './popup', './baseConfig', 'aurelia-fetch-client', 'fetch'], function (exports, _aureliaDependencyInjection, _authUtils, _storage, _popup, _baseConfig, _aureliaFetchClient, _fetch) {
+define(['exports', 'aurelia-dependency-injection', './authUtils', './storage', './popup', './baseConfig', './authentication', 'aurelia-fetch-client', 'fetch'], function (exports, _aureliaDependencyInjection, _authUtils, _storage, _popup, _baseConfig, _authentication, _aureliaFetchClient, _fetch) {
   'use strict';
 
   Object.defineProperty(exports, '__esModule', {
@@ -14,13 +14,14 @@ define(['exports', 'aurelia-dependency-injection', './authUtils', './storage', '
   var _authUtils2 = _interopRequireDefault(_authUtils);
 
   var OAuth2 = (function () {
-    function OAuth2(storage, popup, http, config) {
+    function OAuth2(storage, popup, http, config, auth) {
       _classCallCheck(this, _OAuth2);
 
       this.storage = storage;
       this.config = config.current;
       this.popup = popup;
       this.http = http;
+      this.auth = auth;
       this.defaults = {
         url: null,
         name: null,
@@ -44,12 +45,21 @@ define(['exports', 'aurelia-dependency-injection', './authUtils', './storage', '
         var _this = this;
 
         var current = _authUtils2['default'].extend({}, this.defaults, options);
+
         var stateName = current.name + '_state';
 
         if (_authUtils2['default'].isFunction(current.state)) {
           this.storage.set(stateName, current.state());
         } else if (_authUtils2['default'].isString(current.state)) {
           this.storage.set(stateName, current.state);
+        }
+
+        var nonceName = current.name + '_nonce';
+
+        if (_authUtils2['default'].isFunction(current.nonce)) {
+          this.storage.set(nonceName, current.nonce());
+        } else if (_authUtils2['default'].isString(current.nonce)) {
+          this.storage.set(nonceName, current.nonce);
         }
 
         var url = current.authorizationEndpoint + '?' + this.buildQueryString(current);
@@ -62,14 +72,35 @@ define(['exports', 'aurelia-dependency-injection', './authUtils', './storage', '
         }
 
         return openPopup.then(function (oauthData) {
-          if (current.responseType.toUpperCase().includes('TOKEN')) {
-            return oauthData;
-          }
           if (oauthData.state && oauthData.state !== _this.storage.get(stateName)) {
             return Promise.reject('OAuth 2.0 state parameter mismatch.');
           }
+
+          if (current.responseType.toUpperCase().includes('TOKEN')) {
+            if (!_this.verifyIdToken(oauthData, current.name)) {
+              return Promise.reject('OAuth 2.0 Nonce parameter mismatch.');
+            };
+            return oauthData;
+          }
+
           return _this.exchangeForToken(oauthData, userData, current);
         });
+      }
+    }, {
+      key: 'verifyIdToken',
+      value: function verifyIdToken(oauthData, providerName) {
+
+        var idToken = oauthData && oauthData[this.config.responseIdTokenProp];
+        if (!idToken) return true;
+        var idTokenObject = this.auth.decomposeToken(idToken);
+        if (!idTokenObject) return true;
+        var nonceFromToken = idTokenObject.nonce;
+        if (!nonceFromToken) return true;
+        var nonceInStorage = this.storage.get(providerName + '_nonce');
+        if (nonceFromToken !== nonceInStorage) {
+          return false;
+        }
+        return true;
       }
     }, {
       key: 'exchangeForToken',
@@ -117,6 +148,11 @@ define(['exports', 'aurelia-dependency-injection', './authUtils', './storage', '
               paramValue = encodeURIComponent(_this2.storage.get(stateName));
             }
 
+            if (paramName === 'nonce') {
+              var nonceName = current.name + '_nonce';
+              paramValue = encodeURIComponent(_this2.storage.get(nonceName));
+            }
+
             if (paramName === 'scope' && Array.isArray(paramValue)) {
               paramValue = paramValue.join(current.scopeDelimiter);
 
@@ -136,7 +172,7 @@ define(['exports', 'aurelia-dependency-injection', './authUtils', './storage', '
     }]);
 
     var _OAuth2 = OAuth2;
-    OAuth2 = (0, _aureliaDependencyInjection.inject)(_storage.Storage, _popup.Popup, _aureliaFetchClient.HttpClient, _baseConfig.BaseConfig)(OAuth2) || OAuth2;
+    OAuth2 = (0, _aureliaDependencyInjection.inject)(_storage.Storage, _popup.Popup, _aureliaFetchClient.HttpClient, _baseConfig.BaseConfig, _authentication.Authentication)(OAuth2) || OAuth2;
     return OAuth2;
   })();
 

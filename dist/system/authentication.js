@@ -63,7 +63,11 @@ System.register(['aurelia-dependency-injection', './baseConfig', './storage', '.
                     value: function getPayload() {
 
                         var token = this.storage.get(this.tokenName);
-
+                        return decomposeToken(token);
+                    }
+                }, {
+                    key: 'decomposeToken',
+                    value: function decomposeToken(token) {
                         if (token && token.split('.').length === 3) {
                             var base64Url = token.split('.')[1];
                             var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
@@ -104,22 +108,9 @@ System.register(['aurelia-dependency-injection', './baseConfig', './storage', '.
                         }
 
                         var idToken = response && response[this.config.responseIdTokenProp];
-                        var idTokenToStore = undefined;
 
                         if (idToken) {
-                            if (authUtils.isObject(idToken) && authUtils.isObject(idToken.data)) {
-                                response = idToken;
-                            } else if (authUtils.isString(idToken)) {
-                                idTokenToStore = idToken;
-                            }
-                        }
-
-                        if (!idTokenToStore && response) {
-                            idTokenToStore = this.config.tokenRoot && response[this.config.tokenRoot] ? response[this.config.tokenRoot][this.config.idTokenName] : response[this.config.IdTokenName];
-                        }
-
-                        if (idTokenToStore) {
-                            this.storage.set(this.idTokenName, idTokenToStore);
+                            this.storage.set(this.idTokenName, idToken);
                         }
 
                         if (this.config.loginRedirect && !redirect) {

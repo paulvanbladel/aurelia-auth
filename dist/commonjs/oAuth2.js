@@ -22,18 +22,21 @@ var _popup = require('./popup');
 
 var _baseConfig = require('./baseConfig');
 
+var _authentication = require('./authentication');
+
 var _aureliaFetchClient = require('aurelia-fetch-client');
 
 require('fetch');
 
 var OAuth2 = (function () {
-  function OAuth2(storage, popup, http, config) {
+  function OAuth2(storage, popup, http, config, auth) {
     _classCallCheck(this, _OAuth2);
 
     this.storage = storage;
     this.config = config.current;
     this.popup = popup;
     this.http = http;
+    this.auth = auth;
     this.defaults = {
       url: null,
       name: null,
@@ -57,12 +60,21 @@ var OAuth2 = (function () {
       var _this = this;
 
       var current = _authUtils2['default'].extend({}, this.defaults, options);
+
       var stateName = current.name + '_state';
 
       if (_authUtils2['default'].isFunction(current.state)) {
         this.storage.set(stateName, current.state());
       } else if (_authUtils2['default'].isString(current.state)) {
         this.storage.set(stateName, current.state);
+      }
+
+      var nonceName = current.name + '_nonce';
+
+      if (_authUtils2['default'].isFunction(current.nonce)) {
+        this.storage.set(nonceName, current.nonce());
+      } else if (_authUtils2['default'].isString(current.nonce)) {
+        this.storage.set(nonceName, current.nonce);
       }
 
       var url = current.authorizationEndpoint + '?' + this.buildQueryString(current);
@@ -75,14 +87,35 @@ var OAuth2 = (function () {
       }
 
       return openPopup.then(function (oauthData) {
-        if (current.responseType.toUpperCase().includes('TOKEN')) {
-          return oauthData;
-        }
         if (oauthData.state && oauthData.state !== _this.storage.get(stateName)) {
           return Promise.reject('OAuth 2.0 state parameter mismatch.');
         }
+
+        if (current.responseType.toUpperCase().includes('TOKEN')) {
+          if (!_this.verifyIdToken(oauthData, current.name)) {
+            return Promise.reject('OAuth 2.0 Nonce parameter mismatch.');
+          };
+          return oauthData;
+        }
+
         return _this.exchangeForToken(oauthData, userData, current);
       });
+    }
+  }, {
+    key: 'verifyIdToken',
+    value: function verifyIdToken(oauthData, providerName) {
+
+      var idToken = oauthData && oauthData[this.config.responseIdTokenProp];
+      if (!idToken) return true;
+      var idTokenObject = this.auth.decomposeToken(idToken);
+      if (!idTokenObject) return true;
+      var nonceFromToken = idTokenObject.nonce;
+      if (!nonceFromToken) return true;
+      var nonceInStorage = this.storage.get(providerName + '_nonce');
+      if (nonceFromToken !== nonceInStorage) {
+        return false;
+      }
+      return true;
     }
   }, {
     key: 'exchangeForToken',
@@ -130,6 +163,11 @@ var OAuth2 = (function () {
             paramValue = encodeURIComponent(_this2.storage.get(stateName));
           }
 
+          if (paramName === 'nonce') {
+            var nonceName = current.name + '_nonce';
+            paramValue = encodeURIComponent(_this2.storage.get(nonceName));
+          }
+
           if (paramName === 'scope' && Array.isArray(paramValue)) {
             paramValue = paramValue.join(current.scopeDelimiter);
 
@@ -149,7 +187,7 @@ var OAuth2 = (function () {
   }]);
 
   var _OAuth2 = OAuth2;
-  OAuth2 = (0, _aureliaDependencyInjection.inject)(_storage.Storage, _popup.Popup, _aureliaFetchClient.HttpClient, _baseConfig.BaseConfig)(OAuth2) || OAuth2;
+  OAuth2 = (0, _aureliaDependencyInjection.inject)(_storage.Storage, _popup.Popup, _aureliaFetchClient.HttpClient, _baseConfig.BaseConfig, _authentication.Authentication)(OAuth2) || OAuth2;
   return OAuth2;
 })();
 

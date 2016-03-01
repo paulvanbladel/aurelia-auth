@@ -46,6 +46,7 @@ declare module 'aurelia-auth/authentication' {
 	    getProfileUrl(): any;
 	    getToken(): any;
 	    getPayload(): any;
+	    decomposeToken(token: any): any;
 	    setInitialUrl(url: any): void;
 	    setToken(response: any, redirect: any): void;
 	    removeToken(): void;
@@ -96,8 +97,9 @@ declare module 'aurelia-auth/oAuth1' {
 }
 declare module 'aurelia-auth/oAuth2' {
 	export class OAuth2 {
-	    constructor(storage: any, popup: any, http: any, config: any);
+	    constructor(storage: any, popup: any, http: any, config: any, auth: any);
 	    open(options: any, userData: any): any;
+	    verifyIdToken(oauthData: any, providerName: any): boolean;
 	    exchangeForToken(oauthData: any, userData: any, current: any): any;
 	    buildQueryString(current: any): string;
 	}

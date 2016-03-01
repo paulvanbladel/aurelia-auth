@@ -3,16 +3,18 @@ import authUtils from './authUtils';
 import {Storage} from './storage';
 import {Popup} from './popup';
 import {BaseConfig} from './baseConfig';
+import {Authentication} from './authentication';
 import {HttpClient, json} from 'aurelia-fetch-client';
 import 'fetch';
 
-@inject(Storage, Popup, HttpClient, BaseConfig)
+@inject(Storage, Popup, HttpClient, BaseConfig, Authentication)
 export class OAuth2 {
-  constructor(storage, popup, http, config) {
+  constructor(storage, popup, http, config, auth) {
     this.storage = storage;
     this.config = config.current;
     this.popup = popup;
     this.http = http;
+    this.auth = auth;
     this.defaults = {
       url: null,
       name: null,
@@ -32,12 +34,23 @@ export class OAuth2 {
 
   open(options, userData) {
     let current = authUtils.extend({}, this.defaults, options);
+
+    //state handling
     let stateName = current.name + '_state';
 
     if (authUtils.isFunction(current.state)) {
       this.storage.set(stateName, current.state());
     } else if (authUtils.isString(current.state)) {
       this.storage.set(stateName, current.state);
+    }
+
+    //nonce handling
+    let nonceName = current.name + '_nonce';
+
+    if (authUtils.isFunction(current.nonce)) {
+      this.storage.set(nonceName, current.nonce());
+    } else if (authUtils.isString(current.nonce)) {
+      this.storage.set(nonceName, current.nonce);
     }
 
     let url = current.authorizationEndpoint + '?' + this.buildQueryString(current);
@@ -51,15 +64,36 @@ export class OAuth2 {
 
     return openPopup
       .then(oauthData => {
-        if (current.responseType.toUpperCase().includes('TOKEN')) { //meaning implicit flow or hybrid flow
-          return oauthData;
-        }
         if (oauthData.state && oauthData.state !== this.storage.get(stateName)) {
           return Promise.reject('OAuth 2.0 state parameter mismatch.');
         }
+          
+        if (current.responseType.toUpperCase().includes('TOKEN')) { //meaning implicit flow or hybrid flow
+            if (!this.verifyIdToken(oauthData, current.name)){
+                return Promise.reject('OAuth 2.0 Nonce parameter mismatch.');
+            };
+          return oauthData;
+        }
+       
         return this.exchangeForToken(oauthData, userData, current); //responseType is authorization code only (no token nor id_token)
       });
-  }
+  };
+
+
+    verifyIdToken(oauthData, providerName){
+                
+        let idToken = oauthData && oauthData[this.config.responseIdTokenProp];
+        if(!idToken) return true;
+        let idTokenObject = this.auth.decomposeToken(idToken);
+        if(!idTokenObject) return true;
+        let nonceFromToken = idTokenObject.nonce;
+        if(!nonceFromToken) return true;
+        let nonceInStorage = this.storage.get(providerName + '_nonce');
+        if (nonceFromToken!==nonceInStorage) {
+            return false;
+        }
+        return true;
+    };
 
   exchangeForToken(oauthData, userData, current) {
     let data = authUtils.extend({}, userData, {
@@ -100,6 +134,11 @@ export class OAuth2 {
         if (paramName === 'state') {
           let stateName = current.name + '_state';
           paramValue    = encodeURIComponent(this.storage.get(stateName));
+        }
+        
+        if (paramName === 'nonce') {
+          let nonceName = current.name + '_nonce';
+          paramValue    = encodeURIComponent(this.storage.get(nonceName));
         }
 
         if (paramName === 'scope' && Array.isArray(paramValue)) {
