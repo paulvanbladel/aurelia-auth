@@ -1,4 +1,5 @@
 import {inject} from 'aurelia-dependency-injection';
+import {computedFrom, ObserverLocator} from 'aurelia-binding';
 import {HttpClient, json} from 'aurelia-fetch-client';
 import 'fetch';
 import {Authentication} from './authentication';
@@ -26,28 +27,28 @@ export class AuthService {
   }
 
   getMe() {
-    var profileUrl = this.auth.getProfileUrl();
+    let profileUrl = this.auth.getProfileUrl();
     return this.http.fetch(profileUrl)
-      .then(authUtils.status)
-      .then((response) => {
-        return response
-      });
+               .then(authUtils.status)
+               .then((response) => {
+                 return response;
+               });
   }
 
   withRoles(roles = []) {
-    var key = JSON.stringify(authUtils.isArray(roles) ? roles.sort() : roles);
+    let key = JSON.stringify(authUtils.isArray(roles) ? roles.sort() : roles);
     if (!this.roleAuthenticator[key]) {
       let self = this;
       this.roleAuthenticator[key] = {
         token: self.auth.token,
         @computedFrom('token')
-          get isAuthenticated() {
-            return self.auth.isAuthenticated(roles);
-          },
+        get isAuthenticated() {
+          return self.auth.isAuthenticated(roles);
+        },
         @computedFrom('token')
-          get isAuthorised() {
-            return self.auth.isAuthorised(roles);
-          }
+        get isAuthorised() {
+          return self.auth.isAuthorised(roles);
+        }
       };
     }
     return this.roleAuthenticator[key];
@@ -59,8 +60,8 @@ export class AuthService {
   }
 
   signup(displayName, email, password) {
-    var signupUrl = this.auth.getSignupUrl();
-    var content;
+    let signupUrl = this.auth.getSignupUrl();
+    let content;
     if (typeof arguments[0] === 'object') {
       content = arguments[0];
     } else {
@@ -71,24 +72,21 @@ export class AuthService {
       };
     }
 
-    return this.http.fetch(signupUrl, {
-      method: 'post',
-      body: json(content)
-    })
-      .then(authUtils.status)
-      .then((response) => {
-        if (this.config.loginOnSignup) {
-          this.auth.setToken(response);
-        } else if (this.config.signupRedirect) {
-          window.location.href = this.config.signupRedirect;
-        }
-        return response;
-      });
+    return this.http.fetch(signupUrl, {method: 'post', body: json(content)})
+               .then(authUtils.status)
+               .then((response) => {
+                 if (this.config.loginOnSignup) {
+                   this.auth.setToken(response);
+                 } else if (this.config.signupRedirect) {
+                   window.location.href = this.config.signupRedirect;
+                 }
+                 return response;
+               });
   }
 
   login(email, password) {
-    var loginUrl = this.auth.getLoginUrl();
-    var content;
+    let loginUrl = this.auth.getLoginUrl();
+    let content;
     if (typeof arguments[1] !== 'string') {
       content = arguments[0];
     } else {
@@ -98,15 +96,16 @@ export class AuthService {
       };
     }
 
-    return this.http.fetch(loginUrl, {
-      method: 'post',
-      headers: typeof(content)==='string' ? {'Content-Type': 'application/x-www-form-urlencoded'} : {},
-      body: typeof(content)==='string' ? content : json(content)
-    })
+    return this.http.fetch(loginUrl,
+      {
+        method: 'post',
+        headers: typeof(content) === 'string' ? {'Content-Type': 'application/x-www-form-urlencoded'} : {},
+        body: typeof(content) === 'string' ? content : json(content)
+      })
       .then(authUtils.status)
       .then((response) => {
-        this.auth.setToken(response)
-        return response
+        this.auth.setToken(response);
+        return response;
       });
   }
 
@@ -115,36 +114,36 @@ export class AuthService {
   }
 
   authenticate(name, redirect, userData) {
-    var provider = this.oAuth2;
+    let provider = this.oAuth2;
     if (this.config.providers[name].type === '1.0') {
       provider = this.oAuth1;
-    };
+    }
 
     return provider.open(this.config.providers[name], userData || {})
-      .then((response) => {
-        this.auth.setToken(response, redirect);
-        return response;
-      });
+                   .then((response) => {
+                     this.auth.setToken(response, redirect);
+                     return response;
+                   });
   }
 
   unlink(provider) {
-    var unlinkUrl = this.config.baseUrl ? authUtils.joinUrl(this.config.baseUrl, this.config.unlinkUrl) : this.config.unlinkUrl;
+    let unlinkUrl = this.config.baseUrl ? authUtils.joinUrl(this.config.baseUrl, this.config.unlinkUrl) : this.config.unlinkUrl;
 
     if (this.config.unlinkMethod === 'get') {
       return this.http.fetch(unlinkUrl + provider)
-        .then(authUtils.status)
-        .then((response) => {
-          return response;
-        });
+                 .then(authUtils.status)
+                 .then((response) => {
+                   return response;
+                 });
     } else if (this.config.unlinkMethod === 'post') {
       return this.http.fetch(unlinkUrl, {
         method: 'post',
         body: json(provider)
       })
-        .then(authUtils.status)
-        .then((response) => {
-          return response;
-        });
+      .then(authUtils.status)
+      .then((response) => {
+        return response;
+      });
     }
   }
 }

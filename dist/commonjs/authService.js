@@ -14,6 +14,8 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 var _aureliaDependencyInjection = require('aurelia-dependency-injection');
 
+var _aureliaBinding = require('aurelia-binding');
+
 var _aureliaFetchClient = require('aurelia-fetch-client');
 
 require('fetch');
@@ -77,13 +79,13 @@ var AuthService = (function () {
             }
           }, {
             key: 'isAuthenticated',
-            decorators: [computedFrom('token')],
+            decorators: [(0, _aureliaBinding.computedFrom)('token')],
             get: function get() {
               return self.auth.isAuthenticated(roles);
             }
           }, {
             key: 'isAuthorised',
-            decorators: [computedFrom('token')],
+            decorators: [(0, _aureliaBinding.computedFrom)('token')],
             get: function get() {
               return self.auth.isAuthorised(roles);
             }
@@ -98,7 +100,7 @@ var AuthService = (function () {
       var _this3 = this;
 
       var signupUrl = this.auth.getSignupUrl();
-      var content;
+      var content = undefined;
       if (typeof arguments[0] === 'object') {
         content = arguments[0];
       } else {
@@ -109,10 +111,7 @@ var AuthService = (function () {
         };
       }
 
-      return this.http.fetch(signupUrl, {
-        method: 'post',
-        body: (0, _aureliaFetchClient.json)(content)
-      }).then(_authUtils2['default'].status).then(function (response) {
+      return this.http.fetch(signupUrl, { method: 'post', body: (0, _aureliaFetchClient.json)(content) }).then(_authUtils2['default'].status).then(function (response) {
         if (_this3.config.loginOnSignup) {
           _this3.auth.setToken(response);
         } else if (_this3.config.signupRedirect) {
@@ -127,7 +126,7 @@ var AuthService = (function () {
       var _this4 = this;
 
       var loginUrl = this.auth.getLoginUrl();
-      var content;
+      var content = undefined;
       if (typeof arguments[1] !== 'string') {
         content = arguments[0];
       } else {
@@ -159,7 +158,7 @@ var AuthService = (function () {
       var provider = this.oAuth2;
       if (this.config.providers[name].type === '1.0') {
         provider = this.oAuth1;
-      };
+      }
 
       return provider.open(this.config.providers[name], userData || {}).then(function (response) {
         _this5.auth.setToken(response, redirect);
@@ -186,14 +185,14 @@ var AuthService = (function () {
     }
   }, {
     key: 'tokenPayload',
-    decorators: [computedFrom('token')],
+    decorators: [(0, _aureliaBinding.computedFrom)('token')],
     get: function get() {
       return this.auth.getPayload();
     }
   }]);
 
   var _AuthService = AuthService;
-  AuthService = (0, _aureliaDependencyInjection.inject)(ObserverLocator, _aureliaFetchClient.HttpClient, _authentication.Authentication, _oAuth1.OAuth1, _oAuth2.OAuth2, _baseConfig.BaseConfig)(AuthService) || AuthService;
+  AuthService = (0, _aureliaDependencyInjection.inject)(_aureliaBinding.ObserverLocator, _aureliaFetchClient.HttpClient, _authentication.Authentication, _oAuth1.OAuth1, _oAuth2.OAuth2, _baseConfig.BaseConfig)(AuthService) || AuthService;
   return AuthService;
 })();
 

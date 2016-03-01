@@ -62,12 +62,12 @@ System.register([], function (_export) {
         },
 
         parseQueryString: function parseQueryString(keyValue) {
-          var obj = {},
-              key,
-              value;
-          authUtils.forEach((keyValue || '').split('&'), function (keyValue) {
-            if (keyValue) {
-              value = keyValue.split('=');
+          var obj = {};
+          var key = undefined;
+          var value = undefined;
+          authUtils.forEach((keyValue || '').split('&'), function (keyValue2) {
+            if (keyValue2) {
+              value = keyValue2.split('=');
               key = decodeURIComponent(value[0]);
               obj[key] = authUtils.isDefined(value[1]) ? decodeURIComponent(value[1]) : true;
             }
@@ -105,7 +105,7 @@ System.register([], function (_export) {
           return value !== null && typeof value === 'object' && !Object.getPrototypeOf(value);
         },
         isArrayLike: function isArrayLike(obj) {
-          if (obj == null || authUtils.isWindow(obj)) {
+          if (obj === null || authUtils.isWindow(obj)) {
             return false;
           }
         },
@@ -129,11 +129,12 @@ System.register([], function (_export) {
 
           return forEach;
         })(function (obj, iterator, context) {
-          var key, length;
+          var key = undefined;
+          var length = undefined;
           if (obj) {
             if (authUtils.isFunction(obj)) {
               for (key in obj) {
-                if (key != 'prototype' && key != 'length' && key != 'name' && (!obj.hasOwnProperty || obj.hasOwnProperty(key))) {
+                if (key !== 'prototype' && key !== 'length' && key !== 'name' && (!obj.hasOwnProperty || obj.hasOwnProperty(key))) {
                   iterator.call(context, obj[key], key, obj);
                 }
               }

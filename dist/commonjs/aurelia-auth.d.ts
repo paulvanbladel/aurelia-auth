@@ -1,5 +1,5 @@
 declare module 'aurelia-auth/authUtils' {
-	 var authUtils: {
+	 let authUtils: {
 	    status: (response: any) => any;
 	    isDefined: (value: any) => boolean;
 	    camelCase: (name: any) => any;
@@ -63,6 +63,7 @@ declare module 'aurelia-auth/authentication' {
 
 }
 declare module 'aurelia-auth/app.fetch-httpClient.config' {
+	import 'fetch';
 	export class FetchConfig {
 	    constructor(httpClient: any, authService: any, storage: any, config: any);
 	    configure(): void;
@@ -70,6 +71,7 @@ declare module 'aurelia-auth/app.fetch-httpClient.config' {
 
 }
 declare module 'aurelia-auth/app.httpClient.config' {
+	import 'fetch';
 	export default class  {
 	    constructor(http: any, auth: any, storage: any, config: any);
 	    configure(): void;
@@ -95,6 +97,7 @@ declare module 'aurelia-auth/popup' {
 
 }
 declare module 'aurelia-auth/oAuth1' {
+	import 'fetch';
 	export class OAuth1 {
 	    constructor(storage: any, popup: any, http: any, config: any);
 	    open(options: any, userData: any): any;
@@ -104,6 +107,7 @@ declare module 'aurelia-auth/oAuth1' {
 
 }
 declare module 'aurelia-auth/oAuth2' {
+	import 'fetch';
 	export class OAuth2 {
 	    constructor(storage: any, popup: any, http: any, config: any);
 	    open(options: any, userData: any): any;
@@ -113,6 +117,7 @@ declare module 'aurelia-auth/oAuth2' {
 
 }
 declare module 'aurelia-auth/authService' {
+	import 'fetch';
 	export class AuthService {
 	    constructor(observerLocator: any, http: any, auth: any, oAuth1: any, oAuth2: any, config: any);
 	    getMe(): any;

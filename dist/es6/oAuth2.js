@@ -84,7 +84,7 @@ export class OAuth2 {
     })
       .then(authUtils.status)
       .then((response) => {
-        return response
+        return response;
       });
   }
 
@@ -117,9 +117,3 @@ export class OAuth2 {
     return keyValuePairs.map(pair => pair.join('=')).join('&');
   }
 }
-
-
-
-
-
-
