@@ -24,7 +24,7 @@ export class BaseConfig {
       signupRoute: '/signup',
       tokenRoot: false,
       tokenName: 'token',
-      idTokenName:'id_token',
+      idTokenName: 'id_token',
       tokenPrefix: 'aurelia',
       responseTokenProp: 'access_token',
       responseIdTokenProp: 'id_token',

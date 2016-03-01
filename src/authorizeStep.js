@@ -1,7 +1,6 @@
 import {inject} from 'aurelia-dependency-injection';
 import {Authentication} from './authentication';
 import {Router, Redirect} from 'aurelia-router';
-import {Authentication} from './authentication';
 import authUtils from './authUtils';
 
 @inject(Authentication)
@@ -11,13 +10,13 @@ export class AuthorizeStep {
   }
 
   run(routingContext, next) {
-    var loginRoute = this.auth.getLoginRoute();
+    let loginRoute = this.auth.getLoginRoute();
 
     if (routingContext.getAllInstructions().some(i => !this.auth.isAuthorised(i.config.auth))) {
       let auth = [];
-      for(let i of routingContext.getAllInstructions()) {
-        if(authUtils.isArray(i.config.auth)) {
-          for(let a of i.config.auth) {
+      for (let i of routingContext.getAllInstructions()) {
+        if (authUtils.isArray(i.config.auth)) {
+          for (let a of i.config.auth) {
             auth.push(a);
           }
         }
@@ -25,11 +24,11 @@ export class AuthorizeStep {
       this.auth.setInitialUrl(window.location.href, auth);
       return next.cancel(new Redirect(loginRoute));
     } else if (
-        this.auth.isAuthenticated() && //is logged in?
-        this.auth.isAuthorised(this.auth.getRequiredRoles()) && //have authorization to access initial route?
-        routingContext.getAllInstructions().some(i => i.fragment === loginRoute)
-      ) {
-      var loginRedirect = this.auth.getLoginRedirect();
+      this.auth.isAuthenticated() && //is logged in?
+      this.auth.isAuthorised(this.auth.getRequiredRoles()) && //have authorization to access initial route?
+      routingContext.getAllInstructions().some(i => i.fragment === loginRoute)
+    ) {
+      let loginRedirect = this.auth.getLoginRedirect();
       return next.cancel(new Redirect(loginRedirect));
     }
 

@@ -1,0 +1,8 @@
+{
+  "extends": "./node_modules/aurelia-tools/.eslintrc",
+  "rules": {
+    "no-else-return": 0,
+    "strict": [0, "never"],
+    "no-console": 0
+  }
+}
