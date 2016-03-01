@@ -133,10 +133,10 @@ export class Authentication {
             return false;
         }
         if (authUtils.isArray(auth) && auth.length > 0) {
-            if(!payload.roles) {
+            if(!payload.sub.roles) {
                 return false;
             }
-            return auth.some(r => payload.roles.some(rp => r === rp));
+            return auth.some(r => payload.sub.roles.some(rp => r === rp));
         }
         return true;
     }
