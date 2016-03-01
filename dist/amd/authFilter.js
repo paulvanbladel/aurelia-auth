@@ -1,4 +1,4 @@
-define(['exports', 'aurelia-framework', './authentication'], function (exports, _aureliaFramework, _authentication) {
+define(['exports', 'aurelia-dependency-injection', './authentication'], function (exports, _aureliaDependencyInjection, _authentication) {
   'use strict';
 
   Object.defineProperty(exports, '__esModule', {
@@ -28,7 +28,7 @@ define(['exports', 'aurelia-framework', './authentication'], function (exports, 
     }]);
 
     var _AuthFilterValueConverter = AuthFilterValueConverter;
-    AuthFilterValueConverter = (0, _aureliaFramework.inject)(_authentication.Authentication)(AuthFilterValueConverter) || AuthFilterValueConverter;
+    AuthFilterValueConverter = (0, _aureliaDependencyInjection.inject)(_authentication.Authentication)(AuthFilterValueConverter) || AuthFilterValueConverter;
     return AuthFilterValueConverter;
   })();
 

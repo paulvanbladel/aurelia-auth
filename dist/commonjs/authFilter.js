@@ -8,7 +8,7 @@ var _createClass = (function () { function defineProperties(target, props) { for
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
-var _aureliaFramework = require('aurelia-framework');
+var _aureliaDependencyInjection = require('aurelia-dependency-injection');
 
 var _authentication = require('./authentication');
 
@@ -31,7 +31,7 @@ var AuthFilterValueConverter = (function () {
   }]);
 
   var _AuthFilterValueConverter = AuthFilterValueConverter;
-  AuthFilterValueConverter = (0, _aureliaFramework.inject)(_authentication.Authentication)(AuthFilterValueConverter) || AuthFilterValueConverter;
+  AuthFilterValueConverter = (0, _aureliaDependencyInjection.inject)(_authentication.Authentication)(AuthFilterValueConverter) || AuthFilterValueConverter;
   return AuthFilterValueConverter;
 })();
 

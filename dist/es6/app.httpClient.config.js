@@ -5,7 +5,7 @@ import {Authentication} from './authentication';
 import {Storage} from './storage';
 import {inject} from 'aurelia-dependency-injection';
 
-@inject(HttpClient,Authentication,Storage, BaseConfig)
+@inject(HttpClient, Authentication, Storage, BaseConfig)
 export default class {
   constructor(http, auth, storage, config) {
     this.http = http;

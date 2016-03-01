@@ -62,12 +62,12 @@ export class OAuth1 {
     let exchangeForTokenUrl = this.config.baseUrl ? authUtils.joinUrl(this.config.baseUrl, current.url) : current.url;
     let credentials         = this.config.withCredentials ? 'include' : 'same-origin';
 
-  return this.http.fetch(exchangeForTokenUrl, {
+    return this.http.fetch(exchangeForTokenUrl, {
       method: 'post',
       body: json(data),
       credentials: credentials
     })
-      .then(authUtils.status)
+    .then(authUtils.status);
   }
 
   buildQueryString(obj) {
@@ -78,8 +78,3 @@ export class OAuth1 {
     return str.join('&');
   }
 }
-
-
-
-
-

@@ -1,4 +1,4 @@
-define(['exports', 'aurelia-dependency-injection', 'aurelia-fetch-client', 'fetch', './authentication', './baseConfig', './oAuth1', './oAuth2', './authUtils'], function (exports, _aureliaDependencyInjection, _aureliaFetchClient, _fetch, _authentication, _baseConfig, _oAuth1, _oAuth2, _authUtils) {
+define(['exports', 'aurelia-dependency-injection', 'aurelia-binding', 'aurelia-fetch-client', 'fetch', './authentication', './baseConfig', './oAuth1', './oAuth2', './authUtils'], function (exports, _aureliaDependencyInjection, _aureliaBinding, _aureliaFetchClient, _fetch, _authentication, _baseConfig, _oAuth1, _oAuth2, _authUtils) {
   'use strict';
 
   Object.defineProperty(exports, '__esModule', {
@@ -62,13 +62,13 @@ define(['exports', 'aurelia-dependency-injection', 'aurelia-fetch-client', 'fetc
               }
             }, {
               key: 'isAuthenticated',
-              decorators: [computedFrom('token')],
+              decorators: [(0, _aureliaBinding.computedFrom)('token')],
               get: function get() {
                 return self.auth.isAuthenticated(roles);
               }
             }, {
               key: 'isAuthorised',
-              decorators: [computedFrom('token')],
+              decorators: [(0, _aureliaBinding.computedFrom)('token')],
               get: function get() {
                 return self.auth.isAuthorised(roles);
               }
@@ -83,7 +83,7 @@ define(['exports', 'aurelia-dependency-injection', 'aurelia-fetch-client', 'fetc
         var _this3 = this;
 
         var signupUrl = this.auth.getSignupUrl();
-        var content;
+        var content = undefined;
         if (typeof arguments[0] === 'object') {
           content = arguments[0];
         } else {
@@ -94,10 +94,7 @@ define(['exports', 'aurelia-dependency-injection', 'aurelia-fetch-client', 'fetc
           };
         }
 
-        return this.http.fetch(signupUrl, {
-          method: 'post',
-          body: (0, _aureliaFetchClient.json)(content)
-        }).then(_authUtils2['default'].status).then(function (response) {
+        return this.http.fetch(signupUrl, { method: 'post', body: (0, _aureliaFetchClient.json)(content) }).then(_authUtils2['default'].status).then(function (response) {
           if (_this3.config.loginOnSignup) {
             _this3.auth.setToken(response);
           } else if (_this3.config.signupRedirect) {
@@ -112,7 +109,7 @@ define(['exports', 'aurelia-dependency-injection', 'aurelia-fetch-client', 'fetc
         var _this4 = this;
 
         var loginUrl = this.auth.getLoginUrl();
-        var content;
+        var content = undefined;
         if (typeof arguments[1] !== 'string') {
           content = arguments[0];
         } else {
@@ -144,7 +141,7 @@ define(['exports', 'aurelia-dependency-injection', 'aurelia-fetch-client', 'fetc
         var provider = this.oAuth2;
         if (this.config.providers[name].type === '1.0') {
           provider = this.oAuth1;
-        };
+        }
 
         return provider.open(this.config.providers[name], userData || {}).then(function (response) {
           _this5.auth.setToken(response, redirect);
@@ -171,14 +168,14 @@ define(['exports', 'aurelia-dependency-injection', 'aurelia-fetch-client', 'fetc
       }
     }, {
       key: 'tokenPayload',
-      decorators: [computedFrom('token')],
+      decorators: [(0, _aureliaBinding.computedFrom)('token')],
       get: function get() {
         return this.auth.getPayload();
       }
     }]);
 
     var _AuthService = AuthService;
-    AuthService = (0, _aureliaDependencyInjection.inject)(ObserverLocator, _aureliaFetchClient.HttpClient, _authentication.Authentication, _oAuth1.OAuth1, _oAuth2.OAuth2, _baseConfig.BaseConfig)(AuthService) || AuthService;
+    AuthService = (0, _aureliaDependencyInjection.inject)(_aureliaBinding.ObserverLocator, _aureliaFetchClient.HttpClient, _authentication.Authentication, _oAuth1.OAuth1, _oAuth2.OAuth2, _baseConfig.BaseConfig)(AuthService) || AuthService;
     return AuthService;
   })();
 

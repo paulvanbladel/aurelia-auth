@@ -26,7 +26,7 @@ System.register(['aurelia-dependency-injection', './baseConfig'], function (_exp
           value: function get(key) {
             switch (this.config.storage) {
               case 'localStorage':
-                if ('localStorage' in window && window['localStorage'] !== null) {
+                if ('localStorage' in window && window.localStorage !== null) {
                   return localStorage.getItem(key);
                 } else {
                   console.warn('Warning: Local Storage is disabled or unavailable');
@@ -35,13 +35,15 @@ System.register(['aurelia-dependency-injection', './baseConfig'], function (_exp
                 break;
 
               case 'sessionStorage':
-                if ('sessionStorage' in window && window['sessionStorage'] !== null) {
+                if ('sessionStorage' in window && window.sessionStorage !== null) {
                   return sessionStorage.getItem(key);
                 } else {
                   console.warn('Warning: Session Storage is disabled or unavailable.  will not work correctly.');
                   return undefined;
                 }
                 break;
+              default:
+                throw new Error('Unexpected storage type requested.');
             }
           }
         }, {
@@ -49,7 +51,7 @@ System.register(['aurelia-dependency-injection', './baseConfig'], function (_exp
           value: function set(key, value) {
             switch (this.config.storage) {
               case 'localStorage':
-                if ('localStorage' in window && window['localStorage'] !== null) {
+                if ('localStorage' in window && window.localStorage !== null) {
                   return localStorage.setItem(key, value);
                 } else {
                   console.warn('Warning: Local Storage is disabled or unavailable.  will not work correctly.');
@@ -58,13 +60,16 @@ System.register(['aurelia-dependency-injection', './baseConfig'], function (_exp
                 break;
 
               case 'sessionStorage':
-                if ('sessionStorage' in window && window['sessionStorage'] !== null) {
+                if ('sessionStorage' in window && window.sessionStorage !== null) {
                   return sessionStorage.setItem(key, value);
                 } else {
                   console.warn('Warning: Session Storage is disabled or unavailable.  will not work correctly.');
                   return undefined;
                 }
                 break;
+
+              default:
+                throw new Error('Unexpected storage type requested.');
             }
           }
         }, {
@@ -72,7 +77,7 @@ System.register(['aurelia-dependency-injection', './baseConfig'], function (_exp
           value: function remove(key) {
             switch (this.config.storage) {
               case 'localStorage':
-                if ('localStorage' in window && window['localStorage'] !== null) {
+                if ('localStorage' in window && window.localStorage !== null) {
                   return localStorage.removeItem(key);
                 } else {
                   console.warn('Warning: Local Storage is disabled or unavailable.  will not work correctly.');
@@ -81,13 +86,16 @@ System.register(['aurelia-dependency-injection', './baseConfig'], function (_exp
                 break;
 
               case 'sessionStorage':
-                if ('sessionStorage' in window && window['sessionStorage'] !== null) {
+                if ('sessionStorage' in window && window.sessionStorage !== null) {
                   return sessionStorage.removeItem(key);
                 } else {
                   console.warn('Warning: Session Storage is disabled or unavailable.  will not work correctly.');
                   return undefined;
                 }
                 break;
+
+              default:
+                throw new Error('Unexpected storage type requested.');
             }
           }
         }]);

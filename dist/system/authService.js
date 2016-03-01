@@ -1,7 +1,7 @@
-System.register(['aurelia-dependency-injection', 'aurelia-fetch-client', 'fetch', './authentication', './baseConfig', './oAuth1', './oAuth2', './authUtils'], function (_export) {
+System.register(['aurelia-dependency-injection', 'aurelia-binding', 'aurelia-fetch-client', 'fetch', './authentication', './baseConfig', './oAuth1', './oAuth2', './authUtils'], function (_export) {
   'use strict';
 
-  var inject, HttpClient, json, Authentication, BaseConfig, OAuth1, OAuth2, authUtils, AuthService;
+  var inject, computedFrom, ObserverLocator, HttpClient, json, Authentication, BaseConfig, OAuth1, OAuth2, authUtils, AuthService;
 
   var _createDecoratedClass = (function () { function defineProperties(target, descriptors, initializers) { for (var i = 0; i < descriptors.length; i++) { var descriptor = descriptors[i]; var decorators = descriptor.decorators; var key = descriptor.key; delete descriptor.key; delete descriptor.decorators; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor || descriptor.initializer) descriptor.writable = true; if (decorators) { for (var f = 0; f < decorators.length; f++) { var decorator = decorators[f]; if (typeof decorator === 'function') { descriptor = decorator(target, key, descriptor) || descriptor; } else { throw new TypeError('The decorator for method ' + descriptor.key + ' is of the invalid type ' + typeof decorator); } } if (descriptor.initializer !== undefined) { initializers[key] = descriptor; continue; } } Object.defineProperty(target, key, descriptor); } } return function (Constructor, protoProps, staticProps, protoInitializers, staticInitializers) { if (protoProps) defineProperties(Constructor.prototype, protoProps, protoInitializers); if (staticProps) defineProperties(Constructor, staticProps, staticInitializers); return Constructor; }; })();
 
@@ -12,6 +12,9 @@ System.register(['aurelia-dependency-injection', 'aurelia-fetch-client', 'fetch'
   return {
     setters: [function (_aureliaDependencyInjection) {
       inject = _aureliaDependencyInjection.inject;
+    }, function (_aureliaBinding) {
+      computedFrom = _aureliaBinding.computedFrom;
+      ObserverLocator = _aureliaBinding.ObserverLocator;
     }, function (_aureliaFetchClient) {
       HttpClient = _aureliaFetchClient.HttpClient;
       json = _aureliaFetchClient.json;
@@ -95,7 +98,7 @@ System.register(['aurelia-dependency-injection', 'aurelia-fetch-client', 'fetch'
             var _this3 = this;
 
             var signupUrl = this.auth.getSignupUrl();
-            var content;
+            var content = undefined;
             if (typeof arguments[0] === 'object') {
               content = arguments[0];
             } else {
@@ -106,10 +109,7 @@ System.register(['aurelia-dependency-injection', 'aurelia-fetch-client', 'fetch'
               };
             }
 
-            return this.http.fetch(signupUrl, {
-              method: 'post',
-              body: json(content)
-            }).then(authUtils.status).then(function (response) {
+            return this.http.fetch(signupUrl, { method: 'post', body: json(content) }).then(authUtils.status).then(function (response) {
               if (_this3.config.loginOnSignup) {
                 _this3.auth.setToken(response);
               } else if (_this3.config.signupRedirect) {
@@ -124,7 +124,7 @@ System.register(['aurelia-dependency-injection', 'aurelia-fetch-client', 'fetch'
             var _this4 = this;
 
             var loginUrl = this.auth.getLoginUrl();
-            var content;
+            var content = undefined;
             if (typeof arguments[1] !== 'string') {
               content = arguments[0];
             } else {
@@ -156,7 +156,7 @@ System.register(['aurelia-dependency-injection', 'aurelia-fetch-client', 'fetch'
             var provider = this.oAuth2;
             if (this.config.providers[name].type === '1.0') {
               provider = this.oAuth1;
-            };
+            }
 
             return provider.open(this.config.providers[name], userData || {}).then(function (response) {
               _this5.auth.setToken(response, redirect);
