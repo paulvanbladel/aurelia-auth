@@ -14,8 +14,7 @@ export class FetchConfig {
     this.config = config.current;
   }
 
-  configure(){
-
+  configure() {
     this.httpClient.configure(httpConfig => {
       httpConfig
         .withDefaults({
