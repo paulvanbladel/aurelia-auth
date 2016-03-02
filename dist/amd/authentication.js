@@ -58,7 +58,7 @@ define(['exports', 'aurelia-dependency-injection', './baseConfig', './storage', 
             value: function getPayload() {
 
                 var token = this.storage.get(this.tokenName);
-                return decomposeToken(token);
+                return this.decomposeToken(token);
             }
         }, {
             key: 'decomposeToken',

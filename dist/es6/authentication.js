@@ -39,7 +39,7 @@ export class Authentication {
     getPayload() {
 
         let token = this.storage.get(this.tokenName);
-        return decomposeToken(token);
+        return this.decomposeToken(token);
     }
 
     decomposeToken(token){

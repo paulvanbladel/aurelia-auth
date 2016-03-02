@@ -65,7 +65,7 @@ var Authentication = (function () {
         value: function getPayload() {
 
             var token = this.storage.get(this.tokenName);
-            return decomposeToken(token);
+            return this.decomposeToken(token);
         }
     }, {
         key: 'decomposeToken',
