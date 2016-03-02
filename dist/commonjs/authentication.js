@@ -69,7 +69,7 @@ var Authentication = (function () {
   }, {
     key: 'getPayload',
     value: function getPayload() {
-      return decomposeToken(this.token);
+      return this.decomposeToken(this.token);
     }
   }, {
     key: 'decomposeToken',

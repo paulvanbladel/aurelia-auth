@@ -42,7 +42,7 @@ export class Authentication {
   }
 
   getPayload() {
-    return decomposeToken(this.token);
+    return this.decomposeToken(this.token);
   }
 
   decomposeToken(token) {

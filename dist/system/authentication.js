@@ -67,7 +67,7 @@ System.register(['aurelia-dependency-injection', './baseConfig', './storage', '.
         }, {
           key: 'getPayload',
           value: function getPayload() {
-            return decomposeToken(this.token);
+            return this.decomposeToken(this.token);
           }
         }, {
           key: 'decomposeToken',
