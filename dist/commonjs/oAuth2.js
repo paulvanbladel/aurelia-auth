@@ -94,7 +94,7 @@ var OAuth2 = (function () {
         if (current.responseType.toUpperCase().includes('TOKEN')) {
           if (!_this.verifyIdToken(oauthData, current.name)) {
             return Promise.reject('OAuth 2.0 Nonce parameter mismatch.');
-          };
+          }
           return oauthData;
         }
 
@@ -104,7 +104,6 @@ var OAuth2 = (function () {
   }, {
     key: 'verifyIdToken',
     value: function verifyIdToken(oauthData, providerName) {
-
       var idToken = oauthData && oauthData[this.config.responseIdTokenProp];
       if (!idToken) return true;
       var idTokenObject = this.auth.decomposeToken(idToken);

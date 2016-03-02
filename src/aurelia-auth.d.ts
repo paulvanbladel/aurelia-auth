@@ -1,5 +1,5 @@
 declare module 'aurelia-auth/authUtils' {
-	 var authUtils: {
+	 let authUtils: {
 	    status: (response: any) => any;
 	    isDefined: (value: any) => boolean;
 	    camelCase: (name: any) => any;
@@ -41,21 +41,30 @@ declare module 'aurelia-auth/authentication' {
 	    constructor(storage: any, config: any);
 	    getLoginRoute(): any;
 	    getLoginRedirect(): any;
+	    getRequiredRoles(): any;
 	    getLoginUrl(): any;
 	    getSignupUrl(): any;
 	    getProfileUrl(): any;
 	    getToken(): any;
 	    getPayload(): any;
 	    decomposeToken(token: any): any;
-	    setInitialUrl(url: any): void;
+	    setInitialUrl(url: any, roles: any): void;
 	    setToken(response: any, redirect: any): void;
 	    removeToken(): void;
-	    isAuthenticated(): boolean;
+	    /**
+	     * Checks if user is authenticated.
+	     * If @auth is provided, also validates if user has at least one of the required roles.
+	     *
+	     * @param auth - it is string[] with roles names as elements
+	     */
+	    isAuthenticated(auth: any): any;
+	    isAuthorised(auth: any): any;
 	    logout(redirect: any): any;
 	}
 
 }
 declare module 'aurelia-auth/app.fetch-httpClient.config' {
+	import 'fetch';
 	export class FetchConfig {
 	    constructor(httpClient: any, authService: any, storage: any, config: any);
 	    configure(): void;
@@ -63,6 +72,7 @@ declare module 'aurelia-auth/app.fetch-httpClient.config' {
 
 }
 declare module 'aurelia-auth/app.httpClient.config' {
+	import 'fetch';
 	export default class  {
 	    constructor(http: any, auth: any, storage: any, config: any);
 	    configure(): void;
@@ -71,7 +81,8 @@ declare module 'aurelia-auth/app.httpClient.config' {
 }
 declare module 'aurelia-auth/authFilter' {
 	export class AuthFilterValueConverter {
-	    toView(routes: any, isAuthenticated: any): any;
+	    constructor(auth: any);
+	    toView(routes: any): any;
 	}
 
 }
@@ -87,6 +98,7 @@ declare module 'aurelia-auth/popup' {
 
 }
 declare module 'aurelia-auth/oAuth1' {
+	import 'fetch';
 	export class OAuth1 {
 	    constructor(storage: any, popup: any, http: any, config: any);
 	    open(options: any, userData: any): any;
@@ -96,6 +108,7 @@ declare module 'aurelia-auth/oAuth1' {
 
 }
 declare module 'aurelia-auth/oAuth2' {
+	import 'fetch';
 	export class OAuth2 {
 	    constructor(storage: any, popup: any, http: any, config: any, auth: any);
 	    open(options: any, userData: any): any;
@@ -106,16 +119,11 @@ declare module 'aurelia-auth/oAuth2' {
 
 }
 declare module 'aurelia-auth/authService' {
+	import 'fetch';
 	export class AuthService {
-	    constructor(http: any, auth: any, oAuth1: any, oAuth2: any, config: any);
+	    constructor(observerLocator: any, http: any, auth: any, oAuth1: any, oAuth2: any, config: any);
 	    getMe(): any;
-	    isAuthenticated(): any;
-	    getTokenPayload(): any;
-	    signup(displayName: any, email: any, password: any): any;
-	    login(email: any, password: any): any;
-	    logout(redirectUri: any): any;
-	    authenticate(name: any, redirect: any, userData: any): any;
-	    unlink(provider: any): any;
+	    withRoles(roles?: any[]): any;
 	}
 
 }

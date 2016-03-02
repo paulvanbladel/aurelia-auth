@@ -76,7 +76,7 @@ var BaseConfig = (function () {
           type: '2.0',
           clientId: 'jsClient',
           nonce: function nonce() {
-            var val = ((Date.now() + Math.random()) * Math.random()).toString().replace(".", "");
+            var val = ((Date.now() + Math.random()) * Math.random()).toString().replace('.', '');
             return encodeURIComponent(val);
           },
           popupOptions: { width: 452, height: 633 }
