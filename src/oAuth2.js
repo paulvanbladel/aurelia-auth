@@ -80,7 +80,7 @@ export class OAuth2 {
   };
 
 
-    verifyIdToken(oauthData, providerName){
+  verifyIdToken(oauthData, providerName){
                 
         let idToken = oauthData && oauthData[this.config.responseIdTokenProp];
         if(!idToken) return true;
