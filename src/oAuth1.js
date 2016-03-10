@@ -39,7 +39,7 @@ export class OAuth1 {
           this.popup = this.popup.open(
             [
               current.authorizationEndpoint,
-              this.buildQueryString(response.content)
+              this.buildQueryString(response)
             ].join('?'),
             current.name,
             current.popupOptions,
@@ -47,7 +47,7 @@ export class OAuth1 {
         } else {
           this.popup.popupWindow.location = [
             current.authorizationEndpoint,
-            this.buildQueryString(response.content)
+            this.buildQueryString(response)
           ].join('?');
         }
 
