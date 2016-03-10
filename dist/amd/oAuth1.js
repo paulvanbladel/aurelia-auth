@@ -46,9 +46,9 @@ define(['exports', 'aurelia-dependency-injection', './authUtils', './storage', '
           method: 'post'
         }).then(_authUtils2['default'].status).then(function (response) {
           if (_this.config.platform === 'mobile') {
-            _this.popup = _this.popup.open([current.authorizationEndpoint, _this.buildQueryString(response.content)].join('?'), current.name, current.popupOptions, current.redirectUri);
+            _this.popup = _this.popup.open([current.authorizationEndpoint, _this.buildQueryString(response)].join('?'), current.name, current.popupOptions, current.redirectUri);
           } else {
-            _this.popup.popupWindow.location = [current.authorizationEndpoint, _this.buildQueryString(response.content)].join('?');
+            _this.popup.popupWindow.location = [current.authorizationEndpoint, _this.buildQueryString(response)].join('?');
           }
 
           var popupListener = _this.config.platform === 'mobile' ? _this.popup.eventListener(current.redirectUri) : _this.popup.pollPopup();

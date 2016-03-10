@@ -1,3 +1,11 @@
+### 0.12.15 (2016-03-10)
+
+
+#### Bug Fixes
+
+* **oauth:** set current provider settings on open ([069367a1](git+https://github.com/paulvanbladel/aurelia-auth.git/commit/069367a1d1f5cb7aa055aca541480a7495bd2495))
+
+
 ### 0.12.14 (2016-03-08)
 
 
