@@ -63,14 +63,6 @@ declare module 'aurelia-auth/app.fetch-httpClient.config' {
 	}
 
 }
-declare module 'aurelia-auth/app.httpClient.config' {
-	import 'isomorphic-fetch';
-	export default class  {
-	    constructor(http: any, auth: any, storage: any, config: any);
-	    configure(): void;
-	}
-
-}
 declare module 'aurelia-auth/authFilter' {
 	export class AuthFilterValueConverter {
 	    toView(routes: any, isAuthenticated: any): any;
