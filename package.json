@@ -21,6 +21,12 @@
     "url": "https://github.com/paulvanbladel/aurelia-auth/issues"
   },
   "homepage": "https://github.com/paulvanbladel/aurelia-auth#readme",
+  "dependencies": {
+    "aurelia-dependency-injection": "^1.0.0-beta.1.1.5",
+    "aurelia-fetch-client": "^1.0.0-beta.1.1.1",
+    "aurelia-router": "^1.0.0-beta.1.1.3",
+    "isomorphic-fetch": "^2.2.1"
+  },
   "devDependencies": {
     "aurelia-tools": "^0.1.18",
     "babel-eslint": "^4.1.3",
@@ -56,16 +62,18 @@
     "packages": "jspm_packages"
   },
   "jspm": {
+    "registry": "npm",
+    "jspmPackage": true,
     "main": "index",
-    "format": "register",
+    "format": "amd",
     "directories": {
-      "lib": "dist/system"
+      "lib": "dist/amd"
     },
     "dependencies": {
       "aurelia-dependency-injection": "npm:aurelia-dependency-injection@^1.0.0-beta.1.1.4",
       "aurelia-fetch-client": "npm:aurelia-fetch-client@^1.0.0-beta.1.1.1",
       "aurelia-router": "npm:aurelia-router@^1.0.0-beta.1.1.3",
-      "fetch": "github:github/fetch@^0.11.0"
+      "isomorphic-fetch": "npm:isomorphic-fetch@^2.2.1"
     },
     "devDependencies": {
       "aurelia-pal-browser": "npm:aurelia-pal-browser@^1.0.0-beta.1.1.4",
