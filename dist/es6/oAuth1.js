@@ -4,7 +4,7 @@ import {Storage} from './storage';
 import {Popup} from './popup';
 import {BaseConfig} from './baseConfig';
 import {HttpClient, json} from 'aurelia-fetch-client';
-import 'fetch';
+import 'isomorphic-fetch';
 
 @inject(Storage, Popup, HttpClient, BaseConfig)
 export class OAuth1 {

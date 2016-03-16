@@ -10,7 +10,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 var _aureliaFetchClient = require('aurelia-fetch-client');
 
-require('fetch');
+require('isomorphic-fetch');
 
 var _authentication = require('./authentication');
 
