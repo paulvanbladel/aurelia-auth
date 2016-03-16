@@ -26,7 +26,7 @@ var _authentication = require('./authentication');
 
 var _aureliaFetchClient = require('aurelia-fetch-client');
 
-require('fetch');
+require('isomorphic-fetch');
 
 var OAuth2 = (function () {
   function OAuth2(storage, popup, http, config, auth) {

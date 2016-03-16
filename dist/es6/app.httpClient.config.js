@@ -1,5 +1,5 @@
 import {HttpClient, RequestBuilder} from 'aurelia-http-client';
-import 'fetch';
+import 'isomorphic-fetch';
 import {BaseConfig}  from './baseConfig';
 import {Authentication} from './authentication';
 import {Storage} from './storage';

@@ -5,7 +5,7 @@ import {Popup} from './popup';
 import {BaseConfig} from './baseConfig';
 import {Authentication} from './authentication';
 import {HttpClient, json} from 'aurelia-fetch-client';
-import 'fetch';
+import 'isomorphic-fetch';
 
 @inject(Storage, Popup, HttpClient, BaseConfig, Authentication)
 export class OAuth2 {
@@ -67,21 +67,21 @@ export class OAuth2 {
         if (oauthData.state && oauthData.state !== this.storage.get(stateName)) {
           return Promise.reject('OAuth 2.0 state parameter mismatch.');
         }
-          
+
         if (current.responseType.toUpperCase().includes('TOKEN')) { //meaning implicit flow or hybrid flow
             if (!this.verifyIdToken(oauthData, current.name)){
                 return Promise.reject('OAuth 2.0 Nonce parameter mismatch.');
             };
           return oauthData;
         }
-       
+
         return this.exchangeForToken(oauthData, userData, current); //responseType is authorization code only (no token nor id_token)
       });
   };
 
 
   verifyIdToken(oauthData, providerName){
-                
+
         let idToken = oauthData && oauthData[this.config.responseIdTokenProp];
         if(!idToken) return true;
         let idTokenObject = this.auth.decomposeToken(idToken);
@@ -135,7 +135,7 @@ export class OAuth2 {
           let stateName = current.name + '_state';
           paramValue    = encodeURIComponent(this.storage.get(stateName));
         }
-        
+
         if (paramName === 'nonce') {
           let nonceName = current.name + '_nonce';
           paramValue    = encodeURIComponent(this.storage.get(nonceName));

@@ -24,7 +24,7 @@ var _baseConfig = require('./baseConfig');
 
 var _aureliaFetchClient = require('aurelia-fetch-client');
 
-require('fetch');
+require('isomorphic-fetch');
 
 var OAuth1 = (function () {
   function OAuth1(storage, popup, http, config) {

@@ -56,6 +56,7 @@ declare module 'aurelia-auth/authentication' {
 
 }
 declare module 'aurelia-auth/app.fetch-httpClient.config' {
+	import 'isomorphic-fetch';
 	export class FetchConfig {
 	    constructor(httpClient: any, authService: any, storage: any, config: any);
 	    configure(): void;
@@ -63,6 +64,7 @@ declare module 'aurelia-auth/app.fetch-httpClient.config' {
 
 }
 declare module 'aurelia-auth/app.httpClient.config' {
+	import 'isomorphic-fetch';
 	export default class  {
 	    constructor(http: any, auth: any, storage: any, config: any);
 	    configure(): void;
@@ -87,6 +89,7 @@ declare module 'aurelia-auth/popup' {
 
 }
 declare module 'aurelia-auth/oAuth1' {
+	import 'isomorphic-fetch';
 	export class OAuth1 {
 	    constructor(storage: any, popup: any, http: any, config: any);
 	    open(options: any, userData: any): any;
@@ -96,6 +99,7 @@ declare module 'aurelia-auth/oAuth1' {
 
 }
 declare module 'aurelia-auth/oAuth2' {
+	import 'isomorphic-fetch';
 	export class OAuth2 {
 	    constructor(storage: any, popup: any, http: any, config: any, auth: any);
 	    open(options: any, userData: any): any;
@@ -106,6 +110,7 @@ declare module 'aurelia-auth/oAuth2' {
 
 }
 declare module 'aurelia-auth/authService' {
+	import 'isomorphic-fetch';
 	export class AuthService {
 	    constructor(http: any, auth: any, oAuth1: any, oAuth2: any, config: any);
 	    getMe(): any;
