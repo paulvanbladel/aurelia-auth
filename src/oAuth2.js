@@ -113,7 +113,8 @@ export class OAuth2 {
 
     return this.http.fetch(exchangeForTokenUrl, {
       method: 'post',
-      body: json(data),
+      headers: { 'Content-Type': 'application/json; charset=utf-8' },
+      body: JSON.stringify(data),
       credentials: credentials
     })
       .then(authUtils.status)
