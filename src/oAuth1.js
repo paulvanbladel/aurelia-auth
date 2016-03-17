@@ -24,12 +24,15 @@ export class OAuth1 {
 
   open(options, userData) {
     let current = authUtils.extend({}, this.defaults, options);
+
     let serverUrl = this.config.baseUrl ? authUtils.joinUrl(this.config.baseUrl, current.url) : current.url;
+
     if (this.config.platform !== 'mobile') {
       this.popup = this.popup.open('', current.name, current.popupOptions, current.redirectUri);
     }
-
-    return this.http.fetch(serverUrl, { method: 'post' })
+    return this.http.fetch(serverUrl, {
+      method: 'post'
+    })
       .then(authUtils.status)
       .then(response => {
         if (this.config.platform === 'mobile') {
@@ -40,8 +43,7 @@ export class OAuth1 {
             ].join('?'),
             current.name,
             current.popupOptions,
-            current.redirectUri
-          );
+            current.redirectUri);
         } else {
           this.popup.popupWindow.location = [
             current.authorizationEndpoint,
@@ -49,10 +51,9 @@ export class OAuth1 {
           ].join('?');
         }
 
-        let popupListener = this.config.platform === 'mobile' ?
-          this.popup.eventListener(current.redirectUri) : this.popup.pollPopup();
-        return popupListener
-          .then(result => this.exchangeForToken(result, userData, current));
+        let popupListener = this.config.platform === 'mobile' ? this.popup.eventListener(current.redirectUri) : this.popup.pollPopup();
+
+        return popupListener.then(result => this.exchangeForToken(result, userData, current));
       });
   }
 
@@ -61,18 +62,22 @@ export class OAuth1 {
     let exchangeForTokenUrl = this.config.baseUrl ? authUtils.joinUrl(this.config.baseUrl, current.url) : current.url;
     let credentials         = this.config.withCredentials ? 'include' : 'same-origin';
 
-    return this.http.fetch(exchangeForTokenUrl, {
+  return this.http.fetch(exchangeForTokenUrl, {
       method: 'post',
       body: json(data),
       credentials: credentials
     })
-    .then(authUtils.status);
+      .then(authUtils.status)
   }
 
   buildQueryString(obj) {
     let str = [];
-    authUtils.forEach(obj, (value, key) =>
-      str.push(encodeURIComponent(key) + '=' + encodeURIComponent(value)));
+
+    authUtils.forEach(obj, (value, key) => str.push(encodeURIComponent(key) + '=' + encodeURIComponent(value)));
+
     return str.join('&');
   }
 }
+
+
+

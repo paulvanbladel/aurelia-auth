@@ -1,4 +1,4 @@
-const slice = [].slice;
+var slice = [].slice;
 
 function setHashKey(obj, h) {
   if (h) {
@@ -9,15 +9,15 @@ function setHashKey(obj, h) {
 }
 
 function baseExtend(dst, objs, deep) {
-  let h = dst.$$hashKey;
+  var h = dst.$$hashKey;
 
-  for (let i = 0, ii = objs.length; i < ii; ++i) {
-    let obj = objs[i];
+  for (var i = 0, ii = objs.length; i < ii; ++i) {
+    var obj = objs[i];
     if (!authUtils.isObject(obj) && !authUtils.isFunction(obj)) continue;
-    let keys = Object.keys(obj);
-    for (let j = 0, jj = keys.length; j < jj; j++) {
-      let key = keys[j];
-      let src = obj[key];
+    var keys = Object.keys(obj);
+    for (var j = 0, jj = keys.length; j < jj; j++) {
+      var key = keys[j];
+      var src = obj[key];
 
       if (deep && authUtils.isObject(src)) {
         if (!authUtils.isObject(dst[key])) dst[key] = authUtils.isArray(src) ? [] : {};
@@ -32,15 +32,16 @@ function baseExtend(dst, objs, deep) {
   return dst;
 }
 
-let authUtils = {
+var authUtils = {
+    
   status: function status(response) {
     if (response.status >= 200 && response.status < 400) {
-      return response.json().catch(error => null);
-    }
+            return response.json().catch(error => null);
+        }
 
     throw response;
-  },
-
+    },  
+    
   isDefined: function(value) {
     return typeof value !== 'undefined';
   },
@@ -52,18 +53,19 @@ let authUtils = {
   },
 
   parseQueryString: function(keyValue) {
-    let obj = {};
-    let key;
-    let value;
-    authUtils.forEach((keyValue || '').split('&'), function(kv) {
-      if (kv) {
-        value = kv.split('=');
+    var obj = {},
+        key, value;
+    authUtils.forEach((keyValue || '').split('&'), function(keyValue) {
+      if (keyValue) {
+        value = keyValue.split('=');
         key = decodeURIComponent(value[0]);
         obj[key] = authUtils.isDefined(value[1]) ? decodeURIComponent(value[1]) : true;
       }
     });
     return obj;
   },
+
+
 
   isString: function(value) {
     return typeof value === 'string';
@@ -83,8 +85,9 @@ let authUtils = {
       return url;
     }
 
-    let joined = [baseUrl, url].join('/');
-    let normalize = function(str) {
+    var joined = [baseUrl, url].join('/');
+
+    var normalize = function(str) {
       return str
         .replace(/[\/]+/g, '/')
         .replace(/\/\?/g, '?')
@@ -98,7 +101,7 @@ let authUtils = {
     return value !== null && typeof value === 'object' && !Object.getPrototypeOf(value);
   },
   isArrayLike: function(obj) {
-    if (obj === null || authUtils.isWindow(obj)) {
+    if (obj == null || authUtils.isWindow(obj)) {
       return false;
     }
   },
@@ -112,19 +115,18 @@ let authUtils = {
     return baseExtend(dst, slice.call(arguments, 1), true);
   },
   forEach: function(obj, iterator, context) {
-    let key;
-    let length;
+    var key, length;
     if (obj) {
       if (authUtils.isFunction(obj)) {
         for (key in obj) {
           // Need to check if hasOwnProperty exists,
           // as on IE8 the result of querySelectorAll is an object without a hasOwnProperty function
-          if (key !== 'prototype' && key !== 'length' && key !== 'name' && (!obj.hasOwnProperty || obj.hasOwnProperty(key))) {
+          if (key != 'prototype' && key != 'length' && key != 'name' && (!obj.hasOwnProperty || obj.hasOwnProperty(key))) {
             iterator.call(context, obj[key], key, obj);
           }
         }
       } else if (authUtils.isArray(obj) || authUtils.isArrayLike(obj)) {
-        let isPrimitive = typeof obj !== 'object';
+        var isPrimitive = typeof obj !== 'object';
         for (key = 0, length = obj.length; key < length; key++) {
           if (isPrimitive || key in obj) {
             iterator.call(context, obj[key], key, obj);

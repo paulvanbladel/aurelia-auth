@@ -8,7 +8,7 @@ import {OAuth2} from './oAuth2';
 import authUtils from './authUtils';
 
 
-@inject(HttpClient, Authentication, OAuth1, OAuth2, BaseConfig)
+@inject(HttpClient,Authentication, OAuth1, OAuth2, BaseConfig)
 export class AuthService {
   constructor(http, auth, oAuth1, oAuth2, config) {
     this.http = http;
@@ -19,9 +19,12 @@ export class AuthService {
   }
 
   getMe() {
-    let profileUrl = this.auth.getProfileUrl();
+    var profileUrl = this.auth.getProfileUrl();
     return this.http.fetch(profileUrl)
-      .then(authUtils.status);
+      .then(authUtils.status)
+      .then((response) => {
+        return response
+      });
   }
 
   isAuthenticated() {
@@ -33,8 +36,8 @@ export class AuthService {
   }
 
   signup(displayName, email, password) {
-    let signupUrl = this.auth.getSignupUrl();
-    let content;
+    var signupUrl = this.auth.getSignupUrl();
+    var content;
     if (typeof arguments[0] === 'object') {
       content = arguments[0];
     } else {
@@ -61,8 +64,8 @@ export class AuthService {
   }
 
   login(email, password) {
-    let loginUrl = this.auth.getLoginUrl();
-    let content;
+    var loginUrl = this.auth.getLoginUrl();
+    var content;
     if (typeof arguments[1] !== 'string') {
       content = arguments[0];
     } else {
@@ -74,13 +77,13 @@ export class AuthService {
 
     return this.http.fetch(loginUrl, {
       method: 'post',
-      headers: typeof(content) === 'string' ? {'Content-Type': 'application/x-www-form-urlencoded'} : {},
-      body: typeof(content) === 'string' ? content : json(content)
+      headers: typeof(content)==='string' ? {'Content-Type': 'application/x-www-form-urlencoded'} : {},
+      body: typeof(content)==='string' ? content : json(content)
     })
       .then(authUtils.status)
       .then((response) => {
-        this.auth.setToken(response);
-        return response;
+        this.auth.setToken(response)
+        return response
       });
   }
 
@@ -89,10 +92,10 @@ export class AuthService {
   }
 
   authenticate(name, redirect, userData) {
-    let provider = this.oAuth2;
+    var provider = this.oAuth2;
     if (this.config.providers[name].type === '1.0') {
       provider = this.oAuth1;
-    }
+    };
 
     return provider.open(this.config.providers[name], userData || {})
       .then((response) => {
@@ -102,18 +105,25 @@ export class AuthService {
   }
 
   unlink(provider) {
-    let unlinkUrl = this.config.baseUrl ?
-      authUtils.joinUrl(this.config.baseUrl, this.config.unlinkUrl) : this.config.unlinkUrl;
+    var unlinkUrl = this.config.baseUrl ? authUtils.joinUrl(this.config.baseUrl, this.config.unlinkUrl) : this.config.unlinkUrl;
 
     if (this.config.unlinkMethod === 'get') {
       return this.http.fetch(unlinkUrl + provider)
-        .then(authUtils.status);
+        .then(authUtils.status)
+        .then((response) => {
+          return response;
+        });
     } else if (this.config.unlinkMethod === 'post') {
       return this.http.fetch(unlinkUrl, {
         method: 'post',
         body: json(provider)
       })
-      .then(authUtils.status);
+        .then(authUtils.status)
+        .then((response) => {
+          return response;
+        });
     }
   }
 }
+
+

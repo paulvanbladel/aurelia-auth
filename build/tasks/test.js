@@ -1,30 +1,34 @@
 var gulp = require('gulp');
-var Karma = require('karma').Server;
+var karma = require('karma').server;
 
 /**
  * Run test once and exit
  */
 gulp.task('test', function (done) {
-  new Karma({
-    configFile: __dirname + '/../../karma.conf.js',
-    singleRun: true
-  }, done).start();
+    karma.start({
+        configFile: __dirname + '/../../karma.conf.js',
+        singleRun: true
+    }, function(e) {
+        done();
+    });
 });
 
 /**
  * Watch for file changes and re-run tests on each change
  */
 gulp.task('tdd', function (done) {
-  new Karma({
-    configFile: __dirname + '/../../karma.conf.js'
-  }, done).start();
+    karma.start({
+        configFile: __dirname + '/../../karma.conf.js'
+    }, function(e) {
+        done();
+    });
 });
 
 /**
  * Run test once with code coverage and exit
  */
 gulp.task('cover', function (done) {
-  new Karma({
+  karma.start({
     configFile: __dirname + '/../../karma.conf.js',
     singleRun: true,
     reporters: ['coverage'],
@@ -36,5 +40,7 @@ gulp.task('cover', function (done) {
       type: 'html',
       dir: 'build/reports/coverage'
     }
-  }, done).start();
+  }, function (e) {
+    done();
+  });
 });

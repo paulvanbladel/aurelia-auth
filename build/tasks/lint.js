@@ -1,10 +1,10 @@
 var gulp = require('gulp');
 var paths = require('../paths');
-var eslint = require('gulp-eslint');
+var jshint = require('gulp-jshint');
+var stylish = require('jshint-stylish');
 
 gulp.task('lint', function() {
   return gulp.src(paths.source)
-    .pipe(eslint())
-    .pipe(eslint.format())
-    .pipe(eslint.failOnError());
+    .pipe(jshint())
+    .pipe(jshint.reporter(stylish));
 });

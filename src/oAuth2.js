@@ -35,7 +35,7 @@ export class OAuth2 {
   open(options, userData) {
     let current = authUtils.extend({}, this.defaults, options);
 
-    // state handling
+    //state handling
     let stateName = current.name + '_state';
 
     if (authUtils.isFunction(current.state)) {
@@ -44,8 +44,9 @@ export class OAuth2 {
       this.storage.set(stateName, current.state);
     }
 
-    // nonce handling
+    //nonce handling
     let nonceName = current.name + '_nonce';
+
     if (authUtils.isFunction(current.nonce)) {
       this.storage.set(nonceName, current.nonce());
     } else if (authUtils.isString(current.nonce)) {
@@ -54,9 +55,12 @@ export class OAuth2 {
 
     let url = current.authorizationEndpoint + '?' + this.buildQueryString(current);
 
-    let openPopup = (this.config.platform === 'mobile') ?
-      this.popup.open(url, current.name, current.popupOptions, current.redirectUri).eventListener(current.redirectUri) :
-      this.popup.open(url, current.name, current.popupOptions, current.redirectUri).pollPopup();
+    let openPopup;
+    if (this.config.platform === 'mobile') {
+      openPopup = this.popup.open(url, current.name, current.popupOptions, current.redirectUri).eventListener(current.redirectUri);
+    } else {
+      openPopup = this.popup.open(url, current.name, current.popupOptions, current.redirectUri).pollPopup();
+    }
 
     return openPopup
       .then(oauthData => {
@@ -64,28 +68,32 @@ export class OAuth2 {
           return Promise.reject('OAuth 2.0 state parameter mismatch.');
         }
 
-        if (current.responseType.toUpperCase().includes('TOKEN')) { // meaning implicit flow or hybrid flow
-          if (!this.verifyIdToken(oauthData, current.name)) {
-            return Promise.reject('OAuth 2.0 Nonce parameter mismatch.');
-          }
-
+        if (current.responseType.toUpperCase().includes('TOKEN')) { //meaning implicit flow or hybrid flow
+            if (!this.verifyIdToken(oauthData, current.name)){
+                return Promise.reject('OAuth 2.0 Nonce parameter mismatch.');
+            };
           return oauthData;
         }
 
-        return this.exchangeForToken(oauthData, userData, current); // responseType is authorization code only (no token nor id_token)
+        return this.exchangeForToken(oauthData, userData, current); //responseType is authorization code only (no token nor id_token)
       });
-  }
+  };
 
-  verifyIdToken(oauthData, providerName) {
-    let idToken = oauthData && oauthData[this.config.responseIdTokenProp];
-    if (!idToken) return true;
-    let idTokenObject = this.auth.decomposeToken(idToken);
-    if (!idTokenObject) return true;
-    let nonceFromToken = idTokenObject.nonce;
-    if (!nonceFromToken) return true;
-    let nonceInStorage = this.storage.get(providerName + '_nonce');
-    return (nonceFromToken !== nonceInStorage) ? false : true;
-  }
+
+  verifyIdToken(oauthData, providerName){
+
+        let idToken = oauthData && oauthData[this.config.responseIdTokenProp];
+        if(!idToken) return true;
+        let idTokenObject = this.auth.decomposeToken(idToken);
+        if(!idTokenObject) return true;
+        let nonceFromToken = idTokenObject.nonce;
+        if(!nonceFromToken) return true;
+        let nonceInStorage = this.storage.get(providerName + '_nonce');
+        if (nonceFromToken!==nonceInStorage) {
+            return false;
+        }
+        return true;
+    };
 
   exchangeForToken(oauthData, userData, current) {
     let data = authUtils.extend({}, userData, {
@@ -108,7 +116,10 @@ export class OAuth2 {
       body: json(data),
       credentials: credentials
     })
-    .then(authUtils.status);
+      .then(authUtils.status)
+      .then((response) => {
+        return response
+      });
   }
 
   buildQueryString(current) {
@@ -145,3 +156,9 @@ export class OAuth2 {
     return keyValuePairs.map(pair => pair.join('=')).join('&');
   }
 }
+
+
+
+
+
+
