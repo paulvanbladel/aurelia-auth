@@ -1,9 +1,9 @@
 import {HttpClient} from 'aurelia-fetch-client';
-import 'isomorphic-fetch';
 import {Authentication} from './authentication';
 import {BaseConfig} from './baseConfig';
 import {inject} from 'aurelia-dependency-injection';
 import {Storage} from './storage';
+import 'isomorphic-fetch';
 
 @inject(HttpClient, Authentication, Storage, BaseConfig)
 export class FetchConfig {
@@ -15,9 +15,9 @@ export class FetchConfig {
   }
 
   configure() {
-    var auth = this.auth;
-    var config = this.config;
-    var storage = this.storage;
+    let auth = this.auth;
+    let config = this.config;
+    let storage = this.storage;
 
     this.httpClient.configure(httpConfig => {
       httpConfig
@@ -29,8 +29,8 @@ export class FetchConfig {
         .withInterceptor({
           request(request) {
             if (auth.isAuthenticated() && config.httpInterceptor) {
-              var tokenName = config.tokenPrefix ? `${config.tokenPrefix}_${config.tokenName}` : config.tokenName;
-              var token = storage.get(tokenName);
+              let tokenName = config.tokenPrefix ? `${config.tokenPrefix}_${config.tokenName}` : config.tokenName;
+              let token = storage.get(tokenName);
 
               if (config.authHeader && config.authToken) {
                 token = `${config.authToken} ${token}`;
