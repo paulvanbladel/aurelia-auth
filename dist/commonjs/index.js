@@ -7,6 +7,10 @@ exports.configure = configure;
 
 var _baseConfig = require('./baseConfig');
 
+var _appFetchHttpClientConfig = require('./app.fetch-httpClient.config');
+
+require('./authFilter');
+
 var _authService = require('./authService');
 
 Object.defineProperty(exports, 'AuthService', {
@@ -24,9 +28,6 @@ Object.defineProperty(exports, 'AuthorizeStep', {
     return _authorizeStep.AuthorizeStep;
   }
 });
-
-var _appFetchHttpClientConfig = require('./app.fetch-httpClient.config');
-
 Object.defineProperty(exports, 'FetchConfig', {
   enumerable: true,
   get: function get() {

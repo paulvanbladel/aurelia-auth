@@ -1,4 +1,4 @@
-define(['exports', './baseConfig', './authService', './authorizeStep', './app.fetch-httpClient.config'], function (exports, _baseConfig, _authService, _authorizeStep, _appFetchHttpClientConfig) {
+define(['exports', './baseConfig', './app.fetch-httpClient.config', './authFilter', './authService', './authorizeStep'], function (exports, _baseConfig, _appFetchHttpClientConfig, _authFilter, _authService, _authorizeStep) {
   'use strict';
 
   Object.defineProperty(exports, '__esModule', {

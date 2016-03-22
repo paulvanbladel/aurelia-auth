@@ -1,7 +1,7 @@
-System.register(['./baseConfig', './authService', './authorizeStep', './app.fetch-httpClient.config'], function (_export) {
+System.register(['./baseConfig', './app.fetch-httpClient.config', './authFilter', './authService', './authorizeStep'], function (_export) {
   'use strict';
 
-  var BaseConfig;
+  var BaseConfig, FetchConfig;
 
   _export('configure', configure);
 
@@ -17,12 +17,14 @@ System.register(['./baseConfig', './authService', './authorizeStep', './app.fetc
   return {
     setters: [function (_baseConfig) {
       BaseConfig = _baseConfig.BaseConfig;
-    }, function (_authService) {
+    }, function (_appFetchHttpClientConfig) {
+      FetchConfig = _appFetchHttpClientConfig.FetchConfig;
+
+      _export('FetchConfig', _appFetchHttpClientConfig.FetchConfig);
+    }, function (_authFilter) {}, function (_authService) {
       _export('AuthService', _authService.AuthService);
     }, function (_authorizeStep) {
       _export('AuthorizeStep', _authorizeStep.AuthorizeStep);
-    }, function (_appFetchHttpClientConfig) {
-      _export('FetchConfig', _appFetchHttpClientConfig.FetchConfig);
     }],
     execute: function () {}
   };
