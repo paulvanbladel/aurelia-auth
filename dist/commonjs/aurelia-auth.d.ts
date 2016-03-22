@@ -59,7 +59,7 @@ declare module 'aurelia-auth/app.fetch-httpClient.config' {
 	import 'isomorphic-fetch';
 	export class FetchConfig {
 	    constructor(httpClient: any, authService: any, storage: any, config: any);
-	    intereceptor: {
+	    interceptor: {
 	        request(request: any): any;
 	    };
 	    configure(): void;

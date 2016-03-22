@@ -24,21 +24,20 @@ define(['exports', 'aurelia-fetch-client', 'isomorphic-fetch', './authentication
             value: function configure() {
                 var _this = this;
 
-                var auth = this.auth;
-                var config = this.config;
-                var storage = this.storage;
-
                 this.httpClient.configure(function (httpConfig) {
                     httpConfig.withDefaults({
                         headers: {
                             'Accept': 'application/json'
                         }
-                    }).withInterceptor(_this.intereceptor);
+                    }).withInterceptor(_this.interceptor);
                 });
             }
         }, {
-            key: 'intereceptor',
+            key: 'interceptor',
             get: function get() {
+                var auth = this.auth;
+                var config = this.config;
+                var storage = this.storage;
                 return {
                     request: function request(_request) {
                         if (auth.isAuthenticated() && config.httpInterceptor) {

@@ -15,12 +15,15 @@ export class FetchConfig {
     }
 
 
-    get intereceptor() {
+    get interceptor() {
+        let auth = this.auth;
+        let config = this.config;
+        let storage = this.storage;
         return {
             request(request) {
                 if (auth.isAuthenticated() && config.httpInterceptor) {
-                    var tokenName = config.tokenPrefix ? `${config.tokenPrefix}_${config.tokenName}` : config.tokenName;
-                    var token = storage.get(tokenName);
+                    let tokenName = config.tokenPrefix ? `${config.tokenPrefix}_${config.tokenName}` : config.tokenName;
+                    let token = storage.get(tokenName);
 
                     if (config.authHeader && config.authToken) {
                         token = `${config.authToken} ${token}`;
@@ -34,9 +37,7 @@ export class FetchConfig {
     }
 
     configure() {
-        var auth = this.auth;
-        var config = this.config;
-        var storage = this.storage;
+        
 
         this.httpClient.configure(httpConfig => {
             httpConfig
@@ -45,7 +46,7 @@ export class FetchConfig {
                         'Accept': 'application/json'
                     }
                 })
-                .withInterceptor(this.intereceptor);
+                .withInterceptor(this.interceptor);
         });
     }
 }
