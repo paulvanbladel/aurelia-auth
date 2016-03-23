@@ -1,8 +1,8 @@
 {
   "name": "aurelia-auth",
-  "version": "0.13.6",
+  "version": "0.13.2",
   "description": "Plugin for security token service, social media authentication and local authentication together with other authentication utilities",
-  "main": "dist/system/index.js",
+  "main": "dist/commonjs/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },

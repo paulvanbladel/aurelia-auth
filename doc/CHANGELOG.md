@@ -1,3 +1,12 @@
+### 0.13.7 (2016-03-23)
+
+
+#### Bug Fixes
+
+* **http-client:** remove reference to aurelia-http-client ([63f4da56](git+https://github.com/paulvanbladel/aurelia-auth.git/commit/63f4da565b723dcac463776b21ac35e8beaafdbf))
+* **oauth:** set current provider settings on open ([069367a1](git+https://github.com/paulvanbladel/aurelia-auth.git/commit/069367a1d1f5cb7aa055aca541480a7495bd2495))
+
+
 ### 0.13.6 (2016-03-23)
 
 
