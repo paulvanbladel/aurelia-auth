@@ -16,7 +16,7 @@ export class AuthorizeStep {
         this.auth.setInitialUrl(window.location.href);
         return next.cancel(new Redirect(loginRoute));
       }
-    } else if (isLoggedIn && routingContext.getAllInstructions().some(i => i.fragment) == loginRoute) {
+    } else if (isLoggedIn && routingContext.getAllInstructions().some(i => i.fragment == loginRoute)) {
       var loginRedirect = this.auth.getLoginRedirect();
       return next.cancel(new Redirect(loginRedirect));
     }

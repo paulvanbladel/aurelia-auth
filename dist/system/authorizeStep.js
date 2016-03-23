@@ -38,8 +38,8 @@ System.register(['aurelia-dependency-injection', './authentication', 'aurelia-ro
                 return next.cancel(new Redirect(loginRoute));
               }
             } else if (isLoggedIn && routingContext.getAllInstructions().some(function (i) {
-              return i.fragment;
-            }) == loginRoute) {
+              return i.fragment == loginRoute;
+            })) {
               var loginRedirect = this.auth.getLoginRedirect();
               return next.cancel(new Redirect(loginRedirect));
             }
