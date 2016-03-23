@@ -1,6 +1,6 @@
 {
   "name": "aurelia-auth",
-  "version": "0.13.3",
+  "version": "0.13.4",
   "description": "Plugin for security token service, social media authentication and local authentication together with other authentication utilities",
   "main": "dist/commonjs/index.js",
   "scripts": {
@@ -21,12 +21,6 @@
     "url": "https://github.com/paulvanbladel/aurelia-auth/issues"
   },
   "homepage": "https://github.com/paulvanbladel/aurelia-auth#readme",
-  "dependencies": {
-    "aurelia-dependency-injection": "^1.0.0-beta.1.1.5",
-    "aurelia-fetch-client": "^1.0.0-beta.1.1.1",
-    "aurelia-router": "^1.0.0-beta.1.1.3",
-    "isomorphic-fetch": "^2.2.1"
-  },
   "devDependencies": {
     "aurelia-tools": "^0.1.18",
     "babel-eslint": "^4.1.3",
