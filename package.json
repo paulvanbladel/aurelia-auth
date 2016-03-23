@@ -1,6 +1,6 @@
 {
   "name": "aurelia-auth",
-  "version": "0.13.2",
+  "version": "0.13.3",
   "description": "Plugin for security token service, social media authentication and local authentication together with other authentication utilities",
   "main": "dist/commonjs/index.js",
   "scripts": {
@@ -64,9 +64,9 @@
   "jspm": {
     "registry": "npm",
     "main": "index",
-    "format": "amd",
+    "format": "register",
     "directories": {
-      "lib": "dist/amd"
+      "lib": "dist/system"
     },
     "dependencies": {
       "aurelia-dependency-injection": "npm:aurelia-dependency-injection@^1.0.0-beta.1.1.4",
