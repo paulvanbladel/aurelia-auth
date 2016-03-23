@@ -170,6 +170,28 @@ System.register(['aurelia-dependency-injection', './baseConfig', './storage', '.
                             resolve();
                         });
                     }
+                }, {
+                    key: 'token_interceptor',
+                    get: function get() {
+                        var config = this.config;
+                        var storage = this.storage;
+                        var auth = this;
+                        return {
+                            request: function request(_request) {
+                                if (auth.isAuthenticated() && config.httpInterceptor) {
+                                    var tokenName = config.tokenPrefix ? config.tokenPrefix + '_' + config.tokenName : config.tokenName;
+                                    var token = storage.get(tokenName);
+
+                                    if (config.authHeader && config.authToken) {
+                                        token = config.authToken + ' ' + token;
+                                    }
+
+                                    _request.headers.append(config.authHeader, token);
+                                }
+                                return _request;
+                            }
+                        };
+                    }
                 }]);
 
                 var _Authentication = Authentication;

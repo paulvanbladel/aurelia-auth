@@ -16,7 +16,9 @@ export class AuthService {
     this.oAuth1 = oAuth1;
     this.oAuth2 = oAuth2;
     this.config = config.current;
+    this.token_interceptor = auth.token_interceptor;
   }
+
 
   getMe() {
     var profileUrl = this.auth.getProfileUrl();

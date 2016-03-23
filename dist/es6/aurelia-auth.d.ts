@@ -52,16 +52,16 @@ declare module 'aurelia-auth/authentication' {
 	    removeToken(): void;
 	    isAuthenticated(): boolean;
 	    logout(redirect: any): any;
+	    token_interceptor: {
+	        request(request: any): any;
+	    };
 	}
 
 }
 declare module 'aurelia-auth/app.fetch-httpClient.config' {
 	import 'isomorphic-fetch';
 	export class FetchConfig {
-	    constructor(httpClient: any, authService: any, storage: any, config: any);
-	    interceptor: {
-	        request(request: any): any;
-	    };
+	    constructor(httpClient: any, authService: any);
 	    configure(): void;
 	}
 

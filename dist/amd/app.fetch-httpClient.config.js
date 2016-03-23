@@ -1,4 +1,4 @@
-define(['exports', 'aurelia-fetch-client', 'isomorphic-fetch', './authentication', './baseConfig', 'aurelia-dependency-injection', './storage'], function (exports, _aureliaFetchClient, _isomorphicFetch, _authentication, _baseConfig, _aureliaDependencyInjection, _storage) {
+define(['exports', 'aurelia-dependency-injection', 'aurelia-fetch-client', 'isomorphic-fetch', './authentication'], function (exports, _aureliaDependencyInjection, _aureliaFetchClient, _isomorphicFetch, _authentication) {
     'use strict';
 
     Object.defineProperty(exports, '__esModule', {
@@ -10,13 +10,11 @@ define(['exports', 'aurelia-fetch-client', 'isomorphic-fetch', './authentication
     function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
     var FetchConfig = (function () {
-        function FetchConfig(httpClient, authService, storage, config) {
+        function FetchConfig(httpClient, authService) {
             _classCallCheck(this, _FetchConfig);
 
             this.httpClient = httpClient;
             this.auth = authService;
-            this.storage = storage;
-            this.config = config.current;
         }
 
         _createClass(FetchConfig, [{
@@ -29,35 +27,13 @@ define(['exports', 'aurelia-fetch-client', 'isomorphic-fetch', './authentication
                         headers: {
                             'Accept': 'application/json'
                         }
-                    }).withInterceptor(_this.interceptor);
+                    }).withInterceptor(_this.auth.token_interceptor);
                 });
-            }
-        }, {
-            key: 'interceptor',
-            get: function get() {
-                var auth = this.auth;
-                var config = this.config;
-                var storage = this.storage;
-                return {
-                    request: function request(_request) {
-                        if (auth.isAuthenticated() && config.httpInterceptor) {
-                            var tokenName = config.tokenPrefix ? config.tokenPrefix + '_' + config.tokenName : config.tokenName;
-                            var token = storage.get(tokenName);
-
-                            if (config.authHeader && config.authToken) {
-                                token = config.authToken + ' ' + token;
-                            }
-
-                            _request.headers.append(config.authHeader, token);
-                        }
-                        return _request;
-                    }
-                };
             }
         }]);
 
         var _FetchConfig = FetchConfig;
-        FetchConfig = (0, _aureliaDependencyInjection.inject)(_aureliaFetchClient.HttpClient, _authentication.Authentication, _storage.Storage, _baseConfig.BaseConfig)(FetchConfig) || FetchConfig;
+        FetchConfig = (0, _aureliaDependencyInjection.inject)(_aureliaFetchClient.HttpClient, _authentication.Authentication)(FetchConfig) || FetchConfig;
         return FetchConfig;
     })();
 

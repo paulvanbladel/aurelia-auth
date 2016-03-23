@@ -151,4 +151,27 @@ export class Authentication {
             resolve();
         });
     }
+
+    get token_interceptor() {
+        let config = this.config;
+        let storage = this.storage;
+        let auth = this;
+        return {
+            request(request) {
+                if (auth.isAuthenticated() && config.httpInterceptor) {
+                    let tokenName = config.tokenPrefix ? `${config.tokenPrefix}_${config.tokenName}` : config.tokenName;
+                    let token = storage.get(tokenName);
+
+                    if (config.authHeader && config.authToken) {
+                        token = `${config.authToken} ${token}`;
+                    }
+
+                    request.headers.append(config.authHeader, token);
+                }
+                return request;
+            }
+        }
+    }
+
+
 }
