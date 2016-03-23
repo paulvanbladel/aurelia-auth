@@ -1,6 +1,6 @@
 {
   "name": "aurelia-auth",
-  "version": "0.13.5",
+  "version": "0.13.6",
   "description": "Plugin for security token service, social media authentication and local authentication together with other authentication utilities",
   "main": "dist/system/index.js",
   "scripts": {
@@ -56,7 +56,6 @@
     "packages": "jspm_packages"
   },
   "jspm": {
-    "registry": "npm",
     "main": "index",
     "format": "register",
     "directories": {
