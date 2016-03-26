@@ -1,15 +1,9 @@
 'use strict';
 
-Object.defineProperty(exports, '__esModule', {
+Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.configure = configure;
-
-var _baseConfig = require('./baseConfig');
-
-var _appFetchHttpClientConfig = require('./app.fetch-httpClient.config');
-
-require('./authFilter');
+exports.FetchConfig = exports.AuthorizeStep = exports.AuthService = undefined;
 
 var _authService = require('./authService');
 
@@ -28,12 +22,18 @@ Object.defineProperty(exports, 'AuthorizeStep', {
     return _authorizeStep.AuthorizeStep;
   }
 });
+
+var _appFetchHttpClient = require('./app.fetch-httpClient.config');
+
 Object.defineProperty(exports, 'FetchConfig', {
   enumerable: true,
   get: function get() {
-    return _appFetchHttpClientConfig.FetchConfig;
+    return _appFetchHttpClient.FetchConfig;
   }
 });
+exports.configure = configure;
+
+var _baseConfig = require('./baseConfig');
 
 function configure(aurelia, configCallback) {
   aurelia.globalResources('./authFilter');

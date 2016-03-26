@@ -1,4 +1,4 @@
-import authUtils from './authUtils';
+import {parseQueryString, extend, forEach} from './auth-utilities';
 import {BaseConfig}  from './baseConfig';
 import {inject} from 'aurelia-dependency-injection';
 
@@ -38,10 +38,10 @@ export class Popup {
         if (parser.search || parser.hash) {
           var queryParams = parser.search.substring(1).replace(/\/$/, '');
           var hashParams = parser.hash.substring(1).replace(/\/$/, '');
-          var hash = authUtils.parseQueryString(hashParams);
-          var qs = authUtils.parseQueryString(queryParams);
+          var hash = parseQueryString(hashParams);
+          var qs = parseQueryString(queryParams);
 
-          authUtils.extend(qs, hash);
+          extend(qs, hash);
 
           if (qs.error) {
             reject({
@@ -81,10 +81,10 @@ export class Popup {
           if (popupWindowOrigin === documentOrigin && (self.popupWindow.location.search || self.popupWindow.location.hash)) {
             var queryParams = self.popupWindow.location.search.substring(1).replace(/\/$/, '');
             var hashParams = self.popupWindow.location.hash.substring(1).replace(/[\/$]/, '');
-            var hash = authUtils.parseQueryString(hashParams);
-            var qs = authUtils.parseQueryString(queryParams);
+            var hash = parseQueryString(hashParams);
+            var qs = parseQueryString(queryParams);
 
-            authUtils.extend(qs, hash);
+            extend(qs, hash);
 
             if (qs.error) {
               reject({
@@ -120,7 +120,7 @@ export class Popup {
   prepareOptions(options) {
     var width = options.width || 500;
     var height = options.height || 500;
-    return authUtils.extend({
+    return extend({
       width: width,
       height: height,
       left: window.screenX + ((window.outerWidth - width) / 2),
@@ -130,7 +130,7 @@ export class Popup {
 
   stringifyOptions(options) {
     var parts = [];
-    authUtils.forEach(options, function(value, key) {
+    forEach(options, function(value, key) {
       parts.push(key + '=' + value);
     });
     return parts.join(',');

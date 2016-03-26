@@ -1,10 +1,11 @@
-import {inject} from 'aurelia-dependency-injection';
-import {BaseConfig}  from './baseConfig';
-import {Storage} from './storage';
-import authUtils from './authUtils';
+var _dec, _class;
 
-@inject(Storage, BaseConfig)
-export class Authentication {
+import { inject } from 'aurelia-dependency-injection';
+import { BaseConfig } from './baseConfig';
+import { Storage } from './storage';
+import { joinUrl, isObject, isString } from './auth-utilities';
+
+export let Authentication = (_dec = inject(Storage, BaseConfig), _dec(_class = class Authentication {
     constructor(storage, config) {
         this.storage = storage;
         this.config = config.current;
@@ -21,15 +22,15 @@ export class Authentication {
     }
 
     getLoginUrl() {
-        return this.config.baseUrl ? authUtils.joinUrl(this.config.baseUrl, this.config.loginUrl) : this.config.loginUrl;
+        return this.config.baseUrl ? joinUrl(this.config.baseUrl, this.config.loginUrl) : this.config.loginUrl;
     }
 
     getSignupUrl() {
-        return this.config.baseUrl ? authUtils.joinUrl(this.config.baseUrl, this.config.signupUrl) : this.config.signupUrl;
+        return this.config.baseUrl ? joinUrl(this.config.baseUrl, this.config.signupUrl) : this.config.signupUrl;
     }
 
     getProfileUrl() {
-        return this.config.baseUrl ? authUtils.joinUrl(this.config.baseUrl, this.config.profileUrl) : this.config.profileUrl;
+        return this.config.baseUrl ? joinUrl(this.config.baseUrl, this.config.profileUrl) : this.config.profileUrl;
     }
 
     getToken() {
@@ -42,7 +43,7 @@ export class Authentication {
         return this.decomposeToken(token);
     }
 
-    decomposeToken(token){
+    decomposeToken(token) {
         if (token && token.split('.').length === 3) {
             let base64Url = token.split('.')[1];
             let base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
@@ -61,48 +62,37 @@ export class Authentication {
 
     setToken(response, redirect) {
 
-         
-        //access token handling
-              
-            let accessToken = response && response[this.config.responseTokenProp];
-            let tokenToStore;
+        let accessToken = response && response[this.config.responseTokenProp];
+        let tokenToStore;
 
-            if (accessToken) {
-                if (authUtils.isObject(accessToken) && authUtils.isObject(accessToken.data)) {
-                    response = accessToken;
-                } else if (authUtils.isString(accessToken)) {
-                    tokenToStore = accessToken;
-                }
+        if (accessToken) {
+            if (isObject(accessToken) && isObject(accessToken.data)) {
+                response = accessToken;
+            } else if (isString(accessToken)) {
+                tokenToStore = accessToken;
             }
+        }
 
-            if (!tokenToStore && response) {
-                tokenToStore = this.config.tokenRoot && response[this.config.tokenRoot] ? response[this.config.tokenRoot][this.config.tokenName] : response[this.config.tokenName];
-            }
+        if (!tokenToStore && response) {
+            tokenToStore = this.config.tokenRoot && response[this.config.tokenRoot] ? response[this.config.tokenRoot][this.config.tokenName] : response[this.config.tokenName];
+        }
 
-            if (tokenToStore) {
-                this.storage.set(this.tokenName, tokenToStore);
-            }
-            
+        if (tokenToStore) {
+            this.storage.set(this.tokenName, tokenToStore);
+        }
 
-        //id token handling
-         
-            let idToken = response && response[this.config.responseIdTokenProp];
-            
-            if (idToken) {
-                    this.storage.set(this.idTokenName, idToken);
-            }
+        let idToken = response && response[this.config.responseIdTokenProp];
 
-        
-        
+        if (idToken) {
+            this.storage.set(this.idTokenName, idToken);
+        }
+
         if (this.config.loginRedirect && !redirect) {
             window.location.href = this.getLoginRedirect();
-        } else if (redirect && authUtils.isString(redirect)) {
+        } else if (redirect && isString(redirect)) {
             window.location.href = window.encodeURI(redirect);
         }
     }
-
-    
-
 
     removeToken() {
         this.storage.remove(this.tokenName);
@@ -112,12 +102,10 @@ export class Authentication {
 
         let token = this.storage.get(this.tokenName);
 
-        // There's no token, so user is not authenticated.
         if (!token) {
             return false;
         }
 
-        // There is a token, but in a different format. Return true.
         if (token.split('.').length !== 3) {
             return true;
         }
@@ -144,7 +132,7 @@ export class Authentication {
 
             if (this.config.logoutRedirect && !redirect) {
                 window.location.href = this.config.logoutRedirect;
-            } else if (authUtils.isString(redirect)) {
+            } else if (isString(redirect)) {
                 window.location.href = redirect;
             }
 
@@ -159,19 +147,18 @@ export class Authentication {
         return {
             request(request) {
                 if (auth.isAuthenticated() && config.httpInterceptor) {
-                    let tokenName = config.tokenPrefix ? `${config.tokenPrefix}_${config.tokenName}` : config.tokenName;
+                    let tokenName = config.tokenPrefix ? `${ config.tokenPrefix }_${ config.tokenName }` : config.tokenName;
                     let token = storage.get(tokenName);
 
                     if (config.authHeader && config.authToken) {
-                        token = `${config.authToken} ${token}`;
+                        token = `${ config.authToken } ${ token }`;
                     }
 
                     request.headers.append(config.authHeader, token);
                 }
                 return request;
             }
-        }
+        };
     }
 
-
-}
+}) || _class);

@@ -1,26 +1,14 @@
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.Storage = undefined;
-
 var _dec, _class;
 
-var _aureliaDependencyInjection = require('aurelia-dependency-injection');
+import { inject } from 'aurelia-dependency-injection';
+import { BaseConfig } from './baseConfig';
 
-var _baseConfig = require('./baseConfig');
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var Storage = exports.Storage = (_dec = (0, _aureliaDependencyInjection.inject)(_baseConfig.BaseConfig), _dec(_class = function () {
-  function Storage(config) {
-    _classCallCheck(this, Storage);
-
+export let Storage = (_dec = inject(BaseConfig), _dec(_class = class Storage {
+  constructor(config) {
     this.config = config.current;
   }
 
-  Storage.prototype.get = function get(key) {
+  get(key) {
     switch (this.config.storage) {
       case 'localStorage':
         if ('localStorage' in window && window['localStorage'] !== null) {
@@ -40,9 +28,9 @@ var Storage = exports.Storage = (_dec = (0, _aureliaDependencyInjection.inject)(
         }
         break;
     }
-  };
+  }
 
-  Storage.prototype.set = function set(key, value) {
+  set(key, value) {
     switch (this.config.storage) {
       case 'localStorage':
         if ('localStorage' in window && window['localStorage'] !== null) {
@@ -62,9 +50,9 @@ var Storage = exports.Storage = (_dec = (0, _aureliaDependencyInjection.inject)(
         }
         break;
     }
-  };
+  }
 
-  Storage.prototype.remove = function remove(key) {
+  remove(key) {
     switch (this.config.storage) {
       case 'localStorage':
         if ('localStorage' in window && window['localStorage'] !== null) {
@@ -84,7 +72,5 @@ var Storage = exports.Storage = (_dec = (0, _aureliaDependencyInjection.inject)(
         }
         break;
     }
-  };
-
-  return Storage;
-}()) || _class);
+  }
+}) || _class);

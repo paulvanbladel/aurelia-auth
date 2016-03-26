@@ -1,8 +1,8 @@
-import authUtils from './authUtils';
+import {merge} from './auth-utilities';
 
 export class BaseConfig {
   configure(incomingConfig) {
-    authUtils.merge(this._current, incomingConfig);
+    merge(this._current, incomingConfig);
   }
 
   get current() {
@@ -42,7 +42,7 @@ export class BaseConfig {
         //authorizationEndpoint: 'http://localhost:22530/connect/authorize',
         redirectUri: window.location.origin || window.location.protocol + '//' + window.location.host,
         scope: ['profile', 'openid'],
-        
+
         responseType :'code',
         scopePrefix: '',
         scopeDelimiter: ' ',
