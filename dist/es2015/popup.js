@@ -1,9 +1,10 @@
-import authUtils from './authUtils';
-import {BaseConfig}  from './baseConfig';
-import {inject} from 'aurelia-dependency-injection';
+var _dec, _class;
 
-@inject(BaseConfig)
-export class Popup {
+import { parseQueryString, extend, forEach } from './auth-utilities';
+import { BaseConfig } from './baseConfig';
+import { inject } from 'aurelia-dependency-injection';
+
+export let Popup = (_dec = inject(BaseConfig), _dec(_class = class Popup {
   constructor(config) {
     this.config = config.current;
     this.popupWindow = null;
@@ -27,7 +28,7 @@ export class Popup {
   eventListener(redirectUri) {
     var self = this;
     var promise = new Promise((resolve, reject) => {
-      self.popupWindow.addEventListener('loadstart', (event) => {
+      self.popupWindow.addEventListener('loadstart', event => {
         if (event.url.indexOf(redirectUri) !== 0) {
           return;
         }
@@ -38,10 +39,10 @@ export class Popup {
         if (parser.search || parser.hash) {
           var queryParams = parser.search.substring(1).replace(/\/$/, '');
           var hashParams = parser.hash.substring(1).replace(/\/$/, '');
-          var hash = authUtils.parseQueryString(hashParams);
-          var qs = authUtils.parseQueryString(queryParams);
+          var hash = parseQueryString(hashParams);
+          var qs = parseQueryString(queryParams);
 
-          authUtils.extend(qs, hash);
+          extend(qs, hash);
 
           if (qs.error) {
             reject({
@@ -81,10 +82,10 @@ export class Popup {
           if (popupWindowOrigin === documentOrigin && (self.popupWindow.location.search || self.popupWindow.location.hash)) {
             var queryParams = self.popupWindow.location.search.substring(1).replace(/\/$/, '');
             var hashParams = self.popupWindow.location.hash.substring(1).replace(/[\/$]/, '');
-            var hash = authUtils.parseQueryString(hashParams);
-            var qs = authUtils.parseQueryString(queryParams);
+            var hash = parseQueryString(hashParams);
+            var qs = parseQueryString(queryParams);
 
-            authUtils.extend(qs, hash);
+            extend(qs, hash);
 
             if (qs.error) {
               reject({
@@ -111,8 +112,6 @@ export class Popup {
           });
         }
       }, 35);
-
-
     });
     return promise;
   }
@@ -120,19 +119,19 @@ export class Popup {
   prepareOptions(options) {
     var width = options.width || 500;
     var height = options.height || 500;
-    return authUtils.extend({
+    return extend({
       width: width,
       height: height,
-      left: window.screenX + ((window.outerWidth - width) / 2),
-      top: window.screenY + ((window.outerHeight - height) / 2.5)
+      left: window.screenX + (window.outerWidth - width) / 2,
+      top: window.screenY + (window.outerHeight - height) / 2.5
     }, options);
   }
 
   stringifyOptions(options) {
     var parts = [];
-    authUtils.forEach(options, function(value, key) {
+    forEach(options, function (value, key) {
       parts.push(key + '=' + value);
     });
     return parts.join(',');
   }
-}
+}) || _class);

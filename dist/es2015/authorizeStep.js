@@ -1,9 +1,10 @@
-import {inject} from 'aurelia-dependency-injection';
-import {Authentication} from './authentication';
-import {Router, Redirect} from 'aurelia-router';
+var _dec, _class;
 
-@inject(Authentication)
-export class AuthorizeStep {
+import { inject } from 'aurelia-dependency-injection';
+import { Authentication } from './authentication';
+import { Router, Redirect } from 'aurelia-router';
+
+export let AuthorizeStep = (_dec = inject(Authentication), _dec(_class = class AuthorizeStep {
   constructor(auth) {
     this.auth = auth;
   }
@@ -23,4 +24,4 @@ export class AuthorizeStep {
 
     return next();
   }
-}
+}) || _class);

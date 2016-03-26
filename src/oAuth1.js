@@ -1,5 +1,5 @@
 import {inject} from 'aurelia-dependency-injection';
-import authUtils from './authUtils';
+import {extend, joinUrl, status} from './auth-utilities';
 import {Storage} from './storage';
 import {Popup} from './popup';
 import {BaseConfig} from './baseConfig';
@@ -23,9 +23,8 @@ export class OAuth1 {
   }
 
   open(options, userData) {
-    let current = authUtils.extend({}, this.defaults, options);
-
-    let serverUrl = this.config.baseUrl ? authUtils.joinUrl(this.config.baseUrl, current.url) : current.url;
+    let current = extend({}, this.defaults, options);
+    let serverUrl = this.config.baseUrl ? joinUrl(this.config.baseUrl, current.url) : current.url;
 
     if (this.config.platform !== 'mobile') {
       this.popup = this.popup.open('', current.name, current.popupOptions, current.redirectUri);
@@ -33,7 +32,7 @@ export class OAuth1 {
     return this.http.fetch(serverUrl, {
       method: 'post'
     })
-      .then(authUtils.status)
+      .then(status)
       .then(response => {
         if (this.config.platform === 'mobile') {
           this.popup = this.popup.open(
@@ -58,23 +57,20 @@ export class OAuth1 {
   }
 
   exchangeForToken(oauthData, userData, current) {
-    let data                = authUtils.extend({}, userData, oauthData);
-    let exchangeForTokenUrl = this.config.baseUrl ? authUtils.joinUrl(this.config.baseUrl, current.url) : current.url;
+    let data                = extend({}, userData, oauthData);
+    let exchangeForTokenUrl = this.config.baseUrl ? joinUrl(this.config.baseUrl, current.url) : current.url;
     let credentials         = this.config.withCredentials ? 'include' : 'same-origin';
 
   return this.http.fetch(exchangeForTokenUrl, {
       method: 'post',
       body: json(data),
       credentials: credentials
-    })
-      .then(authUtils.status)
+    }).then(status)
   }
 
   buildQueryString(obj) {
     let str = [];
-
-    authUtils.forEach(obj, (value, key) => str.push(encodeURIComponent(key) + '=' + encodeURIComponent(value)));
-
+    forEach(obj, (value, key) => str.push(encodeURIComponent(key) + '=' + encodeURIComponent(value)));
     return str.join('&');
   }
 }

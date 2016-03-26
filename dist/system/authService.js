@@ -1,11 +1,13 @@
-System.register(['aurelia-dependency-injection', 'aurelia-fetch-client', 'isomorphic-fetch', './authentication', './baseConfig', './oAuth1', './oAuth2', './authUtils'], function (_export) {
-  'use strict';
+'use strict';
 
-  var inject, HttpClient, json, Authentication, BaseConfig, OAuth1, OAuth2, authUtils, AuthService;
+System.register(['aurelia-dependency-injection', 'aurelia-fetch-client', 'isomorphic-fetch', './authentication', './baseConfig', './oAuth1', './oAuth2', './auth-utilities'], function (_export, _context) {
+  var inject, HttpClient, json, Authentication, BaseConfig, OAuth1, OAuth2, status, joinUrl, _typeof, _dec, _class, AuthService;
 
-  var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-
-  function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+  function _classCallCheck(instance, Constructor) {
+    if (!(instance instanceof Constructor)) {
+      throw new TypeError("Cannot call a class as a function");
+    }
+  }
 
   return {
     setters: [function (_aureliaDependencyInjection) {
@@ -17,17 +19,24 @@ System.register(['aurelia-dependency-injection', 'aurelia-fetch-client', 'isomor
       Authentication = _authentication.Authentication;
     }, function (_baseConfig) {
       BaseConfig = _baseConfig.BaseConfig;
-    }, function (_oAuth1) {
-      OAuth1 = _oAuth1.OAuth1;
+    }, function (_oAuth) {
+      OAuth1 = _oAuth.OAuth1;
     }, function (_oAuth2) {
       OAuth2 = _oAuth2.OAuth2;
-    }, function (_authUtils) {
-      authUtils = _authUtils['default'];
+    }, function (_authUtilities) {
+      status = _authUtilities.status;
+      joinUrl = _authUtilities.joinUrl;
     }],
     execute: function () {
-      AuthService = (function () {
+      _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {
+        return typeof obj;
+      } : function (obj) {
+        return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj;
+      };
+
+      _export('AuthService', AuthService = (_dec = inject(HttpClient, Authentication, OAuth1, OAuth2, BaseConfig), _dec(_class = function () {
         function AuthService(http, auth, oAuth1, oAuth2, config) {
-          _classCallCheck(this, _AuthService);
+          _classCallCheck(this, AuthService);
 
           this.http = http;
           this.auth = auth;
@@ -37,122 +46,104 @@ System.register(['aurelia-dependency-injection', 'aurelia-fetch-client', 'isomor
           this.token_interceptor = auth.token_interceptor;
         }
 
-        _createClass(AuthService, [{
-          key: 'getMe',
-          value: function getMe() {
-            var profileUrl = this.auth.getProfileUrl();
-            return this.http.fetch(profileUrl).then(authUtils.status).then(function (response) {
-              return response;
-            });
-          }
-        }, {
-          key: 'isAuthenticated',
-          value: function isAuthenticated() {
-            return this.auth.isAuthenticated();
-          }
-        }, {
-          key: 'getTokenPayload',
-          value: function getTokenPayload() {
-            return this.auth.getPayload();
-          }
-        }, {
-          key: 'signup',
-          value: function signup(displayName, email, password) {
-            var _this = this;
+        AuthService.prototype.getMe = function getMe() {
+          var profileUrl = this.auth.getProfileUrl();
+          return this.http.fetch(profileUrl).then(status);
+        };
 
-            var signupUrl = this.auth.getSignupUrl();
-            var content;
-            if (typeof arguments[0] === 'object') {
-              content = arguments[0];
-            } else {
-              content = {
-                'displayName': displayName,
-                'email': email,
-                'password': password
-              };
-            }
+        AuthService.prototype.isAuthenticated = function isAuthenticated() {
+          return this.auth.isAuthenticated();
+        };
 
-            return this.http.fetch(signupUrl, {
-              method: 'post',
-              body: json(content)
-            }).then(authUtils.status).then(function (response) {
-              if (_this.config.loginOnSignup) {
-                _this.auth.setToken(response);
-              } else if (_this.config.signupRedirect) {
-                window.location.href = _this.config.signupRedirect;
-              }
-              return response;
-            });
-          }
-        }, {
-          key: 'login',
-          value: function login(email, password) {
-            var _this2 = this;
+        AuthService.prototype.getTokenPayload = function getTokenPayload() {
+          return this.auth.getPayload();
+        };
 
-            var loginUrl = this.auth.getLoginUrl();
-            var content;
-            if (typeof arguments[1] !== 'string') {
-              content = arguments[0];
-            } else {
-              content = {
-                'email': email,
-                'password': password
-              };
-            }
+        AuthService.prototype.signup = function signup(displayName, email, password) {
+          var _this = this;
 
-            return this.http.fetch(loginUrl, {
-              method: 'post',
-              headers: typeof content === 'string' ? { 'Content-Type': 'application/x-www-form-urlencoded' } : {},
-              body: typeof content === 'string' ? content : json(content)
-            }).then(authUtils.status).then(function (response) {
-              _this2.auth.setToken(response);
-              return response;
-            });
-          }
-        }, {
-          key: 'logout',
-          value: function logout(redirectUri) {
-            return this.auth.logout(redirectUri);
-          }
-        }, {
-          key: 'authenticate',
-          value: function authenticate(name, redirect, userData) {
-            var _this3 = this;
-
-            var provider = this.oAuth2;
-            if (this.config.providers[name].type === '1.0') {
-              provider = this.oAuth1;
+          var signupUrl = this.auth.getSignupUrl();
+          var content;
+          if (_typeof(arguments[0]) === 'object') {
+            content = arguments[0];
+          } else {
+            content = {
+              'displayName': displayName,
+              'email': email,
+              'password': password
             };
-
-            return provider.open(this.config.providers[name], userData || {}).then(function (response) {
-              _this3.auth.setToken(response, redirect);
-              return response;
-            });
           }
-        }, {
-          key: 'unlink',
-          value: function unlink(provider) {
-            var unlinkUrl = this.config.baseUrl ? authUtils.joinUrl(this.config.baseUrl, this.config.unlinkUrl) : this.config.unlinkUrl;
 
-            if (this.config.unlinkMethod === 'get') {
-              return this.http.fetch(unlinkUrl + provider).then(authUtils.status).then(function (response) {
-                return response;
-              });
-            } else if (this.config.unlinkMethod === 'post') {
-              return this.http.fetch(unlinkUrl, {
-                method: 'post',
-                body: json(provider)
-              }).then(authUtils.status).then(function (response) {
-                return response;
-              });
+          return this.http.fetch(signupUrl, {
+            method: 'post',
+            body: json(content)
+          }).then(status).then(function (response) {
+            if (_this.config.loginOnSignup) {
+              _this.auth.setToken(response);
+            } else if (_this.config.signupRedirect) {
+              window.location.href = _this.config.signupRedirect;
             }
-          }
-        }]);
+            return response;
+          });
+        };
 
-        var _AuthService = AuthService;
-        AuthService = inject(HttpClient, Authentication, OAuth1, OAuth2, BaseConfig)(AuthService) || AuthService;
+        AuthService.prototype.login = function login(email, password) {
+          var _this2 = this;
+
+          var loginUrl = this.auth.getLoginUrl();
+          var content;
+          if (typeof arguments[1] !== 'string') {
+            content = arguments[0];
+          } else {
+            content = {
+              'email': email,
+              'password': password
+            };
+          }
+
+          return this.http.fetch(loginUrl, {
+            method: 'post',
+            headers: typeof content === 'string' ? { 'Content-Type': 'application/x-www-form-urlencoded' } : {},
+            body: typeof content === 'string' ? content : json(content)
+          }).then(status).then(function (response) {
+            _this2.auth.setToken(response);
+            return response;
+          });
+        };
+
+        AuthService.prototype.logout = function logout(redirectUri) {
+          return this.auth.logout(redirectUri);
+        };
+
+        AuthService.prototype.authenticate = function authenticate(name, redirect, userData) {
+          var _this3 = this;
+
+          var provider = this.oAuth2;
+          if (this.config.providers[name].type === '1.0') {
+            provider = this.oAuth1;
+          };
+
+          return provider.open(this.config.providers[name], userData || {}).then(function (response) {
+            _this3.auth.setToken(response, redirect);
+            return response;
+          });
+        };
+
+        AuthService.prototype.unlink = function unlink(provider) {
+          var unlinkUrl = this.config.baseUrl ? joinUrl(this.config.baseUrl, this.config.unlinkUrl) : this.config.unlinkUrl;
+
+          if (this.config.unlinkMethod === 'get') {
+            return this.http.fetch(unlinkUrl + provider).then(status);
+          } else if (this.config.unlinkMethod === 'post') {
+            return this.http.fetch(unlinkUrl, {
+              method: 'post',
+              body: json(provider)
+            }).then(status);
+          }
+        };
+
         return AuthService;
-      })();
+      }()) || _class));
 
       _export('AuthService', AuthService);
     }

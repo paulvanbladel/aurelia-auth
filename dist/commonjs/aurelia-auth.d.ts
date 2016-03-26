@@ -1,136 +1,101 @@
-declare module 'aurelia-auth/authUtils' {
-	 var authUtils: {
-	    status: (response: any) => any;
-	    isDefined: (value: any) => boolean;
-	    camelCase: (name: any) => any;
-	    parseQueryString: (keyValue: any) => {};
-	    isString: (value: any) => boolean;
-	    isObject: (value: any) => boolean;
-	    isArray: (arg: any) => arg is any[];
-	    isFunction: (value: any) => boolean;
-	    joinUrl: (baseUrl: any, url: any) => any;
-	    isBlankObject: (value: any) => boolean;
-	    isArrayLike: (obj: any) => boolean;
-	    isWindow: (obj: any) => boolean;
-	    extend: (dst: any) => any;
-	    merge: (dst: any) => any;
-	    forEach: (obj: any, iterator: any, context: any) => any;
-	};
-	export default authUtils;
-
-}
-declare module 'aurelia-auth/baseConfig' {
-	export class BaseConfig {
-	    configure(incomingConfig: any): void;
-	    current: any;
-	    constructor();
-	}
-
-}
-declare module 'aurelia-auth/storage' {
-	export class Storage {
-	    constructor(config: any);
-	    get(key: any): any;
-	    set(key: any, value: any): void;
-	    remove(key: any): void;
-	}
-
-}
-declare module 'aurelia-auth/authentication' {
-	export class Authentication {
-	    constructor(storage: any, config: any);
-	    getLoginRoute(): any;
-	    getLoginRedirect(): any;
-	    getLoginUrl(): any;
-	    getSignupUrl(): any;
-	    getProfileUrl(): any;
-	    getToken(): any;
-	    getPayload(): any;
-	    decomposeToken(token: any): any;
-	    setInitialUrl(url: any): void;
-	    setToken(response: any, redirect: any): void;
-	    removeToken(): void;
-	    isAuthenticated(): boolean;
-	    logout(redirect: any): any;
-	    token_interceptor: {
-	        request(request: any): any;
-	    };
-	}
-
-}
-declare module 'aurelia-auth/app.fetch-httpClient.config' {
-	import 'isomorphic-fetch';
-	export class FetchConfig {
-	    constructor(httpClient: any, authService: any);
-	    configure(): void;
-	}
-
-}
-declare module 'aurelia-auth/authFilter' {
-	export class AuthFilterValueConverter {
-	    toView(routes: any, isAuthenticated: any): any;
-	}
-
-}
-declare module 'aurelia-auth/popup' {
-	export class Popup {
-	    constructor(config: any);
-	    open(url: any, windowName: any, options: any, redirectUri: any): this;
-	    eventListener(redirectUri: any): any;
-	    pollPopup(): any;
-	    prepareOptions(options: any): any;
-	    stringifyOptions(options: any): string;
-	}
-
-}
-declare module 'aurelia-auth/oAuth1' {
-	import 'isomorphic-fetch';
-	export class OAuth1 {
-	    constructor(storage: any, popup: any, http: any, config: any);
-	    open(options: any, userData: any): any;
-	    exchangeForToken(oauthData: any, userData: any, current: any): any;
-	    buildQueryString(obj: any): string;
-	}
-
-}
-declare module 'aurelia-auth/oAuth2' {
-	import 'isomorphic-fetch';
-	export class OAuth2 {
-	    constructor(storage: any, popup: any, http: any, config: any, auth: any);
-	    open(options: any, userData: any): any;
-	    verifyIdToken(oauthData: any, providerName: any): boolean;
-	    exchangeForToken(oauthData: any, userData: any, current: any): any;
-	    buildQueryString(current: any): string;
-	}
-
-}
-declare module 'aurelia-auth/authService' {
-	import 'isomorphic-fetch';
-	export class AuthService {
-	    constructor(http: any, auth: any, oAuth1: any, oAuth2: any, config: any);
-	    getMe(): any;
-	    isAuthenticated(): any;
-	    getTokenPayload(): any;
-	    signup(displayName: any, email: any, password: any): any;
-	    login(email: any, password: any): any;
-	    logout(redirectUri: any): any;
-	    authenticate(name: any, redirect: any, userData: any): any;
-	    unlink(provider: any): any;
-	}
-
-}
-declare module 'aurelia-auth/authorizeStep' {
-	export class AuthorizeStep {
-	    constructor(auth: any);
-	    run(routingContext: any, next: any): any;
-	}
-
-}
-declare module 'aurelia-auth/index' {
-	export { AuthService } from 'aurelia-auth/authService';
-	export { AuthorizeStep } from 'aurelia-auth/authorizeStep';
-	export { FetchConfig } from 'aurelia-auth/app.fetch-httpClient.config';
-	import 'aurelia-auth/authFilter';
-	export function configure(aurelia: any, configCallback: any): void;
-
+declare module 'aurelia-auth' {
+  import 'isomorphic-fetch';
+  import {
+    inject
+  } from 'aurelia-dependency-injection';
+  import {
+    HttpClient,
+    json
+  } from 'aurelia-fetch-client';
+  import {
+    Router,
+    Redirect
+  } from 'aurelia-router';
+  export class FetchConfig {
+    constructor(httpClient: any, authService: any);
+    configure(): any;
+  }
+  export function status(response: any): any;
+  export function isDefined(value: any): any;
+  export function camelCase(name: any): any;
+  export function parseQueryString(keyValue: any): any;
+  export function isString(value: any): any;
+  export function isObject(value: any): any;
+  export function isFunction(value: any): any;
+  export function joinUrl(baseUrl: any, url: any): any;
+  export function isBlankObject(value: any): any;
+  export function isArrayLike(obj: any): any;
+  export function isWindow(obj: any): any;
+  export function extend(dst: any): any;
+  export function merge(dst: any): any;
+  export function forEach(obj: any, iterator: any, context: any): any;
+  export class AuthFilterValueConverter {
+    toView(routes: any, isAuthenticated: any): any;
+  }
+  export class AuthService {
+    constructor(http: any, auth: any, oAuth1: any, oAuth2: any, config: any);
+    getMe(): any;
+    isAuthenticated(): any;
+    getTokenPayload(): any;
+    signup(displayName: any, email: any, password: any): any;
+    login(email: any, password: any): any;
+    logout(redirectUri: any): any;
+    authenticate(name: any, redirect: any, userData: any): any;
+    unlink(provider: any): any;
+  }
+  export class Authentication {
+    constructor(storage: any, config: any);
+    getLoginRoute(): any;
+    getLoginRedirect(): any;
+    getLoginUrl(): any;
+    getSignupUrl(): any;
+    getProfileUrl(): any;
+    getToken(): any;
+    getPayload(): any;
+    decomposeToken(token: any): any;
+    setInitialUrl(url: any): any;
+    setToken(response: any, redirect: any): any;
+    removeToken(): any;
+    isAuthenticated(): any;
+    logout(redirect: any): any;
+    token_interceptor: any;
+  }
+  export class AuthorizeStep {
+    constructor(auth: any);
+    run(routingContext: any, next: any): any;
+  }
+  export class BaseConfig {
+    configure(incomingConfig: any): any;
+    current: any;
+    constructor();
+  }
+  export class OAuth1 {
+    constructor(storage: any, popup: any, http: any, config: any);
+    open(options: any, userData: any): any;
+    exchangeForToken(oauthData: any, userData: any, current: any): any;
+    buildQueryString(obj: any): any;
+  }
+  export class OAuth2 {
+    constructor(storage: any, popup: any, http: any, config: any, auth: any);
+    open(options: any, userData: any): any;
+    
+    //responseType is authorization code only (no token nor id_token)
+    verifyIdToken(oauthData: any, providerName: any): any;
+    exchangeForToken(oauthData: any, userData: any, current: any): any;
+    buildQueryString(current: any): any;
+  }
+  export class Popup {
+    constructor(config: any);
+    open(url: any, windowName: any, options: any, redirectUri: any): any;
+    eventListener(redirectUri: any): any;
+    pollPopup(): any;
+    prepareOptions(options: any): any;
+    stringifyOptions(options: any): any;
+  }
+  export class Storage {
+    constructor(config: any);
+    get(key: any): any;
+    set(key: any, value: any): any;
+    remove(key: any): any;
+  }
 }
