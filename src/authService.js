@@ -7,8 +7,7 @@ import {OAuth1} from './oAuth1';
 import {OAuth2} from './oAuth2';
 import {status, joinUrl} from './auth-utilities';
 
-
-@inject(HttpClient,Authentication, OAuth1, OAuth2, BaseConfig)
+@inject(HttpClient, Authentication, OAuth1, OAuth2, BaseConfig)
 export class AuthService {
   constructor(http, auth, oAuth1, oAuth2, config) {
     this.http = http;
@@ -16,12 +15,11 @@ export class AuthService {
     this.oAuth1 = oAuth1;
     this.oAuth2 = oAuth2;
     this.config = config.current;
-    this.token_interceptor = auth.token_interceptor;
+    this.tokenInterceptor = auth.tokenInterceptor;
   }
 
-
   getMe() {
-    var profileUrl = this.auth.getProfileUrl();
+    let profileUrl = this.auth.getProfileUrl();
     return this.http.fetch(profileUrl)
       .then(status);
   }
@@ -35,8 +33,8 @@ export class AuthService {
   }
 
   signup(displayName, email, password) {
-    var signupUrl = this.auth.getSignupUrl();
-    var content;
+    let signupUrl = this.auth.getSignupUrl();
+    let content;
     if (typeof arguments[0] === 'object') {
       content = arguments[0];
     } else {
@@ -63,8 +61,8 @@ export class AuthService {
   }
 
   login(email, password) {
-    var loginUrl = this.auth.getLoginUrl();
-    var content;
+    let loginUrl = this.auth.getLoginUrl();
+    let content;
     if (typeof arguments[1] !== 'string') {
       content = arguments[0];
     } else {
@@ -76,13 +74,13 @@ export class AuthService {
 
     return this.http.fetch(loginUrl, {
       method: 'post',
-      headers: typeof(content)==='string' ? {'Content-Type': 'application/x-www-form-urlencoded'} : {},
-      body: typeof(content)==='string' ? content : json(content)
+      headers: typeof(content) === 'string' ? {'Content-Type': 'application/x-www-form-urlencoded'} : {},
+      body: typeof(content) === 'string' ? content : json(content)
     })
       .then(status)
       .then((response) => {
-        this.auth.setToken(response)
-        return response
+        this.auth.setToken(response);
+        return response;
       });
   }
 
@@ -91,10 +89,10 @@ export class AuthService {
   }
 
   authenticate(name, redirect, userData) {
-    var provider = this.oAuth2;
+    let provider = this.oAuth2;
     if (this.config.providers[name].type === '1.0') {
       provider = this.oAuth1;
-    };
+    }
 
     return provider.open(this.config.providers[name], userData || {})
       .then((response) => {
@@ -104,7 +102,7 @@ export class AuthService {
   }
 
   unlink(provider) {
-    var unlinkUrl = this.config.baseUrl ?
+    let unlinkUrl = this.config.baseUrl ?
       joinUrl(this.config.baseUrl, this.config.unlinkUrl) : this.config.unlinkUrl;
 
     if (this.config.unlinkMethod === 'get') {
@@ -118,5 +116,3 @@ export class AuthService {
     }
   }
 }
-
-

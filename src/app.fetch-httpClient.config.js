@@ -5,20 +5,20 @@ import {Authentication} from './authentication';
 
 @inject(HttpClient, Authentication )
 export class FetchConfig {
-    constructor(httpClient, authService) {
-        this.httpClient = httpClient;
-        this.auth = authService;
-    }
+  constructor(httpClient, authService) {
+    this.httpClient = httpClient;
+    this.auth = authService;
+  }
 
-    configure() {
-        this.httpClient.configure(httpConfig => {
-            httpConfig
-                .withDefaults({
-                    headers: {
-                        'Accept': 'application/json'
-                    }
-                })
-                .withInterceptor(this.auth.token_interceptor);
-        });
-    }
+  configure() {
+    this.httpClient.configure(httpConfig => {
+      httpConfig
+        .withDefaults({
+          headers: {
+            'Accept': 'application/json'
+          }
+        })
+        .withInterceptor(this.auth.tokenInterceptor);
+    });
+  }
 }

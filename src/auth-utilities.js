@@ -1,4 +1,4 @@
-var slice = [].slice;
+let slice = [].slice;
 
 function setHashKey(obj, h) {
   if (h) {
@@ -9,15 +9,15 @@ function setHashKey(obj, h) {
 }
 
 function baseExtend(dst, objs, deep) {
-  var h = dst.$$hashKey;
+  let h = dst.$$hashKey;
 
-  for (var i = 0, ii = objs.length; i < ii; ++i) {
-    var obj = objs[i];
+  for (let i = 0, ii = objs.length; i < ii; ++i) {
+    let obj = objs[i];
     if (!isObject(obj) && !isFunction(obj)) continue;
-    var keys = Object.keys(obj);
-    for (var j = 0, jj = keys.length; j < jj; j++) {
-      var key = keys[j];
-      var src = obj[key];
+    let keys = Object.keys(obj);
+    for (let j = 0, jj = keys.length; j < jj; j++) {
+      let key = keys[j];
+      let src = obj[key];
 
       if (deep && isObject(src)) {
         if (!isObject(dst[key])) dst[key] = Array.isArray(src) ? [] : {};
@@ -51,15 +51,18 @@ export function camelCase(name) {
 }
 
 export function parseQueryString(keyValue) {
-  var obj = {},
-      key, value;
-  forEach((keyValue || '').split('&'), function(keyValue) {
-    if (keyValue) {
-      value = keyValue.split('=');
+  let key;
+  let value;
+  let obj = {};
+
+  forEach((keyValue || '').split('&'), function(kv) {
+    if (kv) {
+      value = kv.split('=');
       key = decodeURIComponent(value[0]);
       obj[key] = isDefined(value[1]) ? decodeURIComponent(value[1]) : true;
     }
   });
+
   return obj;
 }
 
@@ -80,9 +83,8 @@ export function joinUrl(baseUrl, url) {
     return url;
   }
 
-  var joined = [baseUrl, url].join('/');
-
-  var normalize = function(str) {
+  let joined = [baseUrl, url].join('/');
+  let normalize = function(str) {
     return str
       .replace(/[\/]+/g, '/')
       .replace(/\/\?/g, '?')
@@ -98,7 +100,7 @@ export function isBlankObject(value) {
 }
 
 export function isArrayLike(obj) {
-  if (obj == null || isWindow(obj)) {
+  if (obj === null || isWindow(obj)) {
     return false;
   }
 }
@@ -116,18 +118,19 @@ export function merge(dst) {
 }
 
 export function forEach(obj, iterator, context) {
-  var key, length;
+  let key;
+  let length;
   if (obj) {
     if (isFunction(obj)) {
       for (key in obj) {
         // Need to check if hasOwnProperty exists,
         // as on IE8 the result of querySelectorAll is an object without a hasOwnProperty function
-        if (key != 'prototype' && key != 'length' && key != 'name' && (!obj.hasOwnProperty || obj.hasOwnProperty(key))) {
+        if (key !== 'prototype' && key !== 'length' && key !== 'name' && (!obj.hasOwnProperty || obj.hasOwnProperty(key))) {
           iterator.call(context, obj[key], key, obj);
         }
       }
     } else if (Array.isArray(obj) || isArrayLike(obj)) {
-      var isPrimitive = typeof obj !== 'object';
+      let isPrimitive = typeof obj !== 'object';
       for (key = 0, length = obj.length; key < length; key++) {
         if (isPrimitive || key in obj) {
           iterator.call(context, obj[key], key, obj);

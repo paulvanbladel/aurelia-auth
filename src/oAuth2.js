@@ -69,31 +69,30 @@ export class OAuth2 {
         }
 
         if (current.responseType.toUpperCase().includes('TOKEN')) { //meaning implicit flow or hybrid flow
-            if (!this.verifyIdToken(oauthData, current.name)){
-                return Promise.reject('OAuth 2.0 Nonce parameter mismatch.');
-            };
+          if (!this.verifyIdToken(oauthData, current.name)) {
+            return Promise.reject('OAuth 2.0 Nonce parameter mismatch.');
+          }
+
           return oauthData;
         }
 
         return this.exchangeForToken(oauthData, userData, current); //responseType is authorization code only (no token nor id_token)
       });
-  };
+  }
 
-
-  verifyIdToken(oauthData, providerName){
-
-        let idToken = oauthData && oauthData[this.config.responseIdTokenProp];
-        if(!idToken) return true;
-        let idTokenObject = this.auth.decomposeToken(idToken);
-        if(!idTokenObject) return true;
-        let nonceFromToken = idTokenObject.nonce;
-        if(!nonceFromToken) return true;
-        let nonceInStorage = this.storage.get(providerName + '_nonce');
-        if (nonceFromToken!==nonceInStorage) {
-            return false;
-        }
-        return true;
-    };
+  verifyIdToken(oauthData, providerName) {
+    let idToken = oauthData && oauthData[this.config.responseIdTokenProp];
+    if (!idToken) return true;
+    let idTokenObject = this.auth.decomposeToken(idToken);
+    if (!idTokenObject) return true;
+    let nonceFromToken = idTokenObject.nonce;
+    if (!nonceFromToken) return true;
+    let nonceInStorage = this.storage.get(providerName + '_nonce');
+    if (nonceFromToken !== nonceInStorage) {
+      return false;
+    }
+    return true;
+  }
 
   exchangeForToken(oauthData, userData, current) {
     let data = extend({}, userData, {
@@ -115,7 +114,7 @@ export class OAuth2 {
       method: 'post',
       body: json(data),
       credentials: credentials
-    }).then(status)
+    }).then(status);
   }
 
   buildQueryString(current) {
@@ -152,9 +151,3 @@ export class OAuth2 {
     return keyValuePairs.map(pair => pair.join('=')).join('&');
   }
 }
-
-
-
-
-
-
