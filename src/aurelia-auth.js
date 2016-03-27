@@ -1,10 +1,10 @@
-export {AuthService} from './authService';
-export {AuthorizeStep} from './authorizeStep';
-export {FetchConfig} from './app.fetch-httpClient.config';
-import {BaseConfig} from './baseConfig';
+export {AuthService} from './auth-service';
+export {AuthorizeStep} from './authorize-step';
+export {FetchConfig} from './auth-fetch-config';
+import {BaseConfig} from './base-config';
 
 export function configure(aurelia, configCallback) {
-  aurelia.globalResources('./authFilter');
+  aurelia.globalResources('./auth-filter');
 
   let baseConfig = aurelia.container.get(BaseConfig);
   if (configCallback !== undefined && typeof(configCallback) === 'function') {

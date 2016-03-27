@@ -42,21 +42,20 @@ export let BaseConfig = class BaseConfig {
 
           redirectUri: window.location.origin || window.location.protocol + '//' + window.location.host,
           scope: ['profile', 'openid'],
-
           responseType: 'code',
           scopePrefix: '',
           scopeDelimiter: ' ',
           requiredUrlParams: ['scope', 'nonce'],
           optionalUrlParams: ['display', 'state'],
           state: function () {
-            var rand = Math.random().toString(36).substr(2);
+            let rand = Math.random().toString(36).substr(2);
             return encodeURIComponent(rand);
           },
           display: 'popup',
           type: '2.0',
           clientId: 'jsClient',
           nonce: function () {
-            var val = ((Date.now() + Math.random()) * Math.random()).toString().replace(".", "");
+            let val = ((Date.now() + Math.random()) * Math.random()).toString().replace('.', '');
             return encodeURIComponent(val);
           },
           popupOptions: { width: 452, height: 633 }
@@ -74,7 +73,7 @@ export let BaseConfig = class BaseConfig {
           display: 'popup',
           type: '2.0',
           state: function () {
-            var rand = Math.random().toString(36).substr(2);
+            let rand = Math.random().toString(36).substr(2);
             return encodeURIComponent(rand);
           },
           popupOptions: {

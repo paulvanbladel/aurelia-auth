@@ -1,14 +1,15 @@
-import {inject} from 'aurelia-dependency-injection';
-import {HttpClient, json} from 'aurelia-fetch-client';
-import 'isomorphic-fetch';
-import {Authentication} from './authentication';
-import {BaseConfig} from './baseConfig';
-import {OAuth1} from './oAuth1';
-import {OAuth2} from './oAuth2';
-import {status, joinUrl} from './auth-utilities';
+var _dec, _class;
 
-@inject(HttpClient, Authentication, OAuth1, OAuth2, BaseConfig)
-export class AuthService {
+import { inject } from 'aurelia-dependency-injection';
+import { HttpClient, json } from 'aurelia-fetch-client';
+import 'isomorphic-fetch';
+import { Authentication } from './authentication';
+import { BaseConfig } from './base-config';
+import { OAuth1 } from './oAuth1';
+import { OAuth2 } from './oAuth2';
+import { status, joinUrl } from './auth-utilities';
+
+export let AuthService = (_dec = inject(HttpClient, Authentication, OAuth1, OAuth2, BaseConfig), _dec(_class = class AuthService {
   constructor(http, auth, oAuth1, oAuth2, config) {
     this.http = http;
     this.auth = auth;
@@ -20,8 +21,7 @@ export class AuthService {
 
   getMe() {
     let profileUrl = this.auth.getProfileUrl();
-    return this.http.fetch(profileUrl)
-      .then(status);
+    return this.http.fetch(profileUrl).then(status);
   }
 
   isAuthenticated() {
@@ -48,16 +48,14 @@ export class AuthService {
     return this.http.fetch(signupUrl, {
       method: 'post',
       body: json(content)
-    })
-      .then(status)
-      .then((response) => {
-        if (this.config.loginOnSignup) {
-          this.auth.setToken(response);
-        } else if (this.config.signupRedirect) {
-          window.location.href = this.config.signupRedirect;
-        }
-        return response;
-      });
+    }).then(status).then(response => {
+      if (this.config.loginOnSignup) {
+        this.auth.setToken(response);
+      } else if (this.config.signupRedirect) {
+        window.location.href = this.config.signupRedirect;
+      }
+      return response;
+    });
   }
 
   login(email, password) {
@@ -74,14 +72,12 @@ export class AuthService {
 
     return this.http.fetch(loginUrl, {
       method: 'post',
-      headers: typeof(content) === 'string' ? {'Content-Type': 'application/x-www-form-urlencoded'} : {},
-      body: typeof(content) === 'string' ? content : json(content)
-    })
-      .then(status)
-      .then((response) => {
-        this.auth.setToken(response);
-        return response;
-      });
+      headers: typeof content === 'string' ? { 'Content-Type': 'application/x-www-form-urlencoded' } : {},
+      body: typeof content === 'string' ? content : json(content)
+    }).then(status).then(response => {
+      this.auth.setToken(response);
+      return response;
+    });
   }
 
   logout(redirectUri) {
@@ -94,20 +90,17 @@ export class AuthService {
       provider = this.oAuth1;
     }
 
-    return provider.open(this.config.providers[name], userData || {})
-      .then((response) => {
-        this.auth.setToken(response, redirect);
-        return response;
-      });
+    return provider.open(this.config.providers[name], userData || {}).then(response => {
+      this.auth.setToken(response, redirect);
+      return response;
+    });
   }
 
   unlink(provider) {
-    let unlinkUrl = this.config.baseUrl ?
-      joinUrl(this.config.baseUrl, this.config.unlinkUrl) : this.config.unlinkUrl;
+    let unlinkUrl = this.config.baseUrl ? joinUrl(this.config.baseUrl, this.config.unlinkUrl) : this.config.unlinkUrl;
 
     if (this.config.unlinkMethod === 'get') {
-      return this.http.fetch(unlinkUrl + provider)
-        .then(status);
+      return this.http.fetch(unlinkUrl + provider).then(status);
     } else if (this.config.unlinkMethod === 'post') {
       return this.http.fetch(unlinkUrl, {
         method: 'post',
@@ -115,4 +108,4 @@ export class AuthService {
       }).then(status);
     }
   }
-}
+}) || _class);

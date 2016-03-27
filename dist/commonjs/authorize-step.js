@@ -9,9 +9,9 @@ var _dec, _class;
 
 var _aureliaDependencyInjection = require('aurelia-dependency-injection');
 
-var _authentication = require('./authentication');
-
 var _aureliaRouter = require('aurelia-router');
+
+var _authentication = require('./authentication');
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -34,7 +34,7 @@ var AuthorizeStep = exports.AuthorizeStep = (_dec = (0, _aureliaDependencyInject
         return next.cancel(new _aureliaRouter.Redirect(loginRoute));
       }
     } else if (isLoggedIn && routingContext.getAllInstructions().some(function (i) {
-      return i.fragment == loginRoute;
+      return i.fragment === loginRoute;
     })) {
       var loginRedirect = this.auth.getLoginRedirect();
       return next.cancel(new _aureliaRouter.Redirect(loginRedirect));

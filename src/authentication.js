@@ -1,5 +1,5 @@
 import {inject} from 'aurelia-dependency-injection';
-import {BaseConfig}  from './baseConfig';
+import {BaseConfig}  from './base-config';
 import {Storage} from './storage';
 import {joinUrl, isObject, isString} from './auth-utilities';
 
