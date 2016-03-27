@@ -1,6 +1,6 @@
 'use strict';
 
-System.register(['aurelia-dependency-injection', 'aurelia-fetch-client', 'isomorphic-fetch', './authentication', './baseConfig', './oAuth1', './oAuth2', './auth-utilities'], function (_export, _context) {
+System.register(['aurelia-dependency-injection', 'aurelia-fetch-client', 'isomorphic-fetch', './authentication', './base-config', './oAuth1', './oAuth2', './auth-utilities'], function (_export, _context) {
   var inject, HttpClient, json, Authentication, BaseConfig, OAuth1, OAuth2, status, joinUrl, _typeof, _dec, _class, AuthService;
 
   function _classCallCheck(instance, Constructor) {
@@ -43,7 +43,7 @@ System.register(['aurelia-dependency-injection', 'aurelia-fetch-client', 'isomor
           this.oAuth1 = oAuth1;
           this.oAuth2 = oAuth2;
           this.config = config.current;
-          this.token_interceptor = auth.token_interceptor;
+          this.tokenInterceptor = auth.tokenInterceptor;
         }
 
         AuthService.prototype.getMe = function getMe() {
@@ -63,7 +63,7 @@ System.register(['aurelia-dependency-injection', 'aurelia-fetch-client', 'isomor
           var _this = this;
 
           var signupUrl = this.auth.getSignupUrl();
-          var content;
+          var content = void 0;
           if (_typeof(arguments[0]) === 'object') {
             content = arguments[0];
           } else {
@@ -91,7 +91,7 @@ System.register(['aurelia-dependency-injection', 'aurelia-fetch-client', 'isomor
           var _this2 = this;
 
           var loginUrl = this.auth.getLoginUrl();
-          var content;
+          var content = void 0;
           if (typeof arguments[1] !== 'string') {
             content = arguments[0];
           } else {
@@ -121,7 +121,7 @@ System.register(['aurelia-dependency-injection', 'aurelia-fetch-client', 'isomor
           var provider = this.oAuth2;
           if (this.config.providers[name].type === '1.0') {
             provider = this.oAuth1;
-          };
+          }
 
           return provider.open(this.config.providers[name], userData || {}).then(function (response) {
             _this3.auth.setToken(response, redirect);

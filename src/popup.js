@@ -1,5 +1,5 @@
 import {parseQueryString, extend, forEach} from './auth-utilities';
-import {BaseConfig}  from './baseConfig';
+import {BaseConfig}  from './base-config';
 import {inject} from 'aurelia-dependency-injection';
 
 @inject(BaseConfig)

@@ -77,7 +77,6 @@ define(['exports', './auth-utilities'], function (exports, _authUtilities) {
 
             redirectUri: window.location.origin || window.location.protocol + '//' + window.location.host,
             scope: ['profile', 'openid'],
-
             responseType: 'code',
             scopePrefix: '',
             scopeDelimiter: ' ',
@@ -91,7 +90,7 @@ define(['exports', './auth-utilities'], function (exports, _authUtilities) {
             type: '2.0',
             clientId: 'jsClient',
             nonce: function nonce() {
-              var val = ((Date.now() + Math.random()) * Math.random()).toString().replace(".", "");
+              var val = ((Date.now() + Math.random()) * Math.random()).toString().replace('.', '');
               return encodeURIComponent(val);
             },
             popupOptions: { width: 452, height: 633 }

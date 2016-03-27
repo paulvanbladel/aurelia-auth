@@ -1,4 +1,4 @@
-define(['exports', 'aurelia-dependency-injection', './authentication', 'aurelia-router'], function (exports, _aureliaDependencyInjection, _authentication, _aureliaRouter) {
+define(['exports', 'aurelia-dependency-injection', 'aurelia-router', './authentication'], function (exports, _aureliaDependencyInjection, _aureliaRouter, _authentication) {
   'use strict';
 
   Object.defineProperty(exports, "__esModule", {
@@ -33,7 +33,7 @@ define(['exports', 'aurelia-dependency-injection', './authentication', 'aurelia-
           return next.cancel(new _aureliaRouter.Redirect(loginRoute));
         }
       } else if (isLoggedIn && routingContext.getAllInstructions().some(function (i) {
-        return i.fragment == loginRoute;
+        return i.fragment === loginRoute;
       })) {
         var loginRedirect = this.auth.getLoginRedirect();
         return next.cancel(new _aureliaRouter.Redirect(loginRedirect));
