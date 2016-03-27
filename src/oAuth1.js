@@ -50,9 +50,10 @@ export class OAuth1 {
           ].join('?');
         }
 
-        let popupListener = this.config.platform === 'mobile' ? this.popup.eventListener(current.redirectUri) : this.popup.pollPopup();
-
-        return popupListener.then(result => this.exchangeForToken(result, userData, current));
+        let popupListener = this.config.platform === 'mobile' ?
+          this.popup.eventListener(current.redirectUri) : this.popup.pollPopup();
+        return popupListener
+          .then(result => this.exchangeForToken(result, userData, current));
       });
   }
 
@@ -61,11 +62,11 @@ export class OAuth1 {
     let exchangeForTokenUrl = this.config.baseUrl ? joinUrl(this.config.baseUrl, current.url) : current.url;
     let credentials         = this.config.withCredentials ? 'include' : 'same-origin';
 
-  return this.http.fetch(exchangeForTokenUrl, {
+    return this.http.fetch(exchangeForTokenUrl, {
       method: 'post',
       body: json(data),
       credentials: credentials
-    }).then(status)
+    }).then(status);
   }
 
   buildQueryString(obj) {
@@ -74,6 +75,3 @@ export class OAuth1 {
     return str.join('&');
   }
 }
-
-
-
