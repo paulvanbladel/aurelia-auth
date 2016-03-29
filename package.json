@@ -1,6 +1,6 @@
 {
   "name": "aurelia-auth",
-  "version": "0.13.9",
+  "version": "2.0.1",
   "description": "Plugin for security token service, social media authentication and local authentication together with other authentication utilities",
   "main": "dist/commonjs/index.js",
   "scripts": {

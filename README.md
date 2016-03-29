@@ -3,7 +3,7 @@
 #### Sample app: [aurelia-auth.opinionatedapps.com](http://aureliauth.opinionatedapps.com)
 #### Sources sample app: [github.com/paulvanbladel/aurelia-auth-sample] (https://github.com/paulvanbladel/aurelia-auth-sample)
 
-#### On NPM this module is called aurelia-authentication !!!
+#### On NPM this module is also called [aurelia-auth](https://www.npmjs.com/package/aurelia-auth)
 
 ## What is aurelia-auth?
 aurelia-auth is a token-based authentication plugin for [Aurelia](http://aurelia.io/) with support for popular social authentication providers (Google, Twitter, Facebook, LinkedIn, Windows Live, FourSquare, Yahoo, Github, Instagram ) and a local stragegy, i.e. simple username (email) and password.
