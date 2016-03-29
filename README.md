@@ -31,7 +31,7 @@ jspm install aurelia-auth
 ```
 On Npm:
 ```
-Npm install aurelia-authentication --save
+Npm install aurelia-auth --save
 ```
 
 # How to use aurelia-auth?
