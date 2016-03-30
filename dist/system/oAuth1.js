@@ -1,6 +1,6 @@
 'use strict';
 
-System.register(['aurelia-dependency-injection', './auth-utilities', './storage', './popup', './baseConfig', 'aurelia-fetch-client', 'isomorphic-fetch'], function (_export, _context) {
+System.register(['aurelia-dependency-injection', './auth-utilities', './storage', './popup', './base-config', 'aurelia-fetch-client', 'isomorphic-fetch'], function (_export, _context) {
   var inject, extend, joinUrl, status, Storage, Popup, BaseConfig, HttpClient, json, _dec, _class, OAuth1;
 
   function _classCallCheck(instance, Constructor) {
@@ -63,7 +63,6 @@ System.register(['aurelia-dependency-injection', './auth-utilities', './storage'
             }
 
             var popupListener = _this.config.platform === 'mobile' ? _this.popup.eventListener(current.redirectUri) : _this.popup.pollPopup();
-
             return popupListener.then(function (result) {
               return _this.exchangeForToken(result, userData, current);
             });

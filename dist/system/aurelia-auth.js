@@ -1,6 +1,6 @@
 'use strict';
 
-System.register(['./authService', './authorizeStep', './app.fetch-httpClient.config', './baseConfig'], function (_export, _context) {
+System.register(['./auth-service', './authorize-step', './auth-fetch-config', './base-config'], function (_export, _context) {
   var BaseConfig;
   return {
     setters: [function (_authService) {
@@ -13,9 +13,9 @@ System.register(['./authService', './authorizeStep', './app.fetch-httpClient.con
       _exportObj2.AuthorizeStep = _authorizeStep.AuthorizeStep;
 
       _export(_exportObj2);
-    }, function (_appFetchHttpClientConfig) {
+    }, function (_authFetchConfig) {
       var _exportObj3 = {};
-      _exportObj3.FetchConfig = _appFetchHttpClientConfig.FetchConfig;
+      _exportObj3.FetchConfig = _authFetchConfig.FetchConfig;
 
       _export(_exportObj3);
     }, function (_baseConfig) {
@@ -23,7 +23,7 @@ System.register(['./authService', './authorizeStep', './app.fetch-httpClient.con
     }],
     execute: function () {
       function configure(aurelia, configCallback) {
-        aurelia.globalResources('./authFilter');
+        aurelia.globalResources('./auth-filter');
 
         var baseConfig = aurelia.container.get(BaseConfig);
         if (configCallback !== undefined && typeof configCallback === 'function') {

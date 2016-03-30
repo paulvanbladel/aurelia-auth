@@ -1,29 +1,145 @@
 import 'isomorphic-fetch';
 import {inject} from 'aurelia-dependency-injection';
 import {HttpClient,json} from 'aurelia-fetch-client';
-import {Router,Redirect} from 'aurelia-router';
+import {Redirect} from 'aurelia-router';
 
 @inject(HttpClient, Authentication )
 export class FetchConfig {
-    constructor(httpClient, authService) {
-        this.httpClient = httpClient;
-        this.auth = authService;
-    }
+  constructor(httpClient, authService) {
+    this.httpClient = httpClient;
+    this.auth = authService;
+  }
 
-    configure() {
-        this.httpClient.configure(httpConfig => {
-            httpConfig
-                .withDefaults({
-                    headers: {
-                        'Accept': 'application/json'
-                    }
-                })
-                .withInterceptor(this.auth.token_interceptor);
-        });
-    }
+  configure() {
+    this.httpClient.configure(httpConfig => {
+      httpConfig
+        .withDefaults({
+          headers: {
+            'Accept': 'application/json'
+          }
+        })
+        .withInterceptor(this.auth.tokenInterceptor);
+    });
+  }
 }
 
-var slice = [].slice;
+export class AuthFilterValueConverter {
+  toView(routes, isAuthenticated) {
+    return routes.filter(r => r.config.auth === undefined || r.config.auth === isAuthenticated);
+  }
+}
+
+@inject(HttpClient, Authentication, OAuth1, OAuth2, BaseConfig)
+export class AuthService {
+  constructor(http, auth, oAuth1, oAuth2, config) {
+    this.http = http;
+    this.auth = auth;
+    this.oAuth1 = oAuth1;
+    this.oAuth2 = oAuth2;
+    this.config = config.current;
+    this.tokenInterceptor = auth.tokenInterceptor;
+  }
+
+  getMe() {
+    let profileUrl = this.auth.getProfileUrl();
+    return this.http.fetch(profileUrl)
+      .then(status);
+  }
+
+  isAuthenticated() {
+    return this.auth.isAuthenticated();
+  }
+
+  getTokenPayload() {
+    return this.auth.getPayload();
+  }
+
+  signup(displayName, email, password) {
+    let signupUrl = this.auth.getSignupUrl();
+    let content;
+    if (typeof arguments[0] === 'object') {
+      content = arguments[0];
+    } else {
+      content = {
+        'displayName': displayName,
+        'email': email,
+        'password': password
+      };
+    }
+
+    return this.http.fetch(signupUrl, {
+      method: 'post',
+      body: json(content)
+    })
+      .then(status)
+      .then((response) => {
+        if (this.config.loginOnSignup) {
+          this.auth.setToken(response);
+        } else if (this.config.signupRedirect) {
+          window.location.href = this.config.signupRedirect;
+        }
+        return response;
+      });
+  }
+
+  login(email, password) {
+    let loginUrl = this.auth.getLoginUrl();
+    let content;
+    if (typeof arguments[1] !== 'string') {
+      content = arguments[0];
+    } else {
+      content = {
+        'email': email,
+        'password': password
+      };
+    }
+
+    return this.http.fetch(loginUrl, {
+      method: 'post',
+      headers: typeof(content) === 'string' ? {'Content-Type': 'application/x-www-form-urlencoded'} : {},
+      body: typeof(content) === 'string' ? content : json(content)
+    })
+      .then(status)
+      .then((response) => {
+        this.auth.setToken(response);
+        return response;
+      });
+  }
+
+  logout(redirectUri) {
+    return this.auth.logout(redirectUri);
+  }
+
+  authenticate(name, redirect, userData) {
+    let provider = this.oAuth2;
+    if (this.config.providers[name].type === '1.0') {
+      provider = this.oAuth1;
+    }
+
+    return provider.open(this.config.providers[name], userData || {})
+      .then((response) => {
+        this.auth.setToken(response, redirect);
+        return response;
+      });
+  }
+
+  unlink(provider) {
+    let unlinkUrl = this.config.baseUrl ?
+      joinUrl(this.config.baseUrl, this.config.unlinkUrl) : this.config.unlinkUrl;
+
+    if (this.config.unlinkMethod === 'get') {
+      return this.http.fetch(unlinkUrl + provider)
+        .then(status);
+    } else if (this.config.unlinkMethod === 'post') {
+      return this.http.fetch(unlinkUrl, {
+        method: 'post',
+        body: json(provider)
+      }).then(status);
+    }
+  }
+}
+
+let slice = [].slice;
 
 function setHashKey(obj, h) {
   if (h) {
@@ -34,15 +150,15 @@ function setHashKey(obj, h) {
 }
 
 function baseExtend(dst, objs, deep) {
-  var h = dst.$$hashKey;
+  let h = dst.$$hashKey;
 
-  for (var i = 0, ii = objs.length; i < ii; ++i) {
-    var obj = objs[i];
+  for (let i = 0, ii = objs.length; i < ii; ++i) {
+    let obj = objs[i];
     if (!isObject(obj) && !isFunction(obj)) continue;
-    var keys = Object.keys(obj);
-    for (var j = 0, jj = keys.length; j < jj; j++) {
-      var key = keys[j];
-      var src = obj[key];
+    let keys = Object.keys(obj);
+    for (let j = 0, jj = keys.length; j < jj; j++) {
+      let key = keys[j];
+      let src = obj[key];
 
       if (deep && isObject(src)) {
         if (!isObject(dst[key])) dst[key] = Array.isArray(src) ? [] : {};
@@ -76,15 +192,18 @@ export function camelCase(name) {
 }
 
 export function parseQueryString(keyValue) {
-  var obj = {},
-      key, value;
-  forEach((keyValue || '').split('&'), function(keyValue) {
-    if (keyValue) {
-      value = keyValue.split('=');
+  let key;
+  let value;
+  let obj = {};
+
+  forEach((keyValue || '').split('&'), function(kv) {
+    if (kv) {
+      value = kv.split('=');
       key = decodeURIComponent(value[0]);
       obj[key] = isDefined(value[1]) ? decodeURIComponent(value[1]) : true;
     }
   });
+
   return obj;
 }
 
@@ -105,9 +224,8 @@ export function joinUrl(baseUrl, url) {
     return url;
   }
 
-  var joined = [baseUrl, url].join('/');
-
-  var normalize = function(str) {
+  let joined = [baseUrl, url].join('/');
+  let normalize = function(str) {
     return str
       .replace(/[\/]+/g, '/')
       .replace(/\/\?/g, '?')
@@ -123,7 +241,7 @@ export function isBlankObject(value) {
 }
 
 export function isArrayLike(obj) {
-  if (obj == null || isWindow(obj)) {
+  if (obj === null || isWindow(obj)) {
     return false;
   }
 }
@@ -141,18 +259,19 @@ export function merge(dst) {
 }
 
 export function forEach(obj, iterator, context) {
-  var key, length;
+  let key;
+  let length;
   if (obj) {
     if (isFunction(obj)) {
       for (key in obj) {
         // Need to check if hasOwnProperty exists,
         // as on IE8 the result of querySelectorAll is an object without a hasOwnProperty function
-        if (key != 'prototype' && key != 'length' && key != 'name' && (!obj.hasOwnProperty || obj.hasOwnProperty(key))) {
+        if (key !== 'prototype' && key !== 'length' && key !== 'name' && (!obj.hasOwnProperty || obj.hasOwnProperty(key))) {
           iterator.call(context, obj[key], key, obj);
         }
       }
     } else if (Array.isArray(obj) || isArrayLike(obj)) {
-      var isPrimitive = typeof obj !== 'object';
+      let isPrimitive = typeof obj !== 'object';
       for (key = 0, length = obj.length; key < length; key++) {
         if (isPrimitive || key in obj) {
           iterator.call(context, obj[key], key, obj);
@@ -184,299 +303,169 @@ export function forEach(obj, iterator, context) {
   return obj;
 }
 
-export class AuthFilterValueConverter {
-  toView(routes, isAuthenticated) {
-    return routes.filter(r => r.config.auth === undefined || r.config.auth === isAuthenticated);
-  }
-}
-
-@inject(HttpClient,Authentication, OAuth1, OAuth2, BaseConfig)
-export class AuthService {
-  constructor(http, auth, oAuth1, oAuth2, config) {
-    this.http = http;
-    this.auth = auth;
-    this.oAuth1 = oAuth1;
-    this.oAuth2 = oAuth2;
+@inject(Storage, BaseConfig)
+export class Authentication {
+  constructor(storage, config) {
+    this.storage = storage;
     this.config = config.current;
-    this.token_interceptor = auth.token_interceptor;
+    this.tokenName = this.config.tokenPrefix ?
+      this.config.tokenPrefix + '_' + this.config.tokenName : this.config.tokenName;
+    this.idTokenName = this.config.tokenPrefix ?
+      this.config.tokenPrefix + '_' + this.config.idTokenName : this.config.idTokenName;
   }
 
+  getLoginRoute() {
+    return this.config.loginRoute;
+  }
 
-  getMe() {
-    var profileUrl = this.auth.getProfileUrl();
-    return this.http.fetch(profileUrl)
-      .then(status);
+  getLoginRedirect() {
+    return this.initialUrl || this.config.loginRedirect;
+  }
+
+  getLoginUrl() {
+    return this.config.baseUrl ?
+      joinUrl(this.config.baseUrl, this.config.loginUrl) : this.config.loginUrl;
+  }
+
+  getSignupUrl() {
+    return this.config.baseUrl ?
+      joinUrl(this.config.baseUrl, this.config.signupUrl) : this.config.signupUrl;
+  }
+
+  getProfileUrl() {
+    return this.config.baseUrl ?
+      joinUrl(this.config.baseUrl, this.config.profileUrl) : this.config.profileUrl;
+  }
+
+  getToken() {
+    return this.storage.get(this.tokenName);
+  }
+
+  getPayload() {
+    let token = this.storage.get(this.tokenName);
+    return this.decomposeToken(token);
+  }
+
+  decomposeToken(token) {
+    if (token && token.split('.').length === 3) {
+      let base64Url = token.split('.')[1];
+      let base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+
+      try {
+        return JSON.parse(decodeURIComponent(escape(window.atob(base64))));
+      } catch (error) {
+        return null;
+      }
+    }
+  }
+
+  setInitialUrl(url) {
+    this.initialUrl = url;
+  }
+
+  setToken(response, redirect) {
+    // access token handling
+    let accessToken = response && response[this.config.responseTokenProp];
+    let tokenToStore;
+
+    if (accessToken) {
+      if (isObject(accessToken) && isObject(accessToken.data)) {
+        response = accessToken;
+      } else if (isString(accessToken)) {
+        tokenToStore = accessToken;
+      }
+    }
+
+    if (!tokenToStore && response) {
+      tokenToStore = this.config.tokenRoot && response[this.config.tokenRoot] ?
+        response[this.config.tokenRoot][this.config.tokenName] : response[this.config.tokenName];
+    }
+
+    if (tokenToStore) {
+      this.storage.set(this.tokenName, tokenToStore);
+    }
+
+    // id token handling
+    let idToken = response && response[this.config.responseIdTokenProp];
+
+    if (idToken) {
+      this.storage.set(this.idTokenName, idToken);
+    }
+
+    if (this.config.loginRedirect && !redirect) {
+      window.location.href = this.getLoginRedirect();
+    } else if (redirect && isString(redirect)) {
+      window.location.href = window.encodeURI(redirect);
+    }
+  }
+
+  removeToken() {
+    this.storage.remove(this.tokenName);
   }
 
   isAuthenticated() {
-    return this.auth.isAuthenticated();
-  }
+    let token = this.storage.get(this.tokenName);
 
-  getTokenPayload() {
-    return this.auth.getPayload();
-  }
-
-  signup(displayName, email, password) {
-    var signupUrl = this.auth.getSignupUrl();
-    var content;
-    if (typeof arguments[0] === 'object') {
-      content = arguments[0];
-    } else {
-      content = {
-        'displayName': displayName,
-        'email': email,
-        'password': password
-      };
+    // There's no token, so user is not authenticated.
+    if (!token) {
+      return false;
     }
 
-    return this.http.fetch(signupUrl, {
-      method: 'post',
-      body: json(content)
-    })
-      .then(status)
-      .then((response) => {
-        if (this.config.loginOnSignup) {
-          this.auth.setToken(response);
-        } else if (this.config.signupRedirect) {
-          window.location.href = this.config.signupRedirect;
+    // There is a token, but in a different format. Return true.
+    if (token.split('.').length !== 3) {
+      return true;
+    }
+
+    let exp;
+    try {
+      let base64Url = token.split('.')[1];
+      let base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+      exp = JSON.parse(window.atob(base64)).exp;
+    } catch (error) {
+      return false;
+    }
+
+    if (exp) {
+      return Math.round(new Date().getTime() / 1000) <= exp;
+    }
+
+    return true;
+  }
+
+  logout(redirect) {
+    return new Promise(resolve => {
+      this.storage.remove(this.tokenName);
+
+      if (this.config.logoutRedirect && !redirect) {
+        window.location.href = this.config.logoutRedirect;
+      } else if (isString(redirect)) {
+        window.location.href = redirect;
+      }
+
+      resolve();
+    });
+  }
+
+  get tokenInterceptor() {
+    let config = this.config;
+    let storage = this.storage;
+    let auth = this;
+    return {
+      request(request) {
+        if (auth.isAuthenticated() && config.httpInterceptor) {
+          let tokenName = config.tokenPrefix ? `${config.tokenPrefix}_${config.tokenName}` : config.tokenName;
+          let token = storage.get(tokenName);
+
+          if (config.authHeader && config.authToken) {
+            token = `${config.authToken} ${token}`;
+          }
+
+          request.headers.append(config.authHeader, token);
         }
-        return response;
-      });
-  }
-
-  login(email, password) {
-    var loginUrl = this.auth.getLoginUrl();
-    var content;
-    if (typeof arguments[1] !== 'string') {
-      content = arguments[0];
-    } else {
-      content = {
-        'email': email,
-        'password': password
-      };
-    }
-
-    return this.http.fetch(loginUrl, {
-      method: 'post',
-      headers: typeof(content)==='string' ? {'Content-Type': 'application/x-www-form-urlencoded'} : {},
-      body: typeof(content)==='string' ? content : json(content)
-    })
-      .then(status)
-      .then((response) => {
-        this.auth.setToken(response)
-        return response
-      });
-  }
-
-  logout(redirectUri) {
-    return this.auth.logout(redirectUri);
-  }
-
-  authenticate(name, redirect, userData) {
-    var provider = this.oAuth2;
-    if (this.config.providers[name].type === '1.0') {
-      provider = this.oAuth1;
+        return request;
+      }
     };
-
-    return provider.open(this.config.providers[name], userData || {})
-      .then((response) => {
-        this.auth.setToken(response, redirect);
-        return response;
-      });
   }
-
-  unlink(provider) {
-    var unlinkUrl = this.config.baseUrl ?
-      joinUrl(this.config.baseUrl, this.config.unlinkUrl) : this.config.unlinkUrl;
-
-    if (this.config.unlinkMethod === 'get') {
-      return this.http.fetch(unlinkUrl + provider)
-        .then(status);
-    } else if (this.config.unlinkMethod === 'post') {
-      return this.http.fetch(unlinkUrl, {
-        method: 'post',
-        body: json(provider)
-      }).then(status);
-    }
-  }
-}
-
-
-
-@inject(Storage, BaseConfig)
-export class Authentication {
-    constructor(storage, config) {
-        this.storage = storage;
-        this.config = config.current;
-        this.tokenName = this.config.tokenPrefix ? this.config.tokenPrefix + '_' + this.config.tokenName : this.config.tokenName;
-        this.idTokenName = this.config.tokenPrefix ? this.config.tokenPrefix + '_' + this.config.idTokenName : this.config.idTokenName;
-    }
-
-    getLoginRoute() {
-        return this.config.loginRoute;
-    }
-
-    getLoginRedirect() {
-        return this.initialUrl || this.config.loginRedirect;
-    }
-
-    getLoginUrl() {
-        return this.config.baseUrl ?
-          joinUrl(this.config.baseUrl, this.config.loginUrl) : this.config.loginUrl;
-    }
-
-    getSignupUrl() {
-        return this.config.baseUrl ?
-          joinUrl(this.config.baseUrl, this.config.signupUrl) : this.config.signupUrl;
-    }
-
-    getProfileUrl() {
-        return this.config.baseUrl ?
-          joinUrl(this.config.baseUrl, this.config.profileUrl) : this.config.profileUrl;
-    }
-
-    getToken() {
-        return this.storage.get(this.tokenName);
-    }
-
-    getPayload() {
-
-        let token = this.storage.get(this.tokenName);
-        return this.decomposeToken(token);
-    }
-
-    decomposeToken(token){
-        if (token && token.split('.').length === 3) {
-            let base64Url = token.split('.')[1];
-            let base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-
-            try {
-                return JSON.parse(decodeURIComponent(escape(window.atob(base64))));
-            } catch (error) {
-                return null;
-            }
-        }
-    }
-
-    setInitialUrl(url) {
-        this.initialUrl = url;
-    }
-
-    setToken(response, redirect) {
-
-
-        //access token handling
-
-            let accessToken = response && response[this.config.responseTokenProp];
-            let tokenToStore;
-
-            if (accessToken) {
-                if (isObject(accessToken) && isObject(accessToken.data)) {
-                    response = accessToken;
-                } else if (isString(accessToken)) {
-                    tokenToStore = accessToken;
-                }
-            }
-
-            if (!tokenToStore && response) {
-                tokenToStore = this.config.tokenRoot && response[this.config.tokenRoot] ? response[this.config.tokenRoot][this.config.tokenName] : response[this.config.tokenName];
-            }
-
-            if (tokenToStore) {
-                this.storage.set(this.tokenName, tokenToStore);
-            }
-
-
-        //id token handling
-
-            let idToken = response && response[this.config.responseIdTokenProp];
-
-            if (idToken) {
-                    this.storage.set(this.idTokenName, idToken);
-            }
-
-
-
-        if (this.config.loginRedirect && !redirect) {
-            window.location.href = this.getLoginRedirect();
-        } else if (redirect && isString(redirect)) {
-            window.location.href = window.encodeURI(redirect);
-        }
-    }
-
-
-
-
-    removeToken() {
-        this.storage.remove(this.tokenName);
-    }
-
-    isAuthenticated() {
-
-        let token = this.storage.get(this.tokenName);
-
-        // There's no token, so user is not authenticated.
-        if (!token) {
-            return false;
-        }
-
-        // There is a token, but in a different format. Return true.
-        if (token.split('.').length !== 3) {
-            return true;
-        }
-
-        let exp;
-        try {
-            let base64Url = token.split('.')[1];
-            let base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-            exp = JSON.parse(window.atob(base64)).exp;
-        } catch (error) {
-            return false;
-        }
-
-        if (exp) {
-            return Math.round(new Date().getTime() / 1000) <= exp;
-        }
-
-        return true;
-    }
-
-    logout(redirect) {
-        return new Promise(resolve => {
-            this.storage.remove(this.tokenName);
-
-            if (this.config.logoutRedirect && !redirect) {
-                window.location.href = this.config.logoutRedirect;
-            } else if (isString(redirect)) {
-                window.location.href = redirect;
-            }
-
-            resolve();
-        });
-    }
-
-    get token_interceptor() {
-        let config = this.config;
-        let storage = this.storage;
-        let auth = this;
-        return {
-            request(request) {
-                if (auth.isAuthenticated() && config.httpInterceptor) {
-                    let tokenName = config.tokenPrefix ? `${config.tokenPrefix}_${config.tokenName}` : config.tokenName;
-                    let token = storage.get(tokenName);
-
-                    if (config.authHeader && config.authToken) {
-                        token = `${config.authToken} ${token}`;
-                    }
-
-                    request.headers.append(config.authHeader, token);
-                }
-                return request;
-            }
-        }
-    }
-
-
 }
 
 @inject(Authentication)
@@ -485,16 +474,16 @@ export class AuthorizeStep {
     this.auth = auth;
   }
   run(routingContext, next) {
-    var isLoggedIn = this.auth.isAuthenticated();
-    var loginRoute = this.auth.getLoginRoute();
+    let isLoggedIn = this.auth.isAuthenticated();
+    let loginRoute = this.auth.getLoginRoute();
 
     if (routingContext.getAllInstructions().some(i => i.config.auth)) {
       if (!isLoggedIn) {
         this.auth.setInitialUrl(window.location.href);
         return next.cancel(new Redirect(loginRoute));
       }
-    } else if (isLoggedIn && routingContext.getAllInstructions().some(i => i.fragment == loginRoute)) {
-      var loginRedirect = this.auth.getLoginRedirect();
+    } else if (isLoggedIn && routingContext.getAllInstructions().some(i => i.fragment === loginRoute)) {
+      let loginRedirect = this.auth.getLoginRedirect();
       return next.cancel(new Redirect(loginRedirect));
     }
 
@@ -526,7 +515,7 @@ export class BaseConfig {
       signupRoute: '/signup',
       tokenRoot: false,
       tokenName: 'token',
-      idTokenName:'id_token',
+      idTokenName: 'id_token',
       tokenPrefix: 'aurelia',
       responseTokenProp: 'access_token',
       responseIdTokenProp: 'id_token',
@@ -538,30 +527,29 @@ export class BaseConfig {
       platform: 'browser',
       storage: 'localStorage',
       providers: {
-        identSrv : {
-        name: 'identSrv',
-        url: '/auth/identSrv',
-        //authorizationEndpoint: 'http://localhost:22530/connect/authorize',
-        redirectUri: window.location.origin || window.location.protocol + '//' + window.location.host,
-        scope: ['profile', 'openid'],
-
-        responseType :'code',
-        scopePrefix: '',
-        scopeDelimiter: ' ',
-        requiredUrlParams: ['scope', 'nonce'],
-        optionalUrlParams: ['display','state'],
-         state: function() {
-            var rand = Math.random().toString(36).substr(2);
+        identSrv: {
+          name: 'identSrv',
+          url: '/auth/identSrv',
+          //authorizationEndpoint: 'http://localhost:22530/connect/authorize',
+          redirectUri: window.location.origin || window.location.protocol + '//' + window.location.host,
+          scope: ['profile', 'openid'],
+          responseType: 'code',
+          scopePrefix: '',
+          scopeDelimiter: ' ',
+          requiredUrlParams: ['scope', 'nonce'],
+          optionalUrlParams: ['display', 'state'],
+          state: function() {
+            let rand = Math.random().toString(36).substr(2);
             return encodeURIComponent(rand);
           },
-        display: 'popup',
-        type: '2.0',
-        clientId: 'jsClient',
-        nonce : function(){
-            var val = ((Date.now() + Math.random()) * Math.random()).toString().replace(".", "");
+          display: 'popup',
+          type: '2.0',
+          clientId: 'jsClient',
+          nonce: function() {
+            let val = ((Date.now() + Math.random()) * Math.random()).toString().replace('.', '');
             return encodeURIComponent(val);
-        },
-        popupOptions: { width: 452, height: 633 }
+          },
+          popupOptions: { width: 452, height: 633 }
         },
         google: {
           name: 'google',
@@ -572,11 +560,11 @@ export class BaseConfig {
           scopePrefix: 'openid',
           scopeDelimiter: ' ',
           requiredUrlParams: ['scope'],
-          optionalUrlParams: ['display','state'],
+          optionalUrlParams: ['display', 'state'],
           display: 'popup',
           type: '2.0',
           state: function() {
-            var rand = Math.random().toString(36).substr(2);
+            let rand = Math.random().toString(36).substr(2);
             return encodeURIComponent(rand);
           },
           popupOptions: {
@@ -733,9 +721,10 @@ export class OAuth1 {
           ].join('?');
         }
 
-        let popupListener = this.config.platform === 'mobile' ? this.popup.eventListener(current.redirectUri) : this.popup.pollPopup();
-
-        return popupListener.then(result => this.exchangeForToken(result, userData, current));
+        let popupListener = this.config.platform === 'mobile' ?
+          this.popup.eventListener(current.redirectUri) : this.popup.pollPopup();
+        return popupListener
+          .then(result => this.exchangeForToken(result, userData, current));
       });
   }
 
@@ -744,11 +733,11 @@ export class OAuth1 {
     let exchangeForTokenUrl = this.config.baseUrl ? joinUrl(this.config.baseUrl, current.url) : current.url;
     let credentials         = this.config.withCredentials ? 'include' : 'same-origin';
 
-  return this.http.fetch(exchangeForTokenUrl, {
+    return this.http.fetch(exchangeForTokenUrl, {
       method: 'post',
       body: json(data),
       credentials: credentials
-    }).then(status)
+    }).then(status);
   }
 
   buildQueryString(obj) {
@@ -757,9 +746,6 @@ export class OAuth1 {
     return str.join('&');
   }
 }
-
-
-
 
 @inject(Storage, Popup, HttpClient, BaseConfig, Authentication)
 export class OAuth2 {
@@ -823,31 +809,30 @@ export class OAuth2 {
         }
 
         if (current.responseType.toUpperCase().includes('TOKEN')) { //meaning implicit flow or hybrid flow
-            if (!this.verifyIdToken(oauthData, current.name)){
-                return Promise.reject('OAuth 2.0 Nonce parameter mismatch.');
-            };
+          if (!this.verifyIdToken(oauthData, current.name)) {
+            return Promise.reject('OAuth 2.0 Nonce parameter mismatch.');
+          }
+
           return oauthData;
         }
 
         return this.exchangeForToken(oauthData, userData, current); //responseType is authorization code only (no token nor id_token)
       });
-  };
+  }
 
-
-  verifyIdToken(oauthData, providerName){
-
-        let idToken = oauthData && oauthData[this.config.responseIdTokenProp];
-        if(!idToken) return true;
-        let idTokenObject = this.auth.decomposeToken(idToken);
-        if(!idTokenObject) return true;
-        let nonceFromToken = idTokenObject.nonce;
-        if(!nonceFromToken) return true;
-        let nonceInStorage = this.storage.get(providerName + '_nonce');
-        if (nonceFromToken!==nonceInStorage) {
-            return false;
-        }
-        return true;
-    };
+  verifyIdToken(oauthData, providerName) {
+    let idToken = oauthData && oauthData[this.config.responseIdTokenProp];
+    if (!idToken) return true;
+    let idTokenObject = this.auth.decomposeToken(idToken);
+    if (!idTokenObject) return true;
+    let nonceFromToken = idTokenObject.nonce;
+    if (!nonceFromToken) return true;
+    let nonceInStorage = this.storage.get(providerName + '_nonce');
+    if (nonceFromToken !== nonceInStorage) {
+      return false;
+    }
+    return true;
+  }
 
   exchangeForToken(oauthData, userData, current) {
     let data = extend({}, userData, {
@@ -869,7 +854,7 @@ export class OAuth2 {
       method: 'post',
       body: json(data),
       credentials: credentials
-    }).then(status)
+    }).then(status);
   }
 
   buildQueryString(current) {
@@ -907,12 +892,6 @@ export class OAuth2 {
   }
 }
 
-
-
-
-
-
-
 @inject(BaseConfig)
 export class Popup {
   constructor(config) {
@@ -924,10 +903,8 @@ export class Popup {
 
   open(url, windowName, options, redirectUri) {
     this.url = url;
-    var optionsString = this.stringifyOptions(this.prepareOptions(options || {}));
-
+    let optionsString = this.stringifyOptions(this.prepareOptions(options || {}));
     this.popupWindow = window.open(url, windowName, optionsString);
-
     if (this.popupWindow && this.popupWindow.focus) {
       this.popupWindow.focus();
     }
@@ -936,21 +913,21 @@ export class Popup {
   }
 
   eventListener(redirectUri) {
-    var self = this;
-    var promise = new Promise((resolve, reject) => {
+    let self = this;
+    let promise = new Promise((resolve, reject) => {
       self.popupWindow.addEventListener('loadstart', (event) => {
         if (event.url.indexOf(redirectUri) !== 0) {
           return;
         }
 
-        var parser = document.createElement('a');
+        let parser = document.createElement('a');
         parser.href = event.url;
 
         if (parser.search || parser.hash) {
-          var queryParams = parser.search.substring(1).replace(/\/$/, '');
-          var hashParams = parser.hash.substring(1).replace(/\/$/, '');
-          var hash = parseQueryString(hashParams);
-          var qs = parseQueryString(queryParams);
+          let queryParams = parser.search.substring(1).replace(/\/$/, '');
+          let hashParams = parser.hash.substring(1).replace(/\/$/, '');
+          let hash = parseQueryString(hashParams);
+          let qs = parseQueryString(queryParams);
 
           extend(qs, hash);
 
@@ -982,18 +959,18 @@ export class Popup {
   }
 
   pollPopup() {
-    var self = this;
-    var promise = new Promise((resolve, reject) => {
+    let self = this;
+    let promise = new Promise((resolve, reject) => {
       this.polling = setInterval(() => {
         try {
-          var documentOrigin = document.location.host;
-          var popupWindowOrigin = self.popupWindow.location.host;
+          let documentOrigin = document.location.host;
+          let popupWindowOrigin = self.popupWindow.location.host;
 
           if (popupWindowOrigin === documentOrigin && (self.popupWindow.location.search || self.popupWindow.location.hash)) {
-            var queryParams = self.popupWindow.location.search.substring(1).replace(/\/$/, '');
-            var hashParams = self.popupWindow.location.hash.substring(1).replace(/[\/$]/, '');
-            var hash = parseQueryString(hashParams);
-            var qs = parseQueryString(queryParams);
+            let queryParams = self.popupWindow.location.search.substring(1).replace(/\/$/, '');
+            let hashParams = self.popupWindow.location.hash.substring(1).replace(/[\/$]/, '');
+            let hash = parseQueryString(hashParams);
+            let qs = parseQueryString(queryParams);
 
             extend(qs, hash);
 
@@ -1008,7 +985,9 @@ export class Popup {
             self.popupWindow.close();
             clearInterval(self.polling);
           }
-        } catch (error) {}
+        } catch (error) {
+          // no-op
+        }
 
         if (!self.popupWindow) {
           clearInterval(self.polling);
@@ -1022,15 +1001,13 @@ export class Popup {
           });
         }
       }, 35);
-
-
     });
     return promise;
   }
 
   prepareOptions(options) {
-    var width = options.width || 500;
-    var height = options.height || 500;
+    let width = options.width || 500;
+    let height = options.height || 500;
     return extend({
       width: width,
       height: height,
@@ -1040,7 +1017,7 @@ export class Popup {
   }
 
   stringifyOptions(options) {
-    var parts = [];
+    let parts = [];
     forEach(options, function(value, key) {
       parts.push(key + '=' + value);
     });
@@ -1052,73 +1029,21 @@ export class Popup {
 export class Storage {
   constructor(config) {
     this.config = config.current;
+    this.storage = this._getStorage(this.config.storage);
   }
 
-  get(key) {
-    switch (this.config.storage) {
-    case 'localStorage':
-      if ('localStorage' in window && window['localStorage'] !== null) {
-        return localStorage.getItem(key);
-      } else {
-        console.warn('Warning: Local Storage is disabled or unavailable');
-        return undefined;
-      }
-      break;
-
-    case 'sessionStorage':
-      if ('sessionStorage' in window && window['sessionStorage'] !== null) {
-        return sessionStorage.getItem(key);
-      } else {
-        console.warn('Warning: Session Storage is disabled or unavailable.  will not work correctly.');
-        return undefined;
-      }
-      break;
+  get(key) { return this.storage.getItem(key); }
+  set(key, value) { return this.storage.setItem(key, value); }
+  remove(key) { return this.storage.removeItem(key); }
+  _getStorage(type) {
+    if (type === 'localStorage') {
+      if ('localStorage' in window && window.localStorage !== null) return localStorage;
+      throw new Error('Local Storage is disabled or unavailable.');
+    } else if (type === 'sessionStorage') {
+      if ('sessionStorage' in window && window.sessionStorage !== null) return sessionStorage;
+      throw new Error('Session Storage is disabled or unavailable.');
     }
-  }
 
-  set(key, value) {
-    switch (this.config.storage) {
-    case 'localStorage':
-      if ('localStorage' in window && window['localStorage'] !== null) {
-        return localStorage.setItem(key, value);
-
-      } else {
-        console.warn('Warning: Local Storage is disabled or unavailable.  will not work correctly.');
-        return undefined;
-      }
-      break;
-
-    case 'sessionStorage':
-      if ('sessionStorage' in window && window['sessionStorage'] !== null) {
-        return sessionStorage.setItem(key, value);
-      } else {
-        console.warn('Warning: Session Storage is disabled or unavailable.  will not work correctly.');
-        return undefined;
-      }
-      break;
-    }
-  }
-
-  remove(key) {
-    switch (this.config.storage) {
-    case 'localStorage':
-      if ('localStorage' in window && window['localStorage'] !== null) {
-        return localStorage.removeItem(key);
-      } else {
-        console.warn('Warning: Local Storage is disabled or unavailable.  will not work correctly.');
-        return undefined;
-      }
-      break;
-
-    case 'sessionStorage':
-      if ('sessionStorage' in window && window['sessionStorage'] !== null) {
-        return sessionStorage.removeItem(key);
-
-      } else {
-        console.warn('Warning: Session Storage is disabled or unavailable.  will not work correctly.');
-        return undefined;
-      }
-      break;
-    }
+    throw new Error('Invalid storage type specified: ' + type);
   }
 }

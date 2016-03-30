@@ -4,7 +4,7 @@ import { inject } from 'aurelia-dependency-injection';
 import { extend, joinUrl, status } from './auth-utilities';
 import { Storage } from './storage';
 import { Popup } from './popup';
-import { BaseConfig } from './baseConfig';
+import { BaseConfig } from './base-config';
 import { HttpClient, json } from 'aurelia-fetch-client';
 import 'isomorphic-fetch';
 
@@ -40,7 +40,6 @@ export let OAuth1 = (_dec = inject(Storage, Popup, HttpClient, BaseConfig), _dec
       }
 
       let popupListener = this.config.platform === 'mobile' ? this.popup.eventListener(current.redirectUri) : this.popup.pollPopup();
-
       return popupListener.then(result => this.exchangeForToken(result, userData, current));
     });
   }

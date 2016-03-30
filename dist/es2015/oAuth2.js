@@ -4,7 +4,7 @@ import { inject } from 'aurelia-dependency-injection';
 import { extend, forEach, isFunction, isString, joinUrl, camelCase } from './auth-utilities';
 import { Storage } from './storage';
 import { Popup } from './popup';
-import { BaseConfig } from './baseConfig';
+import { BaseConfig } from './base-config';
 import { Authentication } from './authentication';
 import { HttpClient, json } from 'aurelia-fetch-client';
 import 'isomorphic-fetch';
@@ -69,7 +69,8 @@ export let OAuth2 = (_dec = inject(Storage, Popup, HttpClient, BaseConfig, Authe
       if (current.responseType.toUpperCase().includes('TOKEN')) {
         if (!this.verifyIdToken(oauthData, current.name)) {
           return Promise.reject('OAuth 2.0 Nonce parameter mismatch.');
-        };
+        }
+
         return oauthData;
       }
 
@@ -78,7 +79,6 @@ export let OAuth2 = (_dec = inject(Storage, Popup, HttpClient, BaseConfig, Authe
   }
 
   verifyIdToken(oauthData, providerName) {
-
     let idToken = oauthData && oauthData[this.config.responseIdTokenProp];
     if (!idToken) return true;
     let idTokenObject = this.auth.decomposeToken(idToken);

@@ -1,6 +1,6 @@
 'use strict';
 
-System.register(['./auth-utilities', './baseConfig', 'aurelia-dependency-injection'], function (_export, _context) {
+System.register(['./auth-utilities', './base-config', 'aurelia-dependency-injection'], function (_export, _context) {
   var parseQueryString, extend, forEach, BaseConfig, inject, _dec, _class, Popup;
 
   function _classCallCheck(instance, Constructor) {
@@ -33,9 +33,7 @@ System.register(['./auth-utilities', './baseConfig', 'aurelia-dependency-injecti
         Popup.prototype.open = function open(url, windowName, options, redirectUri) {
           this.url = url;
           var optionsString = this.stringifyOptions(this.prepareOptions(options || {}));
-
           this.popupWindow = window.open(url, windowName, optionsString);
-
           if (this.popupWindow && this.popupWindow.focus) {
             this.popupWindow.focus();
           }

@@ -5,7 +5,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.FetchConfig = exports.AuthorizeStep = exports.AuthService = undefined;
 
-var _authService = require('./authService');
+var _authService = require('./auth-service');
 
 Object.defineProperty(exports, 'AuthService', {
   enumerable: true,
@@ -14,7 +14,7 @@ Object.defineProperty(exports, 'AuthService', {
   }
 });
 
-var _authorizeStep = require('./authorizeStep');
+var _authorizeStep = require('./authorize-step');
 
 Object.defineProperty(exports, 'AuthorizeStep', {
   enumerable: true,
@@ -23,20 +23,20 @@ Object.defineProperty(exports, 'AuthorizeStep', {
   }
 });
 
-var _appFetchHttpClient = require('./app.fetch-httpClient.config');
+var _authFetchConfig = require('./auth-fetch-config');
 
 Object.defineProperty(exports, 'FetchConfig', {
   enumerable: true,
   get: function get() {
-    return _appFetchHttpClient.FetchConfig;
+    return _authFetchConfig.FetchConfig;
   }
 });
 exports.configure = configure;
 
-var _baseConfig = require('./baseConfig');
+var _baseConfig = require('./base-config');
 
 function configure(aurelia, configCallback) {
-  aurelia.globalResources('./authFilter');
+  aurelia.globalResources('./auth-filter');
 
   var baseConfig = aurelia.container.get(_baseConfig.BaseConfig);
   if (configCallback !== undefined && typeof configCallback === 'function') {

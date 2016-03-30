@@ -1,6 +1,6 @@
 'use strict';
 
-System.register(['aurelia-dependency-injection', './auth-utilities', './storage', './popup', './baseConfig', './authentication', 'aurelia-fetch-client', 'isomorphic-fetch'], function (_export, _context) {
+System.register(['aurelia-dependency-injection', './auth-utilities', './storage', './popup', './base-config', './authentication', 'aurelia-fetch-client', 'isomorphic-fetch'], function (_export, _context) {
   var inject, extend, forEach, isFunction, isString, joinUrl, camelCase, Storage, Popup, BaseConfig, Authentication, HttpClient, json, _dec, _class, OAuth2;
 
   function _classCallCheck(instance, Constructor) {
@@ -96,7 +96,8 @@ System.register(['aurelia-dependency-injection', './auth-utilities', './storage'
             if (current.responseType.toUpperCase().includes('TOKEN')) {
               if (!_this.verifyIdToken(oauthData, current.name)) {
                 return Promise.reject('OAuth 2.0 Nonce parameter mismatch.');
-              };
+              }
+
               return oauthData;
             }
 
@@ -105,7 +106,6 @@ System.register(['aurelia-dependency-injection', './auth-utilities', './storage'
         };
 
         OAuth2.prototype.verifyIdToken = function verifyIdToken(oauthData, providerName) {
-
           var idToken = oauthData && oauthData[this.config.responseIdTokenProp];
           if (!idToken) return true;
           var idTokenObject = this.auth.decomposeToken(idToken);

@@ -8,12 +8,25 @@ declare module 'aurelia-auth' {
     json
   } from 'aurelia-fetch-client';
   import {
-    Router,
     Redirect
   } from 'aurelia-router';
   export class FetchConfig {
     constructor(httpClient: any, authService: any);
     configure(): any;
+  }
+  export class AuthFilterValueConverter {
+    toView(routes: any, isAuthenticated: any): any;
+  }
+  export class AuthService {
+    constructor(http: any, auth: any, oAuth1: any, oAuth2: any, config: any);
+    getMe(): any;
+    isAuthenticated(): any;
+    getTokenPayload(): any;
+    signup(displayName: any, email: any, password: any): any;
+    login(email: any, password: any): any;
+    logout(redirectUri: any): any;
+    authenticate(name: any, redirect: any, userData: any): any;
+    unlink(provider: any): any;
   }
   export function status(response: any): any;
   export function isDefined(value: any): any;
@@ -29,20 +42,6 @@ declare module 'aurelia-auth' {
   export function extend(dst: any): any;
   export function merge(dst: any): any;
   export function forEach(obj: any, iterator: any, context: any): any;
-  export class AuthFilterValueConverter {
-    toView(routes: any, isAuthenticated: any): any;
-  }
-  export class AuthService {
-    constructor(http: any, auth: any, oAuth1: any, oAuth2: any, config: any);
-    getMe(): any;
-    isAuthenticated(): any;
-    getTokenPayload(): any;
-    signup(displayName: any, email: any, password: any): any;
-    login(email: any, password: any): any;
-    logout(redirectUri: any): any;
-    authenticate(name: any, redirect: any, userData: any): any;
-    unlink(provider: any): any;
-  }
   export class Authentication {
     constructor(storage: any, config: any);
     getLoginRoute(): any;
@@ -58,7 +57,7 @@ declare module 'aurelia-auth' {
     removeToken(): any;
     isAuthenticated(): any;
     logout(redirect: any): any;
-    token_interceptor: any;
+    tokenInterceptor: any;
   }
   export class AuthorizeStep {
     constructor(auth: any);

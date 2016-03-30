@@ -15,7 +15,7 @@ var _storage = require('./storage');
 
 var _popup = require('./popup');
 
-var _baseConfig = require('./baseConfig');
+var _baseConfig = require('./base-config');
 
 var _authentication = require('./authentication');
 
@@ -89,7 +89,8 @@ var OAuth2 = exports.OAuth2 = (_dec = (0, _aureliaDependencyInjection.inject)(_s
       if (current.responseType.toUpperCase().includes('TOKEN')) {
         if (!_this.verifyIdToken(oauthData, current.name)) {
           return Promise.reject('OAuth 2.0 Nonce parameter mismatch.');
-        };
+        }
+
         return oauthData;
       }
 
@@ -98,7 +99,6 @@ var OAuth2 = exports.OAuth2 = (_dec = (0, _aureliaDependencyInjection.inject)(_s
   };
 
   OAuth2.prototype.verifyIdToken = function verifyIdToken(oauthData, providerName) {
-
     var idToken = oauthData && oauthData[this.config.responseIdTokenProp];
     if (!idToken) return true;
     var idTokenObject = this.auth.decomposeToken(idToken);

@@ -1,4 +1,4 @@
-define(['exports', './auth-utilities', './baseConfig', 'aurelia-dependency-injection'], function (exports, _authUtilities, _baseConfig, _aureliaDependencyInjection) {
+define(['exports', './auth-utilities', './base-config', 'aurelia-dependency-injection'], function (exports, _authUtilities, _baseConfig, _aureliaDependencyInjection) {
   'use strict';
 
   Object.defineProperty(exports, "__esModule", {
@@ -27,9 +27,7 @@ define(['exports', './auth-utilities', './baseConfig', 'aurelia-dependency-injec
     Popup.prototype.open = function open(url, windowName, options, redirectUri) {
       this.url = url;
       var optionsString = this.stringifyOptions(this.prepareOptions(options || {}));
-
       this.popupWindow = window.open(url, windowName, optionsString);
-
       if (this.popupWindow && this.popupWindow.focus) {
         this.popupWindow.focus();
       }

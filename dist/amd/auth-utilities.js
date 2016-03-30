@@ -80,16 +80,18 @@ define(['exports'], function (exports) {
   }
 
   function parseQueryString(keyValue) {
-    var obj = {},
-        key,
-        value;
-    forEach((keyValue || '').split('&'), function (keyValue) {
-      if (keyValue) {
-        value = keyValue.split('=');
+    var key = void 0;
+    var value = void 0;
+    var obj = {};
+
+    forEach((keyValue || '').split('&'), function (kv) {
+      if (kv) {
+        value = kv.split('=');
         key = decodeURIComponent(value[0]);
         obj[key] = isDefined(value[1]) ? decodeURIComponent(value[1]) : true;
       }
     });
+
     return obj;
   }
 
@@ -111,7 +113,6 @@ define(['exports'], function (exports) {
     }
 
     var joined = [baseUrl, url].join('/');
-
     var normalize = function normalize(str) {
       return str.replace(/[\/]+/g, '/').replace(/\/\?/g, '?').replace(/\/\#/g, '#').replace(/\:\//g, '://');
     };
@@ -124,7 +125,7 @@ define(['exports'], function (exports) {
   }
 
   function isArrayLike(obj) {
-    if (obj == null || isWindow(obj)) {
+    if (obj === null || isWindow(obj)) {
       return false;
     }
   }
@@ -142,11 +143,12 @@ define(['exports'], function (exports) {
   }
 
   function forEach(obj, iterator, context) {
-    var key, length;
+    var key = void 0;
+    var length = void 0;
     if (obj) {
       if (isFunction(obj)) {
         for (key in obj) {
-          if (key != 'prototype' && key != 'length' && key != 'name' && (!obj.hasOwnProperty || obj.hasOwnProperty(key))) {
+          if (key !== 'prototype' && key !== 'length' && key !== 'name' && (!obj.hasOwnProperty || obj.hasOwnProperty(key))) {
             iterator.call(context, obj[key], key, obj);
           }
         }

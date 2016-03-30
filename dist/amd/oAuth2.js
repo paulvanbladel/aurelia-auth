@@ -1,4 +1,4 @@
-define(['exports', 'aurelia-dependency-injection', './auth-utilities', './storage', './popup', './baseConfig', './authentication', 'aurelia-fetch-client', 'isomorphic-fetch'], function (exports, _aureliaDependencyInjection, _authUtilities, _storage, _popup, _baseConfig, _authentication, _aureliaFetchClient) {
+define(['exports', 'aurelia-dependency-injection', './auth-utilities', './storage', './popup', './base-config', './authentication', 'aurelia-fetch-client', 'isomorphic-fetch'], function (exports, _aureliaDependencyInjection, _authUtilities, _storage, _popup, _baseConfig, _authentication, _aureliaFetchClient) {
   'use strict';
 
   Object.defineProperty(exports, "__esModule", {
@@ -78,7 +78,8 @@ define(['exports', 'aurelia-dependency-injection', './auth-utilities', './storag
         if (current.responseType.toUpperCase().includes('TOKEN')) {
           if (!_this.verifyIdToken(oauthData, current.name)) {
             return Promise.reject('OAuth 2.0 Nonce parameter mismatch.');
-          };
+          }
+
           return oauthData;
         }
 
@@ -87,7 +88,6 @@ define(['exports', 'aurelia-dependency-injection', './auth-utilities', './storag
     };
 
     OAuth2.prototype.verifyIdToken = function verifyIdToken(oauthData, providerName) {
-
       var idToken = oauthData && oauthData[this.config.responseIdTokenProp];
       if (!idToken) return true;
       var idTokenObject = this.auth.decomposeToken(idToken);

@@ -1,7 +1,7 @@
 var _dec, _class;
 
 import { parseQueryString, extend, forEach } from './auth-utilities';
-import { BaseConfig } from './baseConfig';
+import { BaseConfig } from './base-config';
 import { inject } from 'aurelia-dependency-injection';
 
 export let Popup = (_dec = inject(BaseConfig), _dec(_class = class Popup {
@@ -14,10 +14,8 @@ export let Popup = (_dec = inject(BaseConfig), _dec(_class = class Popup {
 
   open(url, windowName, options, redirectUri) {
     this.url = url;
-    var optionsString = this.stringifyOptions(this.prepareOptions(options || {}));
-
+    let optionsString = this.stringifyOptions(this.prepareOptions(options || {}));
     this.popupWindow = window.open(url, windowName, optionsString);
-
     if (this.popupWindow && this.popupWindow.focus) {
       this.popupWindow.focus();
     }
@@ -26,21 +24,21 @@ export let Popup = (_dec = inject(BaseConfig), _dec(_class = class Popup {
   }
 
   eventListener(redirectUri) {
-    var self = this;
-    var promise = new Promise((resolve, reject) => {
+    let self = this;
+    let promise = new Promise((resolve, reject) => {
       self.popupWindow.addEventListener('loadstart', event => {
         if (event.url.indexOf(redirectUri) !== 0) {
           return;
         }
 
-        var parser = document.createElement('a');
+        let parser = document.createElement('a');
         parser.href = event.url;
 
         if (parser.search || parser.hash) {
-          var queryParams = parser.search.substring(1).replace(/\/$/, '');
-          var hashParams = parser.hash.substring(1).replace(/\/$/, '');
-          var hash = parseQueryString(hashParams);
-          var qs = parseQueryString(queryParams);
+          let queryParams = parser.search.substring(1).replace(/\/$/, '');
+          let hashParams = parser.hash.substring(1).replace(/\/$/, '');
+          let hash = parseQueryString(hashParams);
+          let qs = parseQueryString(queryParams);
 
           extend(qs, hash);
 
@@ -72,18 +70,18 @@ export let Popup = (_dec = inject(BaseConfig), _dec(_class = class Popup {
   }
 
   pollPopup() {
-    var self = this;
-    var promise = new Promise((resolve, reject) => {
+    let self = this;
+    let promise = new Promise((resolve, reject) => {
       this.polling = setInterval(() => {
         try {
-          var documentOrigin = document.location.host;
-          var popupWindowOrigin = self.popupWindow.location.host;
+          let documentOrigin = document.location.host;
+          let popupWindowOrigin = self.popupWindow.location.host;
 
           if (popupWindowOrigin === documentOrigin && (self.popupWindow.location.search || self.popupWindow.location.hash)) {
-            var queryParams = self.popupWindow.location.search.substring(1).replace(/\/$/, '');
-            var hashParams = self.popupWindow.location.hash.substring(1).replace(/[\/$]/, '');
-            var hash = parseQueryString(hashParams);
-            var qs = parseQueryString(queryParams);
+            let queryParams = self.popupWindow.location.search.substring(1).replace(/\/$/, '');
+            let hashParams = self.popupWindow.location.hash.substring(1).replace(/[\/$]/, '');
+            let hash = parseQueryString(hashParams);
+            let qs = parseQueryString(queryParams);
 
             extend(qs, hash);
 
@@ -117,8 +115,8 @@ export let Popup = (_dec = inject(BaseConfig), _dec(_class = class Popup {
   }
 
   prepareOptions(options) {
-    var width = options.width || 500;
-    var height = options.height || 500;
+    let width = options.width || 500;
+    let height = options.height || 500;
     return extend({
       width: width,
       height: height,
@@ -128,7 +126,7 @@ export let Popup = (_dec = inject(BaseConfig), _dec(_class = class Popup {
   }
 
   stringifyOptions(options) {
-    var parts = [];
+    let parts = [];
     forEach(options, function (value, key) {
       parts.push(key + '=' + value);
     });

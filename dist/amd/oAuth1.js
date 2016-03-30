@@ -1,4 +1,4 @@
-define(['exports', 'aurelia-dependency-injection', './auth-utilities', './storage', './popup', './baseConfig', 'aurelia-fetch-client', 'isomorphic-fetch'], function (exports, _aureliaDependencyInjection, _authUtilities, _storage, _popup, _baseConfig, _aureliaFetchClient) {
+define(['exports', 'aurelia-dependency-injection', './auth-utilities', './storage', './popup', './base-config', 'aurelia-fetch-client', 'isomorphic-fetch'], function (exports, _aureliaDependencyInjection, _authUtilities, _storage, _popup, _baseConfig, _aureliaFetchClient) {
   'use strict';
 
   Object.defineProperty(exports, "__esModule", {
@@ -50,7 +50,6 @@ define(['exports', 'aurelia-dependency-injection', './auth-utilities', './storag
         }
 
         var popupListener = _this.config.platform === 'mobile' ? _this.popup.eventListener(current.redirectUri) : _this.popup.pollPopup();
-
         return popupListener.then(function (result) {
           return _this.exchangeForToken(result, userData, current);
         });

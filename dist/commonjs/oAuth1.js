@@ -15,7 +15,7 @@ var _storage = require('./storage');
 
 var _popup = require('./popup');
 
-var _baseConfig = require('./baseConfig');
+var _baseConfig = require('./base-config');
 
 var _aureliaFetchClient = require('aurelia-fetch-client');
 
@@ -59,7 +59,6 @@ var OAuth1 = exports.OAuth1 = (_dec = (0, _aureliaDependencyInjection.inject)(_s
       }
 
       var popupListener = _this.config.platform === 'mobile' ? _this.popup.eventListener(current.redirectUri) : _this.popup.pollPopup();
-
       return popupListener.then(function (result) {
         return _this.exchangeForToken(result, userData, current);
       });

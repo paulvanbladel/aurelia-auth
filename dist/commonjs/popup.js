@@ -9,7 +9,7 @@ var _dec, _class;
 
 var _authUtilities = require('./auth-utilities');
 
-var _baseConfig = require('./baseConfig');
+var _baseConfig = require('./base-config');
 
 var _aureliaDependencyInjection = require('aurelia-dependency-injection');
 
@@ -28,9 +28,7 @@ var Popup = exports.Popup = (_dec = (0, _aureliaDependencyInjection.inject)(_bas
   Popup.prototype.open = function open(url, windowName, options, redirectUri) {
     this.url = url;
     var optionsString = this.stringifyOptions(this.prepareOptions(options || {}));
-
     this.popupWindow = window.open(url, windowName, optionsString);
-
     if (this.popupWindow && this.popupWindow.focus) {
       this.popupWindow.focus();
     }
