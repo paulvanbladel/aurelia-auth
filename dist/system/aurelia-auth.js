@@ -1,25 +1,18 @@
 'use strict';
 
-System.register(['./auth-service', './authorize-step', './auth-fetch-config', './base-config'], function (_export, _context) {
-  var BaseConfig;
+System.register(['./auth-service', './authorize-step', './auth-fetch-config', './base-config', './auth-filter'], function (_export, _context) {
+  var AuthService, AuthorizeStep, FetchConfig, BaseConfig, AuthFilterValueConverter;
   return {
     setters: [function (_authService) {
-      var _exportObj = {};
-      _exportObj.AuthService = _authService.AuthService;
-
-      _export(_exportObj);
+      AuthService = _authService.AuthService;
     }, function (_authorizeStep) {
-      var _exportObj2 = {};
-      _exportObj2.AuthorizeStep = _authorizeStep.AuthorizeStep;
-
-      _export(_exportObj2);
+      AuthorizeStep = _authorizeStep.AuthorizeStep;
     }, function (_authFetchConfig) {
-      var _exportObj3 = {};
-      _exportObj3.FetchConfig = _authFetchConfig.FetchConfig;
-
-      _export(_exportObj3);
+      FetchConfig = _authFetchConfig.FetchConfig;
     }, function (_baseConfig) {
       BaseConfig = _baseConfig.BaseConfig;
+    }, function (_authFilter) {
+      AuthFilterValueConverter = _authFilter.AuthFilterValueConverter;
     }],
     execute: function () {
       function configure(aurelia, configCallback) {
@@ -32,6 +25,14 @@ System.register(['./auth-service', './authorize-step', './auth-fetch-config', '.
       }
 
       _export('configure', configure);
+
+      _export('AuthService', AuthService);
+
+      _export('AuthorizeStep', AuthorizeStep);
+
+      _export('FetchConfig', FetchConfig);
+
+      _export('AuthFilterValueConverter', AuthFilterValueConverter);
     }
   };
 });

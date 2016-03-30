@@ -1,28 +1,10 @@
-define(['exports', './auth-service', './authorize-step', './auth-fetch-config', './base-config'], function (exports, _authService, _authorizeStep, _authFetchConfig, _baseConfig) {
+define(['exports', './auth-service', './authorize-step', './auth-fetch-config', './base-config', './auth-filter'], function (exports, _authService, _authorizeStep, _authFetchConfig, _baseConfig, _authFilter) {
   'use strict';
 
   Object.defineProperty(exports, "__esModule", {
     value: true
   });
-  exports.FetchConfig = exports.AuthorizeStep = exports.AuthService = undefined;
-  Object.defineProperty(exports, 'AuthService', {
-    enumerable: true,
-    get: function () {
-      return _authService.AuthService;
-    }
-  });
-  Object.defineProperty(exports, 'AuthorizeStep', {
-    enumerable: true,
-    get: function () {
-      return _authorizeStep.AuthorizeStep;
-    }
-  });
-  Object.defineProperty(exports, 'FetchConfig', {
-    enumerable: true,
-    get: function () {
-      return _authFetchConfig.FetchConfig;
-    }
-  });
+  exports.AuthFilterValueConverter = exports.FetchConfig = exports.AuthorizeStep = exports.AuthService = undefined;
   exports.configure = configure;
   function configure(aurelia, configCallback) {
     aurelia.globalResources('./auth-filter');
@@ -32,4 +14,9 @@ define(['exports', './auth-service', './authorize-step', './auth-fetch-config', 
       configCallback(baseConfig);
     }
   }
+
+  exports.AuthService = _authService.AuthService;
+  exports.AuthorizeStep = _authorizeStep.AuthorizeStep;
+  exports.FetchConfig = _authFetchConfig.FetchConfig;
+  exports.AuthFilterValueConverter = _authFilter.AuthFilterValueConverter;
 });

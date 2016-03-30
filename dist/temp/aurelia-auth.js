@@ -3,13 +3,13 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.Storage = exports.Popup = exports.OAuth2 = exports.OAuth1 = exports.BaseConfig = exports.AuthorizeStep = exports.Authentication = exports.AuthService = exports.AuthFilterValueConverter = exports.FetchConfig = undefined;
+exports.AuthService = exports.OAuth2 = exports.AuthorizeStep = exports.FetchConfig = exports.OAuth1 = exports.Authentication = exports.Storage = exports.Popup = exports.BaseConfig = exports.AuthFilterValueConverter = undefined;
+
+var _dec, _class, _dec2, _class2, _dec3, _class3, _dec4, _class4, _dec5, _class5, _dec6, _class6, _dec7, _class7, _dec8, _class8;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
-
-var _dec, _class, _dec2, _class2, _dec3, _class3, _dec4, _class4, _dec5, _class5, _dec6, _class6, _dec7, _class7, _dec8, _class8;
 
 exports.status = status;
 exports.isDefined = isDefined;
@@ -35,155 +35,6 @@ var _aureliaFetchClient = require('aurelia-fetch-client');
 var _aureliaRouter = require('aurelia-router');
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var FetchConfig = exports.FetchConfig = (_dec = (0, _aureliaDependencyInjection.inject)(_aureliaFetchClient.HttpClient, Authentication), _dec(_class = function () {
-  function FetchConfig(httpClient, authService) {
-    _classCallCheck(this, FetchConfig);
-
-    this.httpClient = httpClient;
-    this.auth = authService;
-  }
-
-  FetchConfig.prototype.configure = function configure() {
-    var _this = this;
-
-    this.httpClient.configure(function (httpConfig) {
-      httpConfig.withDefaults({
-        headers: {
-          'Accept': 'application/json'
-        }
-      }).withInterceptor(_this.auth.tokenInterceptor);
-    });
-  };
-
-  return FetchConfig;
-}()) || _class);
-
-var AuthFilterValueConverter = exports.AuthFilterValueConverter = function () {
-  function AuthFilterValueConverter() {
-    _classCallCheck(this, AuthFilterValueConverter);
-  }
-
-  AuthFilterValueConverter.prototype.toView = function toView(routes, isAuthenticated) {
-    return routes.filter(function (r) {
-      return r.config.auth === undefined || r.config.auth === isAuthenticated;
-    });
-  };
-
-  return AuthFilterValueConverter;
-}();
-
-var AuthService = exports.AuthService = (_dec2 = (0, _aureliaDependencyInjection.inject)(_aureliaFetchClient.HttpClient, Authentication, OAuth1, OAuth2, BaseConfig), _dec2(_class2 = function () {
-  function AuthService(http, auth, oAuth1, oAuth2, config) {
-    _classCallCheck(this, AuthService);
-
-    this.http = http;
-    this.auth = auth;
-    this.oAuth1 = oAuth1;
-    this.oAuth2 = oAuth2;
-    this.config = config.current;
-    this.tokenInterceptor = auth.tokenInterceptor;
-  }
-
-  AuthService.prototype.getMe = function getMe() {
-    var profileUrl = this.auth.getProfileUrl();
-    return this.http.fetch(profileUrl).then(status);
-  };
-
-  AuthService.prototype.isAuthenticated = function isAuthenticated() {
-    return this.auth.isAuthenticated();
-  };
-
-  AuthService.prototype.getTokenPayload = function getTokenPayload() {
-    return this.auth.getPayload();
-  };
-
-  AuthService.prototype.signup = function signup(displayName, email, password) {
-    var _this2 = this;
-
-    var signupUrl = this.auth.getSignupUrl();
-    var content = void 0;
-    if (_typeof(arguments[0]) === 'object') {
-      content = arguments[0];
-    } else {
-      content = {
-        'displayName': displayName,
-        'email': email,
-        'password': password
-      };
-    }
-
-    return this.http.fetch(signupUrl, {
-      method: 'post',
-      body: (0, _aureliaFetchClient.json)(content)
-    }).then(status).then(function (response) {
-      if (_this2.config.loginOnSignup) {
-        _this2.auth.setToken(response);
-      } else if (_this2.config.signupRedirect) {
-        window.location.href = _this2.config.signupRedirect;
-      }
-      return response;
-    });
-  };
-
-  AuthService.prototype.login = function login(email, password) {
-    var _this3 = this;
-
-    var loginUrl = this.auth.getLoginUrl();
-    var content = void 0;
-    if (typeof arguments[1] !== 'string') {
-      content = arguments[0];
-    } else {
-      content = {
-        'email': email,
-        'password': password
-      };
-    }
-
-    return this.http.fetch(loginUrl, {
-      method: 'post',
-      headers: typeof content === 'string' ? { 'Content-Type': 'application/x-www-form-urlencoded' } : {},
-      body: typeof content === 'string' ? content : (0, _aureliaFetchClient.json)(content)
-    }).then(status).then(function (response) {
-      _this3.auth.setToken(response);
-      return response;
-    });
-  };
-
-  AuthService.prototype.logout = function logout(redirectUri) {
-    return this.auth.logout(redirectUri);
-  };
-
-  AuthService.prototype.authenticate = function authenticate(name, redirect, userData) {
-    var _this4 = this;
-
-    var provider = this.oAuth2;
-    if (this.config.providers[name].type === '1.0') {
-      provider = this.oAuth1;
-    }
-
-    return provider.open(this.config.providers[name], userData || {}).then(function (response) {
-      _this4.auth.setToken(response, redirect);
-      return response;
-    });
-  };
-
-  AuthService.prototype.unlink = function unlink(provider) {
-    var unlinkUrl = this.config.baseUrl ? joinUrl(this.config.baseUrl, this.config.unlinkUrl) : this.config.unlinkUrl;
-
-    if (this.config.unlinkMethod === 'get') {
-      return this.http.fetch(unlinkUrl + provider).then(status);
-    } else if (this.config.unlinkMethod === 'post') {
-      return this.http.fetch(unlinkUrl, {
-        method: 'post',
-        body: (0, _aureliaFetchClient.json)(provider)
-      }).then(status);
-    }
-  };
-
-  return AuthService;
-}()) || _class2);
-
 
 var slice = [].slice;
 
@@ -342,198 +193,19 @@ function forEach(obj, iterator, context) {
   return obj;
 }
 
-var Authentication = exports.Authentication = (_dec3 = (0, _aureliaDependencyInjection.inject)(Storage, BaseConfig), _dec3(_class3 = function () {
-  function Authentication(storage, config) {
-    _classCallCheck(this, Authentication);
-
-    this.storage = storage;
-    this.config = config.current;
-    this.tokenName = this.config.tokenPrefix ? this.config.tokenPrefix + '_' + this.config.tokenName : this.config.tokenName;
-    this.idTokenName = this.config.tokenPrefix ? this.config.tokenPrefix + '_' + this.config.idTokenName : this.config.idTokenName;
+var AuthFilterValueConverter = exports.AuthFilterValueConverter = function () {
+  function AuthFilterValueConverter() {
+    _classCallCheck(this, AuthFilterValueConverter);
   }
 
-  Authentication.prototype.getLoginRoute = function getLoginRoute() {
-    return this.config.loginRoute;
-  };
-
-  Authentication.prototype.getLoginRedirect = function getLoginRedirect() {
-    return this.initialUrl || this.config.loginRedirect;
-  };
-
-  Authentication.prototype.getLoginUrl = function getLoginUrl() {
-    return this.config.baseUrl ? joinUrl(this.config.baseUrl, this.config.loginUrl) : this.config.loginUrl;
-  };
-
-  Authentication.prototype.getSignupUrl = function getSignupUrl() {
-    return this.config.baseUrl ? joinUrl(this.config.baseUrl, this.config.signupUrl) : this.config.signupUrl;
-  };
-
-  Authentication.prototype.getProfileUrl = function getProfileUrl() {
-    return this.config.baseUrl ? joinUrl(this.config.baseUrl, this.config.profileUrl) : this.config.profileUrl;
-  };
-
-  Authentication.prototype.getToken = function getToken() {
-    return this.storage.get(this.tokenName);
-  };
-
-  Authentication.prototype.getPayload = function getPayload() {
-    var token = this.storage.get(this.tokenName);
-    return this.decomposeToken(token);
-  };
-
-  Authentication.prototype.decomposeToken = function decomposeToken(token) {
-    if (token && token.split('.').length === 3) {
-      var base64Url = token.split('.')[1];
-      var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-
-      try {
-        return JSON.parse(decodeURIComponent(escape(window.atob(base64))));
-      } catch (error) {
-        return null;
-      }
-    }
-  };
-
-  Authentication.prototype.setInitialUrl = function setInitialUrl(url) {
-    this.initialUrl = url;
-  };
-
-  Authentication.prototype.setToken = function setToken(response, redirect) {
-    var accessToken = response && response[this.config.responseTokenProp];
-    var tokenToStore = void 0;
-
-    if (accessToken) {
-      if (isObject(accessToken) && isObject(accessToken.data)) {
-        response = accessToken;
-      } else if (isString(accessToken)) {
-        tokenToStore = accessToken;
-      }
-    }
-
-    if (!tokenToStore && response) {
-      tokenToStore = this.config.tokenRoot && response[this.config.tokenRoot] ? response[this.config.tokenRoot][this.config.tokenName] : response[this.config.tokenName];
-    }
-
-    if (tokenToStore) {
-      this.storage.set(this.tokenName, tokenToStore);
-    }
-
-    var idToken = response && response[this.config.responseIdTokenProp];
-
-    if (idToken) {
-      this.storage.set(this.idTokenName, idToken);
-    }
-
-    if (this.config.loginRedirect && !redirect) {
-      window.location.href = this.getLoginRedirect();
-    } else if (redirect && isString(redirect)) {
-      window.location.href = window.encodeURI(redirect);
-    }
-  };
-
-  Authentication.prototype.removeToken = function removeToken() {
-    this.storage.remove(this.tokenName);
-  };
-
-  Authentication.prototype.isAuthenticated = function isAuthenticated() {
-    var token = this.storage.get(this.tokenName);
-
-    if (!token) {
-      return false;
-    }
-
-    if (token.split('.').length !== 3) {
-      return true;
-    }
-
-    var exp = void 0;
-    try {
-      var base64Url = token.split('.')[1];
-      var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-      exp = JSON.parse(window.atob(base64)).exp;
-    } catch (error) {
-      return false;
-    }
-
-    if (exp) {
-      return Math.round(new Date().getTime() / 1000) <= exp;
-    }
-
-    return true;
-  };
-
-  Authentication.prototype.logout = function logout(redirect) {
-    var _this5 = this;
-
-    return new Promise(function (resolve) {
-      _this5.storage.remove(_this5.tokenName);
-
-      if (_this5.config.logoutRedirect && !redirect) {
-        window.location.href = _this5.config.logoutRedirect;
-      } else if (isString(redirect)) {
-        window.location.href = redirect;
-      }
-
-      resolve();
+  AuthFilterValueConverter.prototype.toView = function toView(routes, isAuthenticated) {
+    return routes.filter(function (r) {
+      return r.config.auth === undefined || r.config.auth === isAuthenticated;
     });
   };
 
-  _createClass(Authentication, [{
-    key: 'tokenInterceptor',
-    get: function get() {
-      var config = this.config;
-      var storage = this.storage;
-      var auth = this;
-      return {
-        request: function request(_request) {
-          if (auth.isAuthenticated() && config.httpInterceptor) {
-            var tokenName = config.tokenPrefix ? config.tokenPrefix + '_' + config.tokenName : config.tokenName;
-            var token = storage.get(tokenName);
-
-            if (config.authHeader && config.authToken) {
-              token = config.authToken + ' ' + token;
-            }
-
-            _request.headers.append(config.authHeader, token);
-          }
-          return _request;
-        }
-      };
-    }
-  }]);
-
-  return Authentication;
-}()) || _class3);
-var AuthorizeStep = exports.AuthorizeStep = (_dec4 = (0, _aureliaDependencyInjection.inject)(Authentication), _dec4(_class4 = function () {
-  function AuthorizeStep(auth) {
-    _classCallCheck(this, AuthorizeStep);
-
-    this.auth = auth;
-  }
-
-  AuthorizeStep.prototype.run = function run(routingContext, next) {
-    var isLoggedIn = this.auth.isAuthenticated();
-    var loginRoute = this.auth.getLoginRoute();
-
-    if (routingContext.getAllInstructions().some(function (i) {
-      return i.config.auth;
-    })) {
-      if (!isLoggedIn) {
-        this.auth.setInitialUrl(window.location.href);
-        return next.cancel(new _aureliaRouter.Redirect(loginRoute));
-      }
-    } else if (isLoggedIn && routingContext.getAllInstructions().some(function (i) {
-      return i.fragment === loginRoute;
-    })) {
-      var loginRedirect = this.auth.getLoginRedirect();
-      return next.cancel(new _aureliaRouter.Redirect(loginRedirect));
-    }
-
-    return next();
-  };
-
-  return AuthorizeStep;
-}()) || _class4);
+  return AuthFilterValueConverter;
+}();
 
 var BaseConfig = exports.BaseConfig = function () {
   BaseConfig.prototype.configure = function configure(incomingConfig) {
@@ -728,223 +400,7 @@ var BaseConfig = exports.BaseConfig = function () {
   return BaseConfig;
 }();
 
-var OAuth1 = exports.OAuth1 = (_dec5 = (0, _aureliaDependencyInjection.inject)(Storage, Popup, _aureliaFetchClient.HttpClient, BaseConfig), _dec5(_class5 = function () {
-  function OAuth1(storage, popup, http, config) {
-    _classCallCheck(this, OAuth1);
-
-    this.storage = storage;
-    this.config = config.current;
-    this.popup = popup;
-    this.http = http;
-    this.defaults = {
-      url: null,
-      name: null,
-      popupOptions: null,
-      redirectUri: null,
-      authorizationEndpoint: null
-    };
-  }
-
-  OAuth1.prototype.open = function open(options, userData) {
-    var _this6 = this;
-
-    var current = extend({}, this.defaults, options);
-    var serverUrl = this.config.baseUrl ? joinUrl(this.config.baseUrl, current.url) : current.url;
-
-    if (this.config.platform !== 'mobile') {
-      this.popup = this.popup.open('', current.name, current.popupOptions, current.redirectUri);
-    }
-    return this.http.fetch(serverUrl, {
-      method: 'post'
-    }).then(status).then(function (response) {
-      if (_this6.config.platform === 'mobile') {
-        _this6.popup = _this6.popup.open([current.authorizationEndpoint, _this6.buildQueryString(response)].join('?'), current.name, current.popupOptions, current.redirectUri);
-      } else {
-        _this6.popup.popupWindow.location = [current.authorizationEndpoint, _this6.buildQueryString(response)].join('?');
-      }
-
-      var popupListener = _this6.config.platform === 'mobile' ? _this6.popup.eventListener(current.redirectUri) : _this6.popup.pollPopup();
-      return popupListener.then(function (result) {
-        return _this6.exchangeForToken(result, userData, current);
-      });
-    });
-  };
-
-  OAuth1.prototype.exchangeForToken = function exchangeForToken(oauthData, userData, current) {
-    var data = extend({}, userData, oauthData);
-    var exchangeForTokenUrl = this.config.baseUrl ? joinUrl(this.config.baseUrl, current.url) : current.url;
-    var credentials = this.config.withCredentials ? 'include' : 'same-origin';
-
-    return this.http.fetch(exchangeForTokenUrl, {
-      method: 'post',
-      body: (0, _aureliaFetchClient.json)(data),
-      credentials: credentials
-    }).then(status);
-  };
-
-  OAuth1.prototype.buildQueryString = function buildQueryString(obj) {
-    var str = [];
-    forEach(obj, function (value, key) {
-      return str.push(encodeURIComponent(key) + '=' + encodeURIComponent(value));
-    });
-    return str.join('&');
-  };
-
-  return OAuth1;
-}()) || _class5);
-var OAuth2 = exports.OAuth2 = (_dec6 = (0, _aureliaDependencyInjection.inject)(Storage, Popup, _aureliaFetchClient.HttpClient, BaseConfig, Authentication), _dec6(_class6 = function () {
-  function OAuth2(storage, popup, http, config, auth) {
-    _classCallCheck(this, OAuth2);
-
-    this.storage = storage;
-    this.config = config.current;
-    this.popup = popup;
-    this.http = http;
-    this.auth = auth;
-    this.defaults = {
-      url: null,
-      name: null,
-      state: null,
-      scope: null,
-      scopeDelimiter: null,
-      redirectUri: null,
-      popupOptions: null,
-      authorizationEndpoint: null,
-      responseParams: null,
-      requiredUrlParams: null,
-      optionalUrlParams: null,
-      defaultUrlParams: ['response_type', 'client_id', 'redirect_uri'],
-      responseType: 'code'
-    };
-  }
-
-  OAuth2.prototype.open = function open(options, userData) {
-    var _this7 = this;
-
-    var current = extend({}, this.defaults, options);
-
-    var stateName = current.name + '_state';
-
-    if (isFunction(current.state)) {
-      this.storage.set(stateName, current.state());
-    } else if (isString(current.state)) {
-      this.storage.set(stateName, current.state);
-    }
-
-    var nonceName = current.name + '_nonce';
-
-    if (isFunction(current.nonce)) {
-      this.storage.set(nonceName, current.nonce());
-    } else if (isString(current.nonce)) {
-      this.storage.set(nonceName, current.nonce);
-    }
-
-    var url = current.authorizationEndpoint + '?' + this.buildQueryString(current);
-
-    var openPopup = void 0;
-    if (this.config.platform === 'mobile') {
-      openPopup = this.popup.open(url, current.name, current.popupOptions, current.redirectUri).eventListener(current.redirectUri);
-    } else {
-      openPopup = this.popup.open(url, current.name, current.popupOptions, current.redirectUri).pollPopup();
-    }
-
-    return openPopup.then(function (oauthData) {
-      if (oauthData.state && oauthData.state !== _this7.storage.get(stateName)) {
-        return Promise.reject('OAuth 2.0 state parameter mismatch.');
-      }
-
-      if (current.responseType.toUpperCase().includes('TOKEN')) {
-        if (!_this7.verifyIdToken(oauthData, current.name)) {
-          return Promise.reject('OAuth 2.0 Nonce parameter mismatch.');
-        }
-
-        return oauthData;
-      }
-
-      return _this7.exchangeForToken(oauthData, userData, current);
-    });
-  };
-
-  OAuth2.prototype.verifyIdToken = function verifyIdToken(oauthData, providerName) {
-    var idToken = oauthData && oauthData[this.config.responseIdTokenProp];
-    if (!idToken) return true;
-    var idTokenObject = this.auth.decomposeToken(idToken);
-    if (!idTokenObject) return true;
-    var nonceFromToken = idTokenObject.nonce;
-    if (!nonceFromToken) return true;
-    var nonceInStorage = this.storage.get(providerName + '_nonce');
-    if (nonceFromToken !== nonceInStorage) {
-      return false;
-    }
-    return true;
-  };
-
-  OAuth2.prototype.exchangeForToken = function exchangeForToken(oauthData, userData, current) {
-    var data = extend({}, userData, {
-      code: oauthData.code,
-      clientId: current.clientId,
-      redirectUri: current.redirectUri
-    });
-
-    if (oauthData.state) {
-      data.state = oauthData.state;
-    }
-
-    forEach(current.responseParams, function (param) {
-      return data[param] = oauthData[param];
-    });
-
-    var exchangeForTokenUrl = this.config.baseUrl ? joinUrl(this.config.baseUrl, current.url) : current.url;
-    var credentials = this.config.withCredentials ? 'include' : 'same-origin';
-
-    return this.http.fetch(exchangeForTokenUrl, {
-      method: 'post',
-      body: (0, _aureliaFetchClient.json)(data),
-      credentials: credentials
-    }).then(status);
-  };
-
-  OAuth2.prototype.buildQueryString = function buildQueryString(current) {
-    var _this8 = this;
-
-    var keyValuePairs = [];
-    var urlParams = ['defaultUrlParams', 'requiredUrlParams', 'optionalUrlParams'];
-
-    forEach(urlParams, function (params) {
-      forEach(current[params], function (paramName) {
-        var camelizedName = camelCase(paramName);
-        var paramValue = isFunction(current[paramName]) ? current[paramName]() : current[camelizedName];
-
-        if (paramName === 'state') {
-          var stateName = current.name + '_state';
-          paramValue = encodeURIComponent(_this8.storage.get(stateName));
-        }
-
-        if (paramName === 'nonce') {
-          var nonceName = current.name + '_nonce';
-          paramValue = encodeURIComponent(_this8.storage.get(nonceName));
-        }
-
-        if (paramName === 'scope' && Array.isArray(paramValue)) {
-          paramValue = paramValue.join(current.scopeDelimiter);
-
-          if (current.scopePrefix) {
-            paramValue = [current.scopePrefix, paramValue].join(current.scopeDelimiter);
-          }
-        }
-
-        keyValuePairs.push([paramName, paramValue]);
-      });
-    });
-
-    return keyValuePairs.map(function (pair) {
-      return pair.join('=');
-    }).join('&');
-  };
-
-  return OAuth2;
-}()) || _class6);
-var Popup = exports.Popup = (_dec7 = (0, _aureliaDependencyInjection.inject)(BaseConfig), _dec7(_class7 = function () {
+var Popup = exports.Popup = (_dec = (0, _aureliaDependencyInjection.inject)(BaseConfig), _dec(_class = function () {
   function Popup(config) {
     _classCallCheck(this, Popup);
 
@@ -1012,11 +468,11 @@ var Popup = exports.Popup = (_dec7 = (0, _aureliaDependencyInjection.inject)(Bas
   };
 
   Popup.prototype.pollPopup = function pollPopup() {
-    var _this9 = this;
+    var _this = this;
 
     var self = this;
     var promise = new Promise(function (resolve, reject) {
-      _this9.polling = setInterval(function () {
+      _this.polling = setInterval(function () {
         try {
           var documentOrigin = document.location.host;
           var popupWindowOrigin = self.popupWindow.location.host;
@@ -1078,8 +534,8 @@ var Popup = exports.Popup = (_dec7 = (0, _aureliaDependencyInjection.inject)(Bas
   };
 
   return Popup;
-}()) || _class7);
-var Storage = exports.Storage = (_dec8 = (0, _aureliaDependencyInjection.inject)(BaseConfig), _dec8(_class8 = function () {
+}()) || _class);
+var Storage = exports.Storage = (_dec2 = (0, _aureliaDependencyInjection.inject)(BaseConfig), _dec2(_class2 = function () {
   function Storage(config) {
     _classCallCheck(this, Storage);
 
@@ -1112,4 +568,544 @@ var Storage = exports.Storage = (_dec8 = (0, _aureliaDependencyInjection.inject)
   };
 
   return Storage;
+}()) || _class2);
+var Authentication = exports.Authentication = (_dec3 = (0, _aureliaDependencyInjection.inject)(Storage, BaseConfig), _dec3(_class3 = function () {
+  function Authentication(storage, config) {
+    _classCallCheck(this, Authentication);
+
+    this.storage = storage;
+    this.config = config.current;
+    this.tokenName = this.config.tokenPrefix ? this.config.tokenPrefix + '_' + this.config.tokenName : this.config.tokenName;
+    this.idTokenName = this.config.tokenPrefix ? this.config.tokenPrefix + '_' + this.config.idTokenName : this.config.idTokenName;
+  }
+
+  Authentication.prototype.getLoginRoute = function getLoginRoute() {
+    return this.config.loginRoute;
+  };
+
+  Authentication.prototype.getLoginRedirect = function getLoginRedirect() {
+    return this.initialUrl || this.config.loginRedirect;
+  };
+
+  Authentication.prototype.getLoginUrl = function getLoginUrl() {
+    return this.config.baseUrl ? joinUrl(this.config.baseUrl, this.config.loginUrl) : this.config.loginUrl;
+  };
+
+  Authentication.prototype.getSignupUrl = function getSignupUrl() {
+    return this.config.baseUrl ? joinUrl(this.config.baseUrl, this.config.signupUrl) : this.config.signupUrl;
+  };
+
+  Authentication.prototype.getProfileUrl = function getProfileUrl() {
+    return this.config.baseUrl ? joinUrl(this.config.baseUrl, this.config.profileUrl) : this.config.profileUrl;
+  };
+
+  Authentication.prototype.getToken = function getToken() {
+    return this.storage.get(this.tokenName);
+  };
+
+  Authentication.prototype.getPayload = function getPayload() {
+    var token = this.storage.get(this.tokenName);
+    return this.decomposeToken(token);
+  };
+
+  Authentication.prototype.decomposeToken = function decomposeToken(token) {
+    if (token && token.split('.').length === 3) {
+      var base64Url = token.split('.')[1];
+      var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+
+      try {
+        return JSON.parse(decodeURIComponent(escape(window.atob(base64))));
+      } catch (error) {
+        return null;
+      }
+    }
+  };
+
+  Authentication.prototype.setInitialUrl = function setInitialUrl(url) {
+    this.initialUrl = url;
+  };
+
+  Authentication.prototype.setToken = function setToken(response, redirect) {
+    var accessToken = response && response[this.config.responseTokenProp];
+    var tokenToStore = void 0;
+
+    if (accessToken) {
+      if (isObject(accessToken) && isObject(accessToken.data)) {
+        response = accessToken;
+      } else if (isString(accessToken)) {
+        tokenToStore = accessToken;
+      }
+    }
+
+    if (!tokenToStore && response) {
+      tokenToStore = this.config.tokenRoot && response[this.config.tokenRoot] ? response[this.config.tokenRoot][this.config.tokenName] : response[this.config.tokenName];
+    }
+
+    if (tokenToStore) {
+      this.storage.set(this.tokenName, tokenToStore);
+    }
+
+    var idToken = response && response[this.config.responseIdTokenProp];
+
+    if (idToken) {
+      this.storage.set(this.idTokenName, idToken);
+    }
+
+    if (this.config.loginRedirect && !redirect) {
+      window.location.href = this.getLoginRedirect();
+    } else if (redirect && isString(redirect)) {
+      window.location.href = window.encodeURI(redirect);
+    }
+  };
+
+  Authentication.prototype.removeToken = function removeToken() {
+    this.storage.remove(this.tokenName);
+  };
+
+  Authentication.prototype.isAuthenticated = function isAuthenticated() {
+    var token = this.storage.get(this.tokenName);
+
+    if (!token) {
+      return false;
+    }
+
+    if (token.split('.').length !== 3) {
+      return true;
+    }
+
+    var exp = void 0;
+    try {
+      var base64Url = token.split('.')[1];
+      var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+      exp = JSON.parse(window.atob(base64)).exp;
+    } catch (error) {
+      return false;
+    }
+
+    if (exp) {
+      return Math.round(new Date().getTime() / 1000) <= exp;
+    }
+
+    return true;
+  };
+
+  Authentication.prototype.logout = function logout(redirect) {
+    var _this2 = this;
+
+    return new Promise(function (resolve) {
+      _this2.storage.remove(_this2.tokenName);
+
+      if (_this2.config.logoutRedirect && !redirect) {
+        window.location.href = _this2.config.logoutRedirect;
+      } else if (isString(redirect)) {
+        window.location.href = redirect;
+      }
+
+      resolve();
+    });
+  };
+
+  _createClass(Authentication, [{
+    key: 'tokenInterceptor',
+    get: function get() {
+      var config = this.config;
+      var storage = this.storage;
+      var auth = this;
+      return {
+        request: function request(_request) {
+          if (auth.isAuthenticated() && config.httpInterceptor) {
+            var tokenName = config.tokenPrefix ? config.tokenPrefix + '_' + config.tokenName : config.tokenName;
+            var token = storage.get(tokenName);
+
+            if (config.authHeader && config.authToken) {
+              token = config.authToken + ' ' + token;
+            }
+
+            _request.headers.append(config.authHeader, token);
+          }
+          return _request;
+        }
+      };
+    }
+  }]);
+
+  return Authentication;
+}()) || _class3);
+var OAuth1 = exports.OAuth1 = (_dec4 = (0, _aureliaDependencyInjection.inject)(Storage, Popup, _aureliaFetchClient.HttpClient, BaseConfig), _dec4(_class4 = function () {
+  function OAuth1(storage, popup, http, config) {
+    _classCallCheck(this, OAuth1);
+
+    this.storage = storage;
+    this.config = config.current;
+    this.popup = popup;
+    this.http = http;
+    this.defaults = {
+      url: null,
+      name: null,
+      popupOptions: null,
+      redirectUri: null,
+      authorizationEndpoint: null
+    };
+  }
+
+  OAuth1.prototype.open = function open(options, userData) {
+    var _this3 = this;
+
+    var current = extend({}, this.defaults, options);
+    var serverUrl = this.config.baseUrl ? joinUrl(this.config.baseUrl, current.url) : current.url;
+
+    if (this.config.platform !== 'mobile') {
+      this.popup = this.popup.open('', current.name, current.popupOptions, current.redirectUri);
+    }
+    return this.http.fetch(serverUrl, {
+      method: 'post'
+    }).then(status).then(function (response) {
+      if (_this3.config.platform === 'mobile') {
+        _this3.popup = _this3.popup.open([current.authorizationEndpoint, _this3.buildQueryString(response)].join('?'), current.name, current.popupOptions, current.redirectUri);
+      } else {
+        _this3.popup.popupWindow.location = [current.authorizationEndpoint, _this3.buildQueryString(response)].join('?');
+      }
+
+      var popupListener = _this3.config.platform === 'mobile' ? _this3.popup.eventListener(current.redirectUri) : _this3.popup.pollPopup();
+      return popupListener.then(function (result) {
+        return _this3.exchangeForToken(result, userData, current);
+      });
+    });
+  };
+
+  OAuth1.prototype.exchangeForToken = function exchangeForToken(oauthData, userData, current) {
+    var data = extend({}, userData, oauthData);
+    var exchangeForTokenUrl = this.config.baseUrl ? joinUrl(this.config.baseUrl, current.url) : current.url;
+    var credentials = this.config.withCredentials ? 'include' : 'same-origin';
+
+    return this.http.fetch(exchangeForTokenUrl, {
+      method: 'post',
+      body: (0, _aureliaFetchClient.json)(data),
+      credentials: credentials
+    }).then(status);
+  };
+
+  OAuth1.prototype.buildQueryString = function buildQueryString(obj) {
+    var str = [];
+    forEach(obj, function (value, key) {
+      return str.push(encodeURIComponent(key) + '=' + encodeURIComponent(value));
+    });
+    return str.join('&');
+  };
+
+  return OAuth1;
+}()) || _class4);
+var FetchConfig = exports.FetchConfig = (_dec5 = (0, _aureliaDependencyInjection.inject)(_aureliaFetchClient.HttpClient, Authentication), _dec5(_class5 = function () {
+  function FetchConfig(httpClient, authService) {
+    _classCallCheck(this, FetchConfig);
+
+    this.httpClient = httpClient;
+    this.auth = authService;
+  }
+
+  FetchConfig.prototype.configure = function configure() {
+    var _this4 = this;
+
+    this.httpClient.configure(function (httpConfig) {
+      httpConfig.withDefaults({
+        headers: {
+          'Accept': 'application/json'
+        }
+      }).withInterceptor(_this4.auth.tokenInterceptor);
+    });
+  };
+
+  return FetchConfig;
+}()) || _class5);
+var AuthorizeStep = exports.AuthorizeStep = (_dec6 = (0, _aureliaDependencyInjection.inject)(Authentication), _dec6(_class6 = function () {
+  function AuthorizeStep(auth) {
+    _classCallCheck(this, AuthorizeStep);
+
+    this.auth = auth;
+  }
+
+  AuthorizeStep.prototype.run = function run(routingContext, next) {
+    var isLoggedIn = this.auth.isAuthenticated();
+    var loginRoute = this.auth.getLoginRoute();
+
+    if (routingContext.getAllInstructions().some(function (i) {
+      return i.config.auth;
+    })) {
+      if (!isLoggedIn) {
+        this.auth.setInitialUrl(window.location.href);
+        return next.cancel(new _aureliaRouter.Redirect(loginRoute));
+      }
+    } else if (isLoggedIn && routingContext.getAllInstructions().some(function (i) {
+      return i.fragment === loginRoute;
+    })) {
+      var loginRedirect = this.auth.getLoginRedirect();
+      return next.cancel(new _aureliaRouter.Redirect(loginRedirect));
+    }
+
+    return next();
+  };
+
+  return AuthorizeStep;
+}()) || _class6);
+var OAuth2 = exports.OAuth2 = (_dec7 = (0, _aureliaDependencyInjection.inject)(Storage, Popup, _aureliaFetchClient.HttpClient, BaseConfig, Authentication), _dec7(_class7 = function () {
+  function OAuth2(storage, popup, http, config, auth) {
+    _classCallCheck(this, OAuth2);
+
+    this.storage = storage;
+    this.config = config.current;
+    this.popup = popup;
+    this.http = http;
+    this.auth = auth;
+    this.defaults = {
+      url: null,
+      name: null,
+      state: null,
+      scope: null,
+      scopeDelimiter: null,
+      redirectUri: null,
+      popupOptions: null,
+      authorizationEndpoint: null,
+      responseParams: null,
+      requiredUrlParams: null,
+      optionalUrlParams: null,
+      defaultUrlParams: ['response_type', 'client_id', 'redirect_uri'],
+      responseType: 'code'
+    };
+  }
+
+  OAuth2.prototype.open = function open(options, userData) {
+    var _this5 = this;
+
+    var current = extend({}, this.defaults, options);
+
+    var stateName = current.name + '_state';
+
+    if (isFunction(current.state)) {
+      this.storage.set(stateName, current.state());
+    } else if (isString(current.state)) {
+      this.storage.set(stateName, current.state);
+    }
+
+    var nonceName = current.name + '_nonce';
+
+    if (isFunction(current.nonce)) {
+      this.storage.set(nonceName, current.nonce());
+    } else if (isString(current.nonce)) {
+      this.storage.set(nonceName, current.nonce);
+    }
+
+    var url = current.authorizationEndpoint + '?' + this.buildQueryString(current);
+
+    var openPopup = void 0;
+    if (this.config.platform === 'mobile') {
+      openPopup = this.popup.open(url, current.name, current.popupOptions, current.redirectUri).eventListener(current.redirectUri);
+    } else {
+      openPopup = this.popup.open(url, current.name, current.popupOptions, current.redirectUri).pollPopup();
+    }
+
+    return openPopup.then(function (oauthData) {
+      if (oauthData.state && oauthData.state !== _this5.storage.get(stateName)) {
+        return Promise.reject('OAuth 2.0 state parameter mismatch.');
+      }
+
+      if (current.responseType.toUpperCase().includes('TOKEN')) {
+        if (!_this5.verifyIdToken(oauthData, current.name)) {
+          return Promise.reject('OAuth 2.0 Nonce parameter mismatch.');
+        }
+
+        return oauthData;
+      }
+
+      return _this5.exchangeForToken(oauthData, userData, current);
+    });
+  };
+
+  OAuth2.prototype.verifyIdToken = function verifyIdToken(oauthData, providerName) {
+    var idToken = oauthData && oauthData[this.config.responseIdTokenProp];
+    if (!idToken) return true;
+    var idTokenObject = this.auth.decomposeToken(idToken);
+    if (!idTokenObject) return true;
+    var nonceFromToken = idTokenObject.nonce;
+    if (!nonceFromToken) return true;
+    var nonceInStorage = this.storage.get(providerName + '_nonce');
+    if (nonceFromToken !== nonceInStorage) {
+      return false;
+    }
+    return true;
+  };
+
+  OAuth2.prototype.exchangeForToken = function exchangeForToken(oauthData, userData, current) {
+    var data = extend({}, userData, {
+      code: oauthData.code,
+      clientId: current.clientId,
+      redirectUri: current.redirectUri
+    });
+
+    if (oauthData.state) {
+      data.state = oauthData.state;
+    }
+
+    forEach(current.responseParams, function (param) {
+      return data[param] = oauthData[param];
+    });
+
+    var exchangeForTokenUrl = this.config.baseUrl ? joinUrl(this.config.baseUrl, current.url) : current.url;
+    var credentials = this.config.withCredentials ? 'include' : 'same-origin';
+
+    return this.http.fetch(exchangeForTokenUrl, {
+      method: 'post',
+      body: (0, _aureliaFetchClient.json)(data),
+      credentials: credentials
+    }).then(status);
+  };
+
+  OAuth2.prototype.buildQueryString = function buildQueryString(current) {
+    var _this6 = this;
+
+    var keyValuePairs = [];
+    var urlParams = ['defaultUrlParams', 'requiredUrlParams', 'optionalUrlParams'];
+
+    forEach(urlParams, function (params) {
+      forEach(current[params], function (paramName) {
+        var camelizedName = camelCase(paramName);
+        var paramValue = isFunction(current[paramName]) ? current[paramName]() : current[camelizedName];
+
+        if (paramName === 'state') {
+          var stateName = current.name + '_state';
+          paramValue = encodeURIComponent(_this6.storage.get(stateName));
+        }
+
+        if (paramName === 'nonce') {
+          var nonceName = current.name + '_nonce';
+          paramValue = encodeURIComponent(_this6.storage.get(nonceName));
+        }
+
+        if (paramName === 'scope' && Array.isArray(paramValue)) {
+          paramValue = paramValue.join(current.scopeDelimiter);
+
+          if (current.scopePrefix) {
+            paramValue = [current.scopePrefix, paramValue].join(current.scopeDelimiter);
+          }
+        }
+
+        keyValuePairs.push([paramName, paramValue]);
+      });
+    });
+
+    return keyValuePairs.map(function (pair) {
+      return pair.join('=');
+    }).join('&');
+  };
+
+  return OAuth2;
+}()) || _class7);
+var AuthService = exports.AuthService = (_dec8 = (0, _aureliaDependencyInjection.inject)(_aureliaFetchClient.HttpClient, Authentication, OAuth1, OAuth2, BaseConfig), _dec8(_class8 = function () {
+  function AuthService(http, auth, oAuth1, oAuth2, config) {
+    _classCallCheck(this, AuthService);
+
+    this.http = http;
+    this.auth = auth;
+    this.oAuth1 = oAuth1;
+    this.oAuth2 = oAuth2;
+    this.config = config.current;
+    this.tokenInterceptor = auth.tokenInterceptor;
+  }
+
+  AuthService.prototype.getMe = function getMe() {
+    var profileUrl = this.auth.getProfileUrl();
+    return this.http.fetch(profileUrl).then(status);
+  };
+
+  AuthService.prototype.isAuthenticated = function isAuthenticated() {
+    return this.auth.isAuthenticated();
+  };
+
+  AuthService.prototype.getTokenPayload = function getTokenPayload() {
+    return this.auth.getPayload();
+  };
+
+  AuthService.prototype.signup = function signup(displayName, email, password) {
+    var _this7 = this;
+
+    var signupUrl = this.auth.getSignupUrl();
+    var content = void 0;
+    if (_typeof(arguments[0]) === 'object') {
+      content = arguments[0];
+    } else {
+      content = {
+        'displayName': displayName,
+        'email': email,
+        'password': password
+      };
+    }
+
+    return this.http.fetch(signupUrl, {
+      method: 'post',
+      body: (0, _aureliaFetchClient.json)(content)
+    }).then(status).then(function (response) {
+      if (_this7.config.loginOnSignup) {
+        _this7.auth.setToken(response);
+      } else if (_this7.config.signupRedirect) {
+        window.location.href = _this7.config.signupRedirect;
+      }
+      return response;
+    });
+  };
+
+  AuthService.prototype.login = function login(email, password) {
+    var _this8 = this;
+
+    var loginUrl = this.auth.getLoginUrl();
+    var content = void 0;
+    if (typeof arguments[1] !== 'string') {
+      content = arguments[0];
+    } else {
+      content = {
+        'email': email,
+        'password': password
+      };
+    }
+
+    return this.http.fetch(loginUrl, {
+      method: 'post',
+      headers: typeof content === 'string' ? { 'Content-Type': 'application/x-www-form-urlencoded' } : {},
+      body: typeof content === 'string' ? content : (0, _aureliaFetchClient.json)(content)
+    }).then(status).then(function (response) {
+      _this8.auth.setToken(response);
+      return response;
+    });
+  };
+
+  AuthService.prototype.logout = function logout(redirectUri) {
+    return this.auth.logout(redirectUri);
+  };
+
+  AuthService.prototype.authenticate = function authenticate(name, redirect, userData) {
+    var _this9 = this;
+
+    var provider = this.oAuth2;
+    if (this.config.providers[name].type === '1.0') {
+      provider = this.oAuth1;
+    }
+
+    return provider.open(this.config.providers[name], userData || {}).then(function (response) {
+      _this9.auth.setToken(response, redirect);
+      return response;
+    });
+  };
+
+  AuthService.prototype.unlink = function unlink(provider) {
+    var unlinkUrl = this.config.baseUrl ? joinUrl(this.config.baseUrl, this.config.unlinkUrl) : this.config.unlinkUrl;
+
+    if (this.config.unlinkMethod === 'get') {
+      return this.http.fetch(unlinkUrl + provider).then(status);
+    } else if (this.config.unlinkMethod === 'post') {
+      return this.http.fetch(unlinkUrl, {
+        method: 'post',
+        body: (0, _aureliaFetchClient.json)(provider)
+      }).then(status);
+    }
+  };
+
+  return AuthService;
 }()) || _class8);

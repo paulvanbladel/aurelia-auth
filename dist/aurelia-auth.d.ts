@@ -10,24 +10,6 @@ declare module 'aurelia-auth' {
   import {
     Redirect
   } from 'aurelia-router';
-  export class FetchConfig {
-    constructor(httpClient: any, authService: any);
-    configure(): any;
-  }
-  export class AuthFilterValueConverter {
-    toView(routes: any, isAuthenticated: any): any;
-  }
-  export class AuthService {
-    constructor(http: any, auth: any, oAuth1: any, oAuth2: any, config: any);
-    getMe(): any;
-    isAuthenticated(): any;
-    getTokenPayload(): any;
-    signup(displayName: any, email: any, password: any): any;
-    login(email: any, password: any): any;
-    logout(redirectUri: any): any;
-    authenticate(name: any, redirect: any, userData: any): any;
-    unlink(provider: any): any;
-  }
   export function status(response: any): any;
   export function isDefined(value: any): any;
   export function camelCase(name: any): any;
@@ -42,6 +24,28 @@ declare module 'aurelia-auth' {
   export function extend(dst: any): any;
   export function merge(dst: any): any;
   export function forEach(obj: any, iterator: any, context: any): any;
+  export class AuthFilterValueConverter {
+    toView(routes: any, isAuthenticated: any): any;
+  }
+  export class BaseConfig {
+    configure(incomingConfig: any): any;
+    current: any;
+    constructor();
+  }
+  export class Popup {
+    constructor(config: any);
+    open(url: any, windowName: any, options: any, redirectUri: any): any;
+    eventListener(redirectUri: any): any;
+    pollPopup(): any;
+    prepareOptions(options: any): any;
+    stringifyOptions(options: any): any;
+  }
+  export class Storage {
+    constructor(config: any);
+    get(key: any): any;
+    set(key: any, value: any): any;
+    remove(key: any): any;
+  }
   export class Authentication {
     constructor(storage: any, config: any);
     getLoginRoute(): any;
@@ -59,20 +63,19 @@ declare module 'aurelia-auth' {
     logout(redirect: any): any;
     tokenInterceptor: any;
   }
-  export class AuthorizeStep {
-    constructor(auth: any);
-    run(routingContext: any, next: any): any;
-  }
-  export class BaseConfig {
-    configure(incomingConfig: any): any;
-    current: any;
-    constructor();
-  }
   export class OAuth1 {
     constructor(storage: any, popup: any, http: any, config: any);
     open(options: any, userData: any): any;
     exchangeForToken(oauthData: any, userData: any, current: any): any;
     buildQueryString(obj: any): any;
+  }
+  export class FetchConfig {
+    constructor(httpClient: any, authService: any);
+    configure(): any;
+  }
+  export class AuthorizeStep {
+    constructor(auth: any);
+    run(routingContext: any, next: any): any;
   }
   export class OAuth2 {
     constructor(storage: any, popup: any, http: any, config: any, auth: any);
@@ -83,18 +86,15 @@ declare module 'aurelia-auth' {
     exchangeForToken(oauthData: any, userData: any, current: any): any;
     buildQueryString(current: any): any;
   }
-  export class Popup {
-    constructor(config: any);
-    open(url: any, windowName: any, options: any, redirectUri: any): any;
-    eventListener(redirectUri: any): any;
-    pollPopup(): any;
-    prepareOptions(options: any): any;
-    stringifyOptions(options: any): any;
-  }
-  export class Storage {
-    constructor(config: any);
-    get(key: any): any;
-    set(key: any, value: any): any;
-    remove(key: any): any;
+  export class AuthService {
+    constructor(http: any, auth: any, oAuth1: any, oAuth2: any, config: any);
+    getMe(): any;
+    isAuthenticated(): any;
+    getTokenPayload(): any;
+    signup(displayName: any, email: any, password: any): any;
+    login(email: any, password: any): any;
+    logout(redirectUri: any): any;
+    authenticate(name: any, redirect: any, userData: any): any;
+    unlink(provider: any): any;
   }
 }

@@ -25,22 +25,20 @@ function removeDTSPlugin(options) {
 
 gulp.task('build-index', function(){
   var importsToAdd = [];
-  return gulp.src([
-    paths.root + '*.js',
-    paths.root + '**/*.js',
-   '!' + paths.root + 'index.js',
-  ])
-  .pipe(gulpIgnore.exclude('aurelia-auth.js'))
-  .pipe(through2.obj(function(file, enc, callback) {
-    file.contents = new Buffer(tools.extractImports(file.contents.toString("utf8"), importsToAdd));
-    this.push(file);
-    return callback();
-  }))
-  .pipe(concat(jsName))
-  .pipe(insert.transform(function(contents) {
-    return tools.createImportBlock(importsToAdd) + contents;
-  }))
-  .pipe(gulp.dest(paths.output));
+
+  return gulp.src(paths.source)
+    .pipe(tools.sortFiles())
+    .pipe(gulpIgnore.exclude('aurelia-auth.js'))
+    .pipe(through2.obj(function(file, enc, callback) {
+      file.contents = new Buffer(tools.extractImports(file.contents.toString("utf8"), importsToAdd));
+      this.push(file);
+      return callback();
+    }))
+    .pipe(concat(jsName))
+    .pipe(insert.transform(function(contents) {
+      return tools.createImportBlock(importsToAdd) + contents;
+    }))
+    .pipe(gulp.dest(paths.output));
 });
 
 gulp.task('build-es2015-temp', function () {
