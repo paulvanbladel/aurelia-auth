@@ -1,0 +1,13 @@
+language: node_js
+node_js:
+  - '0.12'
+  - '4'
+  - '5'
+
+sudo: false
+cache:
+  directories:
+    - node_modules
+
+script: gulp lint
+
