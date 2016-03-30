@@ -2,6 +2,7 @@ export {AuthService} from './authService';
 export {AuthorizeStep} from './authorizeStep';
 export {FetchConfig} from './app.fetch-httpClient.config';
 import {BaseConfig} from './baseConfig';
+import './authFilter';
 
 export function configure(aurelia, configCallback) {
   aurelia.globalResources('./authFilter');
