@@ -167,37 +167,37 @@ export class FetchConfig {
                         'Accept': 'application/json'
                     }
                 })
-                .withInterceptor(this.auth.token_interceptor);
+                .withInterceptor(this.auth.tokenInterceptor);
         });
     }
 }
 ```
 So, basically a default Accept header is added and a request interceptor is injected.
-'token_interceptor' can be found in [authentication.js](https://github.com/paulvanbladel/aurelia-auth/blob/master/src/authentication.js) 
+'tokenInterceptor' can be found in [authentication.js](https://github.com/paulvanbladel/aurelia-auth/blob/master/src/authentication.js) 
 and is responsible for adding the bearer token to each request message making use of the 
 default Http Client. 
 
 ```
-get token_interceptor() {
-        let config = this.config;
-        let storage = this.storage;
-        let auth = this;
-        return {
-            request(request) {
-                if (auth.isAuthenticated() && config.httpInterceptor) {
-                    let tokenName = config.tokenPrefix ? `${config.tokenPrefix}_${config.tokenName}` : config.tokenName;
-                    let token = storage.get(tokenName);
+get tokenInterceptor() {
+    let config = this.config;
+    let storage = this.storage;
+    let auth = this;
+    return {
+      request(request) {
+        if (auth.isAuthenticated() && config.httpInterceptor) {
+          let tokenName = config.tokenPrefix ? `${config.tokenPrefix}_${config.tokenName}` : config.tokenName;
+          let token = storage.get(tokenName);
 
-                    if (config.authHeader && config.authToken) {
-                        token = `${config.authToken} ${token}`;
-                    }
+          if (config.authHeader && config.authToken) {
+            token = `${config.authToken} ${token}`;
+          }
 
-                    request.headers.append(config.authHeader, token);
-                }
-                return request;
-            }
+          request.headers.append(config.authHeader, token);
         }
-    }
+        return request;
+      }
+    };
+  }
 ```
 So, this behavior is executed automatically when the HttpClient is configured as explained in 'Configure the Fetch Client'.
 
@@ -232,7 +232,7 @@ export class CustomHttpClient extends HttpClient {
                 //we call ourselves the interceptor which comes with aurelia-auth
                 //obviously when this custom Http Client is used for services 
                 //which don't need a bearer token, you should not inject the token interceptor
-                .withInterceptor(auth.token_interceptor)
+                .withInterceptor(auth.tokenInterceptor)
                 //still we can augment the custom HttpClient with own interceptors
                 .withInterceptor({
                     request(request) {
