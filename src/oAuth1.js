@@ -1,5 +1,5 @@
 import {inject} from 'aurelia-dependency-injection';
-import {extend, joinUrl, status} from './auth-utilities';
+import {extend, forEach,joinUrl, status} from './auth-utilities';
 import {Storage} from './storage';
 import {Popup} from './popup';
 import {BaseConfig} from './base-config';

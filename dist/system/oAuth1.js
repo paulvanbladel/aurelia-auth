@@ -1,7 +1,7 @@
 'use strict';
 
 System.register(['aurelia-dependency-injection', './auth-utilities', './storage', './popup', './base-config', 'aurelia-fetch-client', 'isomorphic-fetch'], function (_export, _context) {
-  var inject, extend, joinUrl, status, Storage, Popup, BaseConfig, HttpClient, json, _dec, _class, OAuth1;
+  var inject, extend, forEach, joinUrl, status, Storage, Popup, BaseConfig, HttpClient, json, _dec, _class, OAuth1;
 
   function _classCallCheck(instance, Constructor) {
     if (!(instance instanceof Constructor)) {
@@ -14,6 +14,7 @@ System.register(['aurelia-dependency-injection', './auth-utilities', './storage'
       inject = _aureliaDependencyInjection.inject;
     }, function (_authUtilities) {
       extend = _authUtilities.extend;
+      forEach = _authUtilities.forEach;
       joinUrl = _authUtilities.joinUrl;
       status = _authUtilities.status;
     }, function (_storage) {

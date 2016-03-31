@@ -70,7 +70,7 @@ define(['exports', 'aurelia-dependency-injection', './auth-utilities', './storag
 
     OAuth1.prototype.buildQueryString = function buildQueryString(obj) {
       var str = [];
-      forEach(obj, function (value, key) {
+      (0, _authUtilities.forEach)(obj, function (value, key) {
         return str.push(encodeURIComponent(key) + '=' + encodeURIComponent(value));
       });
       return str.join('&');
