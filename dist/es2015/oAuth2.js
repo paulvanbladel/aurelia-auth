@@ -1,7 +1,7 @@
 var _dec, _class;
 
 import { inject } from 'aurelia-dependency-injection';
-import { extend, forEach, isFunction, isString, joinUrl, camelCase } from './auth-utilities';
+import { extend, forEach, isFunction, isString, joinUrl, camelCase, status } from './auth-utilities';
 import { Storage } from './storage';
 import { Popup } from './popup';
 import { BaseConfig } from './base-config';

@@ -123,7 +123,7 @@ define(['exports', 'aurelia-dependency-injection', './auth-utilities', './storag
         method: 'post',
         body: (0, _aureliaFetchClient.json)(data),
         credentials: credentials
-      }).then(status);
+      }).then(_authUtilities.status);
     };
 
     OAuth2.prototype.buildQueryString = function buildQueryString(current) {
