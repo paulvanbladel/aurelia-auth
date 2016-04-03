@@ -21,7 +21,6 @@
   },
   "jspm": {
     "registry": "npm",
-    "jspmPackage": true,
     "main": "aurelia-auth",
     "format": "amd",
     "directories": {
@@ -33,7 +32,11 @@
       "aurelia-router": "^1.0.0-beta.1.2.0",
       "isomorphic-fetch": "^2.2.1"
     },
-    "devDependencies": {}
+    "devDependencies": {
+      "babel": "babel-core@^5.8.24",
+      "babel-runtime": "^5.8.24",
+      "core-js": "^1.1.4"
+    }
   },
   "dependencies": {
     "aurelia-dependency-injection": "^1.0.0-beta.1.2.0",

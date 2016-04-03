@@ -9,8 +9,8 @@ System.config({
     ]
   },
   paths: {
-    "*": "dist/*",
     "github:*": "jspm_packages/github/*",
+    "aurelia-auth/*": "dist/*",
     "npm:*": "jspm_packages/npm/*"
   },
 
