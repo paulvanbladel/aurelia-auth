@@ -33,6 +33,8 @@
       "isomorphic-fetch": "^2.2.1"
     },
     "devDependencies": {
+      "aurelia-pal-browser": "^1.0.0-beta.1.1.2",
+      "aurelia-polyfills": "^0.1.2",
       "babel": "babel-core@^5.8.24",
       "babel-runtime": "^5.8.24",
       "core-js": "^1.1.4"
