@@ -171,7 +171,7 @@ var Authentication = exports.Authentication = (_dec = (0, _aureliaDependencyInje
               token = config.authToken + ' ' + token;
             }
 
-            _request.headers.append(config.authHeader, token);
+            _request.headers.set(config.authHeader, token);
           }
           return _request;
         }

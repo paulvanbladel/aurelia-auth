@@ -1,6 +1,6 @@
 {
   "name": "aurelia-auth",
-  "version": "2.1.3",
+  "version": "2.1.4",
   "description": "Plugin for security token service, social media authentication and local authentication together with other authentication utilities",
   "keywords": [
     "aurelia",
