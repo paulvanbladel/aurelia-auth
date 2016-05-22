@@ -507,4 +507,4 @@ Via the above mentioned configuration virtually all aspects of the authenticatio
   }
 ```
 
-More non Aurelia specific details can be found on the [Sattelizer Github page](https://github.com/sahat/satellizer/).
+More non-Aurelia specific details can be found on the [Satellizer GitHub page](https://github.com/sahat/satellizer/).
