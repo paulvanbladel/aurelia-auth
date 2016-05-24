@@ -2,6 +2,7 @@ var _dec, _class;
 
 import { inject } from 'aurelia-dependency-injection';
 import { HttpClient, json } from 'aurelia-fetch-client';
+import { EventAggregator } from 'aurelia-event-aggregator';
 import 'isomorphic-fetch';
 import { Authentication } from './authentication';
 import { BaseConfig } from './base-config';
@@ -9,14 +10,15 @@ import { OAuth1 } from './oAuth1';
 import { OAuth2 } from './oAuth2';
 import { status, joinUrl } from './auth-utilities';
 
-export let AuthService = (_dec = inject(HttpClient, Authentication, OAuth1, OAuth2, BaseConfig), _dec(_class = class AuthService {
-  constructor(http, auth, oAuth1, oAuth2, config) {
+export let AuthService = (_dec = inject(HttpClient, Authentication, OAuth1, OAuth2, BaseConfig, EventAggregator), _dec(_class = class AuthService {
+  constructor(http, auth, oAuth1, oAuth2, config, eventAggregator) {
     this.http = http;
     this.auth = auth;
     this.oAuth1 = oAuth1;
     this.oAuth2 = oAuth2;
     this.config = config.current;
     this.tokenInterceptor = auth.tokenInterceptor;
+    this.eventAggregator = eventAggregator;
   }
 
   getMe() {
@@ -54,6 +56,7 @@ export let AuthService = (_dec = inject(HttpClient, Authentication, OAuth1, OAut
       } else if (this.config.signupRedirect) {
         window.location.href = this.config.signupRedirect;
       }
+      this.eventAggregator.publish('auth:signup', response);
       return response;
     });
   }
@@ -76,11 +79,13 @@ export let AuthService = (_dec = inject(HttpClient, Authentication, OAuth1, OAut
       body: typeof content === 'string' ? content : json(content)
     }).then(status).then(response => {
       this.auth.setToken(response);
+      this.eventAggregator.publish('auth:login', response);
       return response;
     });
   }
 
   logout(redirectUri) {
+    this.eventAggregator.publish('auth:logout');
     return this.auth.logout(redirectUri);
   }
 
@@ -92,6 +97,7 @@ export let AuthService = (_dec = inject(HttpClient, Authentication, OAuth1, OAut
 
     return provider.open(this.config.providers[name], userData || {}).then(response => {
       this.auth.setToken(response, redirect);
+      this.eventAggregator.publish('auth:authenticate', response);
       return response;
     });
   }
@@ -100,12 +106,18 @@ export let AuthService = (_dec = inject(HttpClient, Authentication, OAuth1, OAut
     let unlinkUrl = this.config.baseUrl ? joinUrl(this.config.baseUrl, this.config.unlinkUrl) : this.config.unlinkUrl;
 
     if (this.config.unlinkMethod === 'get') {
-      return this.http.fetch(unlinkUrl + provider).then(status);
+      return this.http.fetch(unlinkUrl + provider).then(status).then(response => {
+        this.eventAggregator.publish('auth:unlink', response);
+        return response;
+      });
     } else if (this.config.unlinkMethod === 'post') {
       return this.http.fetch(unlinkUrl, {
         method: 'post',
         body: json(provider)
-      }).then(status);
+      }).then(status).then(response => {
+        this.eventAggregator.publish('auth:unlink', response);
+        return response;
+      });
     }
   }
 }) || _class);

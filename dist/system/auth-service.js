@@ -1,7 +1,9 @@
 'use strict';
 
-System.register(['aurelia-dependency-injection', 'aurelia-fetch-client', 'isomorphic-fetch', './authentication', './base-config', './oAuth1', './oAuth2', './auth-utilities'], function (_export, _context) {
-  var inject, HttpClient, json, Authentication, BaseConfig, OAuth1, OAuth2, status, joinUrl, _typeof, _dec, _class, AuthService;
+System.register(['aurelia-dependency-injection', 'aurelia-fetch-client', 'aurelia-event-aggregator', 'isomorphic-fetch', './authentication', './base-config', './oAuth1', './oAuth2', './auth-utilities'], function (_export, _context) {
+  "use strict";
+
+  var inject, HttpClient, json, EventAggregator, Authentication, BaseConfig, OAuth1, OAuth2, status, joinUrl, _typeof, _dec, _class, AuthService;
 
   function _classCallCheck(instance, Constructor) {
     if (!(instance instanceof Constructor)) {
@@ -15,6 +17,8 @@ System.register(['aurelia-dependency-injection', 'aurelia-fetch-client', 'isomor
     }, function (_aureliaFetchClient) {
       HttpClient = _aureliaFetchClient.HttpClient;
       json = _aureliaFetchClient.json;
+    }, function (_aureliaEventAggregator) {
+      EventAggregator = _aureliaEventAggregator.EventAggregator;
     }, function (_isomorphicFetch) {}, function (_authentication) {
       Authentication = _authentication.Authentication;
     }, function (_baseConfig) {
@@ -34,8 +38,8 @@ System.register(['aurelia-dependency-injection', 'aurelia-fetch-client', 'isomor
         return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj;
       };
 
-      _export('AuthService', AuthService = (_dec = inject(HttpClient, Authentication, OAuth1, OAuth2, BaseConfig), _dec(_class = function () {
-        function AuthService(http, auth, oAuth1, oAuth2, config) {
+      _export('AuthService', AuthService = (_dec = inject(HttpClient, Authentication, OAuth1, OAuth2, BaseConfig, EventAggregator), _dec(_class = function () {
+        function AuthService(http, auth, oAuth1, oAuth2, config, eventAggregator) {
           _classCallCheck(this, AuthService);
 
           this.http = http;
@@ -44,6 +48,7 @@ System.register(['aurelia-dependency-injection', 'aurelia-fetch-client', 'isomor
           this.oAuth2 = oAuth2;
           this.config = config.current;
           this.tokenInterceptor = auth.tokenInterceptor;
+          this.eventAggregator = eventAggregator;
         }
 
         AuthService.prototype.getMe = function getMe() {
@@ -83,6 +88,7 @@ System.register(['aurelia-dependency-injection', 'aurelia-fetch-client', 'isomor
             } else if (_this.config.signupRedirect) {
               window.location.href = _this.config.signupRedirect;
             }
+            _this.eventAggregator.publish('auth:signup', response);
             return response;
           });
         };
@@ -107,11 +113,13 @@ System.register(['aurelia-dependency-injection', 'aurelia-fetch-client', 'isomor
             body: typeof content === 'string' ? content : json(content)
           }).then(status).then(function (response) {
             _this2.auth.setToken(response);
+            _this2.eventAggregator.publish('auth:login', response);
             return response;
           });
         };
 
         AuthService.prototype.logout = function logout(redirectUri) {
+          this.eventAggregator.publish('auth:logout');
           return this.auth.logout(redirectUri);
         };
 
@@ -125,20 +133,29 @@ System.register(['aurelia-dependency-injection', 'aurelia-fetch-client', 'isomor
 
           return provider.open(this.config.providers[name], userData || {}).then(function (response) {
             _this3.auth.setToken(response, redirect);
+            _this3.eventAggregator.publish('auth:authenticate', response);
             return response;
           });
         };
 
         AuthService.prototype.unlink = function unlink(provider) {
+          var _this4 = this;
+
           var unlinkUrl = this.config.baseUrl ? joinUrl(this.config.baseUrl, this.config.unlinkUrl) : this.config.unlinkUrl;
 
           if (this.config.unlinkMethod === 'get') {
-            return this.http.fetch(unlinkUrl + provider).then(status);
+            return this.http.fetch(unlinkUrl + provider).then(status).then(function (response) {
+              _this4.eventAggregator.publish('auth:unlink', response);
+              return response;
+            });
           } else if (this.config.unlinkMethod === 'post') {
             return this.http.fetch(unlinkUrl, {
               method: 'post',
               body: json(provider)
-            }).then(status);
+            }).then(status).then(function (response) {
+              _this4.eventAggregator.publish('auth:unlink', response);
+              return response;
+            });
           }
         };
 

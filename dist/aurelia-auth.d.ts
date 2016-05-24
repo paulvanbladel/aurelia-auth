@@ -10,6 +10,9 @@ declare module 'aurelia-auth' {
   import {
     Redirect
   } from 'aurelia-router';
+  import {
+    EventAggregator
+  } from 'aurelia-event-aggregator';
   export function status(response: any): any;
   export function isDefined(value: any): any;
   export function camelCase(name: any): any;
@@ -87,7 +90,7 @@ declare module 'aurelia-auth' {
     buildQueryString(current: any): any;
   }
   export class AuthService {
-    constructor(http: any, auth: any, oAuth1: any, oAuth2: any, config: any);
+    constructor(http: any, auth: any, oAuth1: any, oAuth2: any, config: any, eventAggregator: any);
     getMe(): any;
     isAuthenticated(): any;
     getTokenPayload(): any;
