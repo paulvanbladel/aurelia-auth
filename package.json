@@ -29,8 +29,7 @@
     "dependencies": {
       "aurelia-dependency-injection": "1.0.0-beta.1.2.0",
       "aurelia-fetch-client": "^1.0.0-beta.1.2.0",
-      "aurelia-router": "^1.0.0-beta.1.2.0",
-      "isomorphic-fetch": "^2.2.1"
+      "aurelia-router": "^1.0.0-beta.1.2.0"
     },
     "devDependencies": {
       "aurelia-pal-browser": "^1.0.0-beta.1.1.2",

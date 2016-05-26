@@ -149,7 +149,7 @@ looking at app.fetch-httpClient.config.js [](https://github.com/paulvanbladel/au
 ```
 import {inject} from 'aurelia-dependency-injection';
 import {HttpClient} from 'aurelia-fetch-client';
-import 'isomorphic-fetch';
+import 'isomorphic-fetch'; // if you need a fetch polyfill
 import {Authentication} from './authentication';
 
 @inject(HttpClient, Authentication )
@@ -212,7 +212,7 @@ In aurelia-auth-sample we can find following custom Http Client:
 ```
 import {HttpClient} from 'aurelia-fetch-client';
 import {inject} from 'aurelia-framework';
-import 'isomorphic-fetch';
+import 'isomorphic-fetch'; // if you need a fetch polyfill
 import {AuthService} from 'aurelia-auth';
 
 @inject(AuthService)
@@ -262,7 +262,7 @@ We can consume this custom Http Client as follows:
 ```
 import {inject, useView} from 'aurelia-framework';
 import {CustomHttpClient} from './customHttpClient';
-import 'isomorphic-fetch';
+import 'isomorphic-fetch'; // if you need a fetch polyfill
 @inject(CustomHttpClient)
 @useView('./customer.html')
 export class Customer2{
