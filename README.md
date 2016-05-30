@@ -394,6 +394,17 @@ configure(){
 ```
 In the above example the customer route is only available for authenticated users.
 
+# Events
+
+At each step of authentication (login, logout, authenticate, signup, unlink), an event is published to Aurelia's event aggregator.
+The events published are as follows:
+
+* login: `auth:login`
+* logout: `auth:logout`
+* authenticate: `auth:authenticate`
+* signup: `auth:signup`
+* unlink: `auth:unlink`
+
 # Full configuration options.
 
 Via the above mentioned configuration virtually all aspects of the authentication process be tweaked:

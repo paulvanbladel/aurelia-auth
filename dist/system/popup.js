@@ -1,6 +1,8 @@
 'use strict';
 
 System.register(['./auth-utilities', './base-config', 'aurelia-dependency-injection'], function (_export, _context) {
+  "use strict";
+
   var parseQueryString, extend, forEach, BaseConfig, inject, _dec, _class, Popup;
 
   function _classCallCheck(instance, Constructor) {
