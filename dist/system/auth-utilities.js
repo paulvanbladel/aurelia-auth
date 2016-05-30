@@ -1,6 +1,8 @@
 'use strict';
 
 System.register([], function (_export, _context) {
+  "use strict";
+
   var _typeof, slice;
 
   function setHashKey(obj, h) {

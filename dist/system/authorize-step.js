@@ -1,6 +1,8 @@
 'use strict';
 
 System.register(['aurelia-dependency-injection', 'aurelia-router', './authentication'], function (_export, _context) {
+  "use strict";
+
   var inject, Redirect, Authentication, _dec, _class, AuthorizeStep;
 
   function _classCallCheck(instance, Constructor) {

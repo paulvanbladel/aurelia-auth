@@ -1,6 +1,8 @@
 'use strict';
 
 System.register(['aurelia-dependency-injection', './auth-utilities', './storage', './popup', './base-config', 'aurelia-fetch-client', 'isomorphic-fetch'], function (_export, _context) {
+  "use strict";
+
   var inject, extend, forEach, joinUrl, status, Storage, Popup, BaseConfig, HttpClient, json, _dec, _class, OAuth1;
 
   function _classCallCheck(instance, Constructor) {
