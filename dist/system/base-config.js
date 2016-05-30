@@ -1,8 +1,6 @@
 'use strict';
 
 System.register(['./auth-utilities'], function (_export, _context) {
-  "use strict";
-
   var merge, _createClass, BaseConfig;
 
   function _classCallCheck(instance, Constructor) {

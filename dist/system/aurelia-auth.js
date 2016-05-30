@@ -1,8 +1,6 @@
 'use strict';
 
 System.register(['./auth-service', './authorize-step', './auth-fetch-config', './base-config', './auth-filter'], function (_export, _context) {
-  "use strict";
-
   var AuthService, AuthorizeStep, FetchConfig, BaseConfig, AuthFilterValueConverter;
   return {
     setters: [function (_authService) {

@@ -1033,7 +1033,7 @@ export class AuthService {
     return provider.open(this.config.providers[name], userData || {})
       .then((response) => {
         this.auth.setToken(response, redirect);
-        this.eventAggregator.publish('auth:authenticate', response)
+        this.eventAggregator.publish('auth:authenticate', response);
         return response;
       });
   }
@@ -1047,8 +1047,8 @@ export class AuthService {
       return this.http.fetch(unlinkUrl + provider)
         .then(status)
         .then(response => {
-            this.eventAggregator.publish('auth:unlink', response);
-            return response;
+          this.eventAggregator.publish('auth:unlink', response);
+          return response;
         });
     } else if (this.config.unlinkMethod === 'post') {
       return this.http.fetch(unlinkUrl, {
@@ -1056,8 +1056,8 @@ export class AuthService {
         body: json(provider)
       }).then(status)
       .then(response => {
-          this.eventAggregator.publish('auth:unlink', response);
-          return response;
+        this.eventAggregator.publish('auth:unlink', response);
+        return response;
       });
     }
   }
