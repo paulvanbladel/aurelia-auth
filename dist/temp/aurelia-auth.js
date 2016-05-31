@@ -26,8 +26,6 @@ exports.extend = extend;
 exports.merge = merge;
 exports.forEach = forEach;
 
-require('isomorphic-fetch');
-
 var _aureliaDependencyInjection = require('aurelia-dependency-injection');
 
 var _aureliaFetchClient = require('aurelia-fetch-client');

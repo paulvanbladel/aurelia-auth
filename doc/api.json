@@ -150,6 +150,17 @@
                     "type": "instrinct",
                     "name": "any"
                   }
+                },
+                {
+                  "id": 153,
+                  "name": "eventAggregator",
+                  "kind": 32768,
+                  "kindString": "Parameter",
+                  "flags": {},
+                  "type": {
+                    "type": "instrinct",
+                    "name": "any"
+                  }
                 }
               ],
               "type": {
@@ -162,7 +173,7 @@
           ]
         },
         {
-          "id": 171,
+          "id": 172,
           "name": "authenticate",
           "kind": 2048,
           "kindString": "Method",
@@ -171,14 +182,14 @@
           },
           "signatures": [
             {
-              "id": 172,
+              "id": 173,
               "name": "authenticate",
               "kind": 4096,
               "kindString": "Call signature",
               "flags": {},
               "parameters": [
                 {
-                  "id": 173,
+                  "id": 174,
                   "name": "name",
                   "kind": 32768,
                   "kindString": "Parameter",
@@ -189,7 +200,7 @@
                   }
                 },
                 {
-                  "id": 174,
+                  "id": 175,
                   "name": "redirect",
                   "kind": 32768,
                   "kindString": "Parameter",
@@ -200,7 +211,7 @@
                   }
                 },
                 {
-                  "id": 175,
+                  "id": 176,
                   "name": "userData",
                   "kind": 32768,
                   "kindString": "Parameter",
@@ -219,7 +230,7 @@
           ]
         },
         {
-          "id": 153,
+          "id": 154,
           "name": "getMe",
           "kind": 2048,
           "kindString": "Method",
@@ -228,7 +239,7 @@
           },
           "signatures": [
             {
-              "id": 154,
+              "id": 155,
               "name": "getMe",
               "kind": 4096,
               "kindString": "Call signature",
@@ -241,7 +252,7 @@
           ]
         },
         {
-          "id": 157,
+          "id": 158,
           "name": "getTokenPayload",
           "kind": 2048,
           "kindString": "Method",
@@ -250,7 +261,7 @@
           },
           "signatures": [
             {
-              "id": 158,
+              "id": 159,
               "name": "getTokenPayload",
               "kind": 4096,
               "kindString": "Call signature",
@@ -263,7 +274,7 @@
           ]
         },
         {
-          "id": 155,
+          "id": 156,
           "name": "isAuthenticated",
           "kind": 2048,
           "kindString": "Method",
@@ -272,7 +283,7 @@
           },
           "signatures": [
             {
-              "id": 156,
+              "id": 157,
               "name": "isAuthenticated",
               "kind": 4096,
               "kindString": "Call signature",
@@ -285,7 +296,7 @@
           ]
         },
         {
-          "id": 164,
+          "id": 165,
           "name": "login",
           "kind": 2048,
           "kindString": "Method",
@@ -294,14 +305,14 @@
           },
           "signatures": [
             {
-              "id": 165,
+              "id": 166,
               "name": "login",
               "kind": 4096,
               "kindString": "Call signature",
               "flags": {},
               "parameters": [
                 {
-                  "id": 166,
+                  "id": 167,
                   "name": "email",
                   "kind": 32768,
                   "kindString": "Parameter",
@@ -312,7 +323,7 @@
                   }
                 },
                 {
-                  "id": 167,
+                  "id": 168,
                   "name": "password",
                   "kind": 32768,
                   "kindString": "Parameter",
@@ -331,7 +342,7 @@
           ]
         },
         {
-          "id": 168,
+          "id": 169,
           "name": "logout",
           "kind": 2048,
           "kindString": "Method",
@@ -340,14 +351,14 @@
           },
           "signatures": [
             {
-              "id": 169,
+              "id": 170,
               "name": "logout",
               "kind": 4096,
               "kindString": "Call signature",
               "flags": {},
               "parameters": [
                 {
-                  "id": 170,
+                  "id": 171,
                   "name": "redirectUri",
                   "kind": 32768,
                   "kindString": "Parameter",
@@ -366,7 +377,7 @@
           ]
         },
         {
-          "id": 159,
+          "id": 160,
           "name": "signup",
           "kind": 2048,
           "kindString": "Method",
@@ -375,14 +386,14 @@
           },
           "signatures": [
             {
-              "id": 160,
+              "id": 161,
               "name": "signup",
               "kind": 4096,
               "kindString": "Call signature",
               "flags": {},
               "parameters": [
                 {
-                  "id": 161,
+                  "id": 162,
                   "name": "displayName",
                   "kind": 32768,
                   "kindString": "Parameter",
@@ -393,7 +404,7 @@
                   }
                 },
                 {
-                  "id": 162,
+                  "id": 163,
                   "name": "email",
                   "kind": 32768,
                   "kindString": "Parameter",
@@ -404,7 +415,7 @@
                   }
                 },
                 {
-                  "id": 163,
+                  "id": 164,
                   "name": "password",
                   "kind": 32768,
                   "kindString": "Parameter",
@@ -423,7 +434,7 @@
           ]
         },
         {
-          "id": 176,
+          "id": 177,
           "name": "unlink",
           "kind": 2048,
           "kindString": "Method",
@@ -432,14 +443,14 @@
           },
           "signatures": [
             {
-              "id": 177,
+              "id": 178,
               "name": "unlink",
               "kind": 4096,
               "kindString": "Call signature",
               "flags": {},
               "parameters": [
                 {
-                  "id": 178,
+                  "id": 179,
                   "name": "provider",
                   "kind": 32768,
                   "kindString": "Parameter",
@@ -470,14 +481,14 @@
           "title": "Methods",
           "kind": 2048,
           "children": [
-            171,
-            153,
-            157,
-            155,
-            164,
-            168,
-            159,
-            176
+            172,
+            154,
+            158,
+            156,
+            165,
+            169,
+            160,
+            177
           ]
         }
       ]
@@ -2229,7 +2240,7 @@
       ]
     },
     {
-      "id": 185,
+      "id": 186,
       "name": "camelCase",
       "kind": 64,
       "kindString": "Function",
@@ -2238,14 +2249,14 @@
       },
       "signatures": [
         {
-          "id": 186,
+          "id": 187,
           "name": "camelCase",
           "kind": 4096,
           "kindString": "Call signature",
           "flags": {},
           "parameters": [
             {
-              "id": 187,
+              "id": 188,
               "name": "name",
               "kind": 32768,
               "kindString": "Parameter",
@@ -2264,7 +2275,7 @@
       ]
     },
     {
-      "id": 213,
+      "id": 214,
       "name": "extend",
       "kind": 64,
       "kindString": "Function",
@@ -2273,14 +2284,14 @@
       },
       "signatures": [
         {
-          "id": 214,
+          "id": 215,
           "name": "extend",
           "kind": 4096,
           "kindString": "Call signature",
           "flags": {},
           "parameters": [
             {
-              "id": 215,
+              "id": 216,
               "name": "dst",
               "kind": 32768,
               "kindString": "Parameter",
@@ -2299,7 +2310,7 @@
       ]
     },
     {
-      "id": 219,
+      "id": 220,
       "name": "forEach",
       "kind": 64,
       "kindString": "Function",
@@ -2308,14 +2319,14 @@
       },
       "signatures": [
         {
-          "id": 220,
+          "id": 221,
           "name": "forEach",
           "kind": 4096,
           "kindString": "Call signature",
           "flags": {},
           "parameters": [
             {
-              "id": 221,
+              "id": 222,
               "name": "obj",
               "kind": 32768,
               "kindString": "Parameter",
@@ -2326,7 +2337,7 @@
               }
             },
             {
-              "id": 222,
+              "id": 223,
               "name": "iterator",
               "kind": 32768,
               "kindString": "Parameter",
@@ -2337,7 +2348,7 @@
               }
             },
             {
-              "id": 223,
+              "id": 224,
               "name": "context",
               "kind": 32768,
               "kindString": "Parameter",
@@ -2356,7 +2367,7 @@
       ]
     },
     {
-      "id": 207,
+      "id": 208,
       "name": "isArrayLike",
       "kind": 64,
       "kindString": "Function",
@@ -2365,14 +2376,14 @@
       },
       "signatures": [
         {
-          "id": 208,
+          "id": 209,
           "name": "isArrayLike",
           "kind": 4096,
           "kindString": "Call signature",
           "flags": {},
           "parameters": [
             {
-              "id": 209,
+              "id": 210,
               "name": "obj",
               "kind": 32768,
               "kindString": "Parameter",
@@ -2391,7 +2402,7 @@
       ]
     },
     {
-      "id": 204,
+      "id": 205,
       "name": "isBlankObject",
       "kind": 64,
       "kindString": "Function",
@@ -2400,14 +2411,14 @@
       },
       "signatures": [
         {
-          "id": 205,
+          "id": 206,
           "name": "isBlankObject",
           "kind": 4096,
           "kindString": "Call signature",
           "flags": {},
           "parameters": [
             {
-              "id": 206,
+              "id": 207,
               "name": "value",
               "kind": 32768,
               "kindString": "Parameter",
@@ -2426,7 +2437,7 @@
       ]
     },
     {
-      "id": 182,
+      "id": 183,
       "name": "isDefined",
       "kind": 64,
       "kindString": "Function",
@@ -2435,14 +2446,14 @@
       },
       "signatures": [
         {
-          "id": 183,
+          "id": 184,
           "name": "isDefined",
           "kind": 4096,
           "kindString": "Call signature",
           "flags": {},
           "parameters": [
             {
-              "id": 184,
+              "id": 185,
               "name": "value",
               "kind": 32768,
               "kindString": "Parameter",
@@ -2461,7 +2472,7 @@
       ]
     },
     {
-      "id": 197,
+      "id": 198,
       "name": "isFunction",
       "kind": 64,
       "kindString": "Function",
@@ -2470,14 +2481,14 @@
       },
       "signatures": [
         {
-          "id": 198,
+          "id": 199,
           "name": "isFunction",
           "kind": 4096,
           "kindString": "Call signature",
           "flags": {},
           "parameters": [
             {
-              "id": 199,
+              "id": 200,
               "name": "value",
               "kind": 32768,
               "kindString": "Parameter",
@@ -2496,7 +2507,7 @@
       ]
     },
     {
-      "id": 194,
+      "id": 195,
       "name": "isObject",
       "kind": 64,
       "kindString": "Function",
@@ -2505,14 +2516,14 @@
       },
       "signatures": [
         {
-          "id": 195,
+          "id": 196,
           "name": "isObject",
           "kind": 4096,
           "kindString": "Call signature",
           "flags": {},
           "parameters": [
             {
-              "id": 196,
+              "id": 197,
               "name": "value",
               "kind": 32768,
               "kindString": "Parameter",
@@ -2531,7 +2542,7 @@
       ]
     },
     {
-      "id": 191,
+      "id": 192,
       "name": "isString",
       "kind": 64,
       "kindString": "Function",
@@ -2540,14 +2551,14 @@
       },
       "signatures": [
         {
-          "id": 192,
+          "id": 193,
           "name": "isString",
           "kind": 4096,
           "kindString": "Call signature",
           "flags": {},
           "parameters": [
             {
-              "id": 193,
+              "id": 194,
               "name": "value",
               "kind": 32768,
               "kindString": "Parameter",
@@ -2566,7 +2577,7 @@
       ]
     },
     {
-      "id": 210,
+      "id": 211,
       "name": "isWindow",
       "kind": 64,
       "kindString": "Function",
@@ -2575,14 +2586,14 @@
       },
       "signatures": [
         {
-          "id": 211,
+          "id": 212,
           "name": "isWindow",
           "kind": 4096,
           "kindString": "Call signature",
           "flags": {},
           "parameters": [
             {
-              "id": 212,
+              "id": 213,
               "name": "obj",
               "kind": 32768,
               "kindString": "Parameter",
@@ -2601,7 +2612,7 @@
       ]
     },
     {
-      "id": 200,
+      "id": 201,
       "name": "joinUrl",
       "kind": 64,
       "kindString": "Function",
@@ -2610,14 +2621,14 @@
       },
       "signatures": [
         {
-          "id": 201,
+          "id": 202,
           "name": "joinUrl",
           "kind": 4096,
           "kindString": "Call signature",
           "flags": {},
           "parameters": [
             {
-              "id": 202,
+              "id": 203,
               "name": "baseUrl",
               "kind": 32768,
               "kindString": "Parameter",
@@ -2628,7 +2639,7 @@
               }
             },
             {
-              "id": 203,
+              "id": 204,
               "name": "url",
               "kind": 32768,
               "kindString": "Parameter",
@@ -2647,7 +2658,7 @@
       ]
     },
     {
-      "id": 216,
+      "id": 217,
       "name": "merge",
       "kind": 64,
       "kindString": "Function",
@@ -2656,14 +2667,14 @@
       },
       "signatures": [
         {
-          "id": 217,
+          "id": 218,
           "name": "merge",
           "kind": 4096,
           "kindString": "Call signature",
           "flags": {},
           "parameters": [
             {
-              "id": 218,
+              "id": 219,
               "name": "dst",
               "kind": 32768,
               "kindString": "Parameter",
@@ -2682,7 +2693,7 @@
       ]
     },
     {
-      "id": 188,
+      "id": 189,
       "name": "parseQueryString",
       "kind": 64,
       "kindString": "Function",
@@ -2691,14 +2702,14 @@
       },
       "signatures": [
         {
-          "id": 189,
+          "id": 190,
           "name": "parseQueryString",
           "kind": 4096,
           "kindString": "Call signature",
           "flags": {},
           "parameters": [
             {
-              "id": 190,
+              "id": 191,
               "name": "keyValue",
               "kind": 32768,
               "kindString": "Parameter",
@@ -2717,7 +2728,7 @@
       ]
     },
     {
-      "id": 179,
+      "id": 180,
       "name": "status",
       "kind": 64,
       "kindString": "Function",
@@ -2726,14 +2737,14 @@
       },
       "signatures": [
         {
-          "id": 180,
+          "id": 181,
           "name": "status",
           "kind": 4096,
           "kindString": "Call signature",
           "flags": {},
           "parameters": [
             {
-              "id": 181,
+              "id": 182,
               "name": "response",
               "kind": 32768,
               "kindString": "Parameter",
@@ -2773,20 +2784,20 @@
       "title": "Functions",
       "kind": 64,
       "children": [
-        185,
-        213,
-        219,
-        207,
-        204,
-        182,
-        197,
-        194,
-        191,
-        210,
-        200,
-        216,
-        188,
-        179
+        186,
+        214,
+        220,
+        208,
+        205,
+        183,
+        198,
+        195,
+        192,
+        211,
+        201,
+        217,
+        189,
+        180
       ]
     }
   ]

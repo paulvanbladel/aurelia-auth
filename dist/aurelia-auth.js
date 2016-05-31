@@ -1,4 +1,3 @@
-import 'isomorphic-fetch';
 import {inject} from 'aurelia-dependency-injection';
 import {HttpClient,json} from 'aurelia-fetch-client';
 import {Redirect} from 'aurelia-router';

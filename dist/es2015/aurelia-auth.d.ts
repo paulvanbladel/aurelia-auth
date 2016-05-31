@@ -1,5 +1,4 @@
 declare module 'aurelia-auth' {
-  import 'isomorphic-fetch';
   import {
     inject
   } from 'aurelia-dependency-injection';

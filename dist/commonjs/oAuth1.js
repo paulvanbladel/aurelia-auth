@@ -19,8 +19,6 @@ var _baseConfig = require('./base-config');
 
 var _aureliaFetchClient = require('aurelia-fetch-client');
 
-require('isomorphic-fetch');
-
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var OAuth1 = exports.OAuth1 = (_dec = (0, _aureliaDependencyInjection.inject)(_storage.Storage, _popup.Popup, _aureliaFetchClient.HttpClient, _baseConfig.BaseConfig), _dec(_class = function () {

@@ -1,4 +1,4 @@
-define(['exports', 'aurelia-dependency-injection', 'aurelia-fetch-client', './authentication', 'isomorphic-fetch'], function (exports, _aureliaDependencyInjection, _aureliaFetchClient, _authentication) {
+define(['exports', 'aurelia-dependency-injection', 'aurelia-fetch-client', './authentication'], function (exports, _aureliaDependencyInjection, _aureliaFetchClient, _authentication) {
   'use strict';
 
   Object.defineProperty(exports, "__esModule", {

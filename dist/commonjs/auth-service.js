@@ -15,8 +15,6 @@ var _aureliaFetchClient = require('aurelia-fetch-client');
 
 var _aureliaEventAggregator = require('aurelia-event-aggregator');
 
-require('isomorphic-fetch');
-
 var _authentication = require('./authentication');
 
 var _baseConfig = require('./base-config');

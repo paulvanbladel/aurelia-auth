@@ -6,7 +6,6 @@ import { Storage } from './storage';
 import { Popup } from './popup';
 import { BaseConfig } from './base-config';
 import { HttpClient, json } from 'aurelia-fetch-client';
-import 'isomorphic-fetch';
 
 export let OAuth1 = (_dec = inject(Storage, Popup, HttpClient, BaseConfig), _dec(_class = class OAuth1 {
   constructor(storage, popup, http, config) {

@@ -2,7 +2,6 @@ var _dec, _class;
 
 import { inject } from 'aurelia-dependency-injection';
 import { HttpClient } from 'aurelia-fetch-client';
-import 'isomorphic-fetch';
 import { Authentication } from './authentication';
 
 export let FetchConfig = (_dec = inject(HttpClient, Authentication), _dec(_class = class FetchConfig {

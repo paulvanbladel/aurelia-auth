@@ -1,6 +1,6 @@
 'use strict';
 
-System.register(['aurelia-dependency-injection', 'aurelia-fetch-client', 'aurelia-event-aggregator', 'isomorphic-fetch', './authentication', './base-config', './oAuth1', './oAuth2', './auth-utilities'], function (_export, _context) {
+System.register(['aurelia-dependency-injection', 'aurelia-fetch-client', 'aurelia-event-aggregator', './authentication', './base-config', './oAuth1', './oAuth2', './auth-utilities'], function (_export, _context) {
   "use strict";
 
   var inject, HttpClient, json, EventAggregator, Authentication, BaseConfig, OAuth1, OAuth2, status, joinUrl, _typeof, _dec, _class, AuthService;
@@ -19,7 +19,7 @@ System.register(['aurelia-dependency-injection', 'aurelia-fetch-client', 'aureli
       json = _aureliaFetchClient.json;
     }, function (_aureliaEventAggregator) {
       EventAggregator = _aureliaEventAggregator.EventAggregator;
-    }, function (_isomorphicFetch) {}, function (_authentication) {
+    }, function (_authentication) {
       Authentication = _authentication.Authentication;
     }, function (_baseConfig) {
       BaseConfig = _baseConfig.BaseConfig;

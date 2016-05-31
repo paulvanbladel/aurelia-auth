@@ -1,6 +1,6 @@
 'use strict';
 
-System.register(['aurelia-dependency-injection', 'aurelia-fetch-client', 'isomorphic-fetch', './authentication'], function (_export, _context) {
+System.register(['aurelia-dependency-injection', 'aurelia-fetch-client', './authentication'], function (_export, _context) {
   "use strict";
 
   var inject, HttpClient, Authentication, _dec, _class, FetchConfig;
@@ -16,7 +16,7 @@ System.register(['aurelia-dependency-injection', 'aurelia-fetch-client', 'isomor
       inject = _aureliaDependencyInjection.inject;
     }, function (_aureliaFetchClient) {
       HttpClient = _aureliaFetchClient.HttpClient;
-    }, function (_isomorphicFetch) {}, function (_authentication) {
+    }, function (_authentication) {
       Authentication = _authentication.Authentication;
     }],
     execute: function () {
