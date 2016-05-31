@@ -1,6 +1,5 @@
 import {inject} from 'aurelia-dependency-injection';
 import {HttpClient} from 'aurelia-fetch-client';
-import 'isomorphic-fetch';
 import {Authentication} from './authentication';
 
 @inject(HttpClient, Authentication )
