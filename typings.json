@@ -1,0 +1,4 @@
+{
+	"name": "aurelia-auth",
+	"main": "dist/aurelia-auth.d.ts"
+}

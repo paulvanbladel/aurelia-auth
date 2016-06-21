@@ -15,6 +15,7 @@
   "license": "MIT",
   "author": "paul van bladel",
   "main": "dist/commonjs/aurelia-auth.js",
+  "typings": "dist/aurelia-auth.d.ts",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/paulvanbladel/aurelia-auth.git"
