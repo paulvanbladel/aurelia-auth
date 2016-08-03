@@ -397,7 +397,7 @@ In the above example the customer route is only available for authenticated user
 
 ## Supplying token programmatically
 
-In case you would like to supply token programmatically instead of using login() functionality, use `setToken(token)`. You might need it to automatically log in use upon registration or on similar use cases.
+In case you would like to supply token programmatically instead of using login functionality, use `setToken(token)`. You might need it to automatically log in user upon registration or on similar use cases.
 
 # Events
 
