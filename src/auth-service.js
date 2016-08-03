@@ -33,6 +33,10 @@ export class AuthService {
     return this.auth.getPayload();
   }
 
+  setToken(token) {
+    this.auth.setToken(Object.defineProperty( {}, this.config.tokenName, { value: token } ));
+  }
+
   signup(displayName, email, password) {
     let signupUrl = this.auth.getSignupUrl();
     let content;
