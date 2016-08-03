@@ -45,6 +45,7 @@ getMe()
 isAuthenticated()
 getTokenPayload()
 unlink(provider)
+setToken(token)
 ```
 Login is used for the local authentication strategy (email + password). Authenticate is for social media authentication. Authenticate is also used for linking a social media account to an existing account.
 
@@ -393,6 +394,10 @@ configure(){
     }
 ```
 In the above example the customer route is only available for authenticated users.
+
+## Supplying token programmatically
+
+In case you would like to supply token programmatically instead of using login functionality, use `setToken(token)`. You might need it to automatically log in user upon registration or on similar use cases.
 
 # Events
 
