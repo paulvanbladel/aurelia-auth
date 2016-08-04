@@ -1,3 +1,4 @@
+
 import {inject} from 'aurelia-dependency-injection';
 import {HttpClient, json} from 'aurelia-fetch-client';
 import {EventAggregator} from 'aurelia-event-aggregator';
@@ -9,6 +10,9 @@ import {status, joinUrl} from './auth-utilities';
 
 @inject(HttpClient, Authentication, OAuth1, OAuth2, BaseConfig, EventAggregator)
 export class AuthService {
+
+  isRequesting: boolean = false;
+
   constructor(http, auth, oAuth1, oAuth2, config, eventAggregator) {
     this.http = http;
     this.auth = auth;
@@ -40,8 +44,7 @@ export class AuthService {
       content = arguments[0];
     } else {
       content = {
-        'displayName': displayName,
-        'email': email,
+        'username': email,
         'password': password
       };
     }
