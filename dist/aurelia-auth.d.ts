@@ -90,10 +90,12 @@ declare module 'aurelia-auth' {
   }
   export class AuthService {
     constructor(http: any, auth: any, oAuth1: any, oAuth2: any, config: any, eventAggregator: any);
+    tokenInterceptor: any;
     getMe(): any;
     isAuthenticated(): any;
     getTokenPayload(): any;
     signup(displayName: any, email: any, password: any): any;
+    signup(props: Object): any;
     login(email: any, password: any): any;
     logout(redirectUri: any): any;
     authenticate(name: any, redirect: any, userData: any): any;
