@@ -236,9 +236,12 @@ var BaseConfig = exports.BaseConfig = function () {
       signupRoute: '/signup',
       tokenRoot: false,
       tokenName: 'token',
+      renewTokenName: 'token',
       idTokenName: 'id_token',
+      idRenewTokenName: 'renew_token',
       tokenPrefix: 'aurelia',
       responseTokenProp: 'access_token',
+      responseRenewTokenProp: 'renew_token',
       responseIdTokenProp: 'id_token',
       unlinkUrl: '/auth/unlink/',
       unlinkMethod: 'get',
@@ -576,7 +579,9 @@ var Authentication = exports.Authentication = (_dec3 = (0, _aureliaDependencyInj
     this.storage = storage;
     this.config = config.current;
     this.tokenName = this.config.tokenPrefix ? this.config.tokenPrefix + '_' + this.config.tokenName : this.config.tokenName;
+    this.renewTokenName = this.config.tokenPrefix ? this.config.tokenPrefix + '_' + this.config.renewTokenName : this.config.renewTokenName;
     this.idTokenName = this.config.tokenPrefix ? this.config.tokenPrefix + '_' + this.config.idTokenName : this.config.idTokenName;
+    this.idRenewTokenName = this.config.tokenPrefix ? this.config.tokenPrefix + '_' + this.config.idRenewTokenName : this.config.idRenewTokenName;
   }
 
   Authentication.prototype.getLoginRoute = function getLoginRoute() {
@@ -627,6 +632,7 @@ var Authentication = exports.Authentication = (_dec3 = (0, _aureliaDependencyInj
 
   Authentication.prototype.setToken = function setToken(response, redirect) {
     var accessToken = response && response[this.config.responseTokenProp];
+    var renewToken = response && response[this.config.responseRenewTokenProp];
     var tokenToStore = void 0;
 
     if (accessToken) {
@@ -643,6 +649,7 @@ var Authentication = exports.Authentication = (_dec3 = (0, _aureliaDependencyInj
 
     if (tokenToStore) {
       this.storage.set(this.tokenName, tokenToStore);
+      this.storage.set(this.renewTokenName, renewToken);
     }
 
     var idToken = response && response[this.config.responseIdTokenProp];
@@ -660,6 +667,7 @@ var Authentication = exports.Authentication = (_dec3 = (0, _aureliaDependencyInj
 
   Authentication.prototype.removeToken = function removeToken() {
     this.storage.remove(this.tokenName);
+    this.storage.remove(this.renewTokenName);
   };
 
   Authentication.prototype.isAuthenticated = function isAuthenticated() {
@@ -694,6 +702,7 @@ var Authentication = exports.Authentication = (_dec3 = (0, _aureliaDependencyInj
 
     return new Promise(function (resolve) {
       _this2.storage.remove(_this2.tokenName);
+      _this2.storage.remove(_this2.renewTokenName);
 
       if (_this2.config.logoutRedirect && !redirect) {
         window.location.href = _this2.config.logoutRedirect;
@@ -1003,6 +1012,8 @@ var AuthService = exports.AuthService = (_dec8 = (0, _aureliaDependencyInjection
   function AuthService(http, auth, oAuth1, oAuth2, config, eventAggregator) {
     _classCallCheck(this, AuthService);
 
+    this.isRequesting = false;
+
     this.http = http;
     this.auth = auth;
     this.oAuth1 = oAuth1;
@@ -1034,8 +1045,7 @@ var AuthService = exports.AuthService = (_dec8 = (0, _aureliaDependencyInjection
       content = arguments[0];
     } else {
       content = {
-        'displayName': displayName,
-        'email': email,
+        'username': email,
         'password': password
       };
     }
@@ -1054,7 +1064,7 @@ var AuthService = exports.AuthService = (_dec8 = (0, _aureliaDependencyInjection
     });
   };
 
-  AuthService.prototype.login = function login(email, password) {
+  AuthService.prototype.login = function login(username, password, type) {
     var _this8 = this;
 
     var loginUrl = this.auth.getLoginUrl();
@@ -1063,8 +1073,9 @@ var AuthService = exports.AuthService = (_dec8 = (0, _aureliaDependencyInjection
       content = arguments[0];
     } else {
       content = {
-        'email': email,
-        'password': password
+        'username': username,
+        'password': password,
+        'type': type
       };
     }
 

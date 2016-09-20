@@ -42,6 +42,8 @@ System.register(['aurelia-dependency-injection', 'aurelia-fetch-client', 'aureli
         function AuthService(http, auth, oAuth1, oAuth2, config, eventAggregator) {
           _classCallCheck(this, AuthService);
 
+          this.isRequesting = false;
+
           this.http = http;
           this.auth = auth;
           this.oAuth1 = oAuth1;
@@ -73,8 +75,7 @@ System.register(['aurelia-dependency-injection', 'aurelia-fetch-client', 'aureli
             content = arguments[0];
           } else {
             content = {
-              'displayName': displayName,
-              'email': email,
+              'username': email,
               'password': password
             };
           }
@@ -93,7 +94,7 @@ System.register(['aurelia-dependency-injection', 'aurelia-fetch-client', 'aureli
           });
         };
 
-        AuthService.prototype.login = function login(email, password) {
+        AuthService.prototype.login = function login(username, password, type) {
           var _this2 = this;
 
           var loginUrl = this.auth.getLoginUrl();
@@ -102,8 +103,9 @@ System.register(['aurelia-dependency-injection', 'aurelia-fetch-client', 'aureli
             content = arguments[0];
           } else {
             content = {
-              'email': email,
-              'password': password
+              'username': username,
+              'password': password,
+              'type': type
             };
           }
 

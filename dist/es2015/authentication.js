@@ -10,7 +10,9 @@ export let Authentication = (_dec = inject(Storage, BaseConfig), _dec(_class = c
     this.storage = storage;
     this.config = config.current;
     this.tokenName = this.config.tokenPrefix ? this.config.tokenPrefix + '_' + this.config.tokenName : this.config.tokenName;
+    this.renewTokenName = this.config.tokenPrefix ? this.config.tokenPrefix + '_' + this.config.renewTokenName : this.config.renewTokenName;
     this.idTokenName = this.config.tokenPrefix ? this.config.tokenPrefix + '_' + this.config.idTokenName : this.config.idTokenName;
+    this.idRenewTokenName = this.config.tokenPrefix ? this.config.tokenPrefix + '_' + this.config.idRenewTokenName : this.config.idRenewTokenName;
   }
 
   getLoginRoute() {
@@ -61,6 +63,7 @@ export let Authentication = (_dec = inject(Storage, BaseConfig), _dec(_class = c
 
   setToken(response, redirect) {
     let accessToken = response && response[this.config.responseTokenProp];
+    let renewToken = response && response[this.config.responseRenewTokenProp];
     let tokenToStore;
 
     if (accessToken) {
@@ -77,6 +80,7 @@ export let Authentication = (_dec = inject(Storage, BaseConfig), _dec(_class = c
 
     if (tokenToStore) {
       this.storage.set(this.tokenName, tokenToStore);
+      this.storage.set(this.renewTokenName, renewToken);
     }
 
     let idToken = response && response[this.config.responseIdTokenProp];
@@ -94,6 +98,7 @@ export let Authentication = (_dec = inject(Storage, BaseConfig), _dec(_class = c
 
   removeToken() {
     this.storage.remove(this.tokenName);
+    this.storage.remove(this.renewTokenName);
   }
 
   isAuthenticated() {
@@ -126,6 +131,7 @@ export let Authentication = (_dec = inject(Storage, BaseConfig), _dec(_class = c
   logout(redirect) {
     return new Promise(resolve => {
       this.storage.remove(this.tokenName);
+      this.storage.remove(this.renewTokenName);
 
       if (this.config.logoutRedirect && !redirect) {
         window.location.href = this.config.logoutRedirect;

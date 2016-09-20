@@ -10,7 +10,10 @@ import { OAuth2 } from './oAuth2';
 import { status, joinUrl } from './auth-utilities';
 
 export let AuthService = (_dec = inject(HttpClient, Authentication, OAuth1, OAuth2, BaseConfig, EventAggregator), _dec(_class = class AuthService {
+
   constructor(http, auth, oAuth1, oAuth2, config, eventAggregator) {
+    this.isRequesting = false;
+
     this.http = http;
     this.auth = auth;
     this.oAuth1 = oAuth1;
@@ -40,8 +43,7 @@ export let AuthService = (_dec = inject(HttpClient, Authentication, OAuth1, OAut
       content = arguments[0];
     } else {
       content = {
-        'displayName': displayName,
-        'email': email,
+        'username': email,
         'password': password
       };
     }
@@ -60,15 +62,16 @@ export let AuthService = (_dec = inject(HttpClient, Authentication, OAuth1, OAut
     });
   }
 
-  login(email, password) {
+  login(username, password, type) {
     let loginUrl = this.auth.getLoginUrl();
     let content;
     if (typeof arguments[1] !== 'string') {
       content = arguments[0];
     } else {
       content = {
-        'email': email,
-        'password': password
+        'username': username,
+        'password': password,
+        'type': type
       };
     }
 

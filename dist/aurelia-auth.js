@@ -197,9 +197,12 @@ export class BaseConfig {
       signupRoute: '/signup',
       tokenRoot: false,
       tokenName: 'token',
+      renewTokenName: 'token',
       idTokenName: 'id_token',
+      idRenewTokenName: 'renew_token',
       tokenPrefix: 'aurelia',
       responseTokenProp: 'access_token',
+      responseRenewTokenProp: 'renew_token',
       responseIdTokenProp: 'id_token',
       unlinkUrl: '/auth/unlink/',
       unlinkMethod: 'get',
@@ -522,8 +525,12 @@ export class Authentication {
     this.config = config.current;
     this.tokenName = this.config.tokenPrefix ?
       this.config.tokenPrefix + '_' + this.config.tokenName : this.config.tokenName;
+    this.renewTokenName = this.config.tokenPrefix ?
+      this.config.tokenPrefix + '_' + this.config.renewTokenName : this.config.renewTokenName;
     this.idTokenName = this.config.tokenPrefix ?
       this.config.tokenPrefix + '_' + this.config.idTokenName : this.config.idTokenName;
+    this.idRenewTokenName = this.config.tokenPrefix ?
+      this.config.tokenPrefix + '_' + this.config.idRenewTokenName : this.config.idRenewTokenName;
   }
 
   getLoginRoute() {
@@ -578,6 +585,7 @@ export class Authentication {
   setToken(response, redirect) {
     // access token handling
     let accessToken = response && response[this.config.responseTokenProp];
+    let renewToken = response && response[this.config.responseRenewTokenProp];
     let tokenToStore;
 
     if (accessToken) {
@@ -595,6 +603,7 @@ export class Authentication {
 
     if (tokenToStore) {
       this.storage.set(this.tokenName, tokenToStore);
+      this.storage.set(this.renewTokenName, renewToken);
     }
 
     // id token handling
@@ -613,6 +622,7 @@ export class Authentication {
 
   removeToken() {
     this.storage.remove(this.tokenName);
+    this.storage.remove(this.renewTokenName);
   }
 
   isAuthenticated() {
@@ -647,6 +657,7 @@ export class Authentication {
   logout(redirect) {
     return new Promise(resolve => {
       this.storage.remove(this.tokenName);
+      this.storage.remove(this.renewTokenName);
 
       if (this.config.logoutRedirect && !redirect) {
         window.location.href = this.config.logoutRedirect;
@@ -938,8 +949,12 @@ export class OAuth2 {
   }
 }
 
+
 @inject(HttpClient, Authentication, OAuth1, OAuth2, BaseConfig, EventAggregator)
 export class AuthService {
+
+  isRequesting: boolean = false;
+
   constructor(http, auth, oAuth1, oAuth2, config, eventAggregator) {
     this.http = http;
     this.auth = auth;
@@ -971,8 +986,7 @@ export class AuthService {
       content = arguments[0];
     } else {
       content = {
-        'displayName': displayName,
-        'email': email,
+        'username': email,
         'password': password
       };
     }
@@ -993,15 +1007,16 @@ export class AuthService {
       });
   }
 
-  login(email, password) {
+  login(username, password, type) {
     let loginUrl = this.auth.getLoginUrl();
     let content;
     if (typeof arguments[1] !== 'string') {
       content = arguments[0];
     } else {
       content = {
-        'email': email,
-        'password': password
+        'username': username,
+        'password': password,
+        'type': type
       };
     }
 

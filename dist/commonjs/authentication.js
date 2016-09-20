@@ -26,7 +26,9 @@ var Authentication = exports.Authentication = (_dec = (0, _aureliaDependencyInje
     this.storage = storage;
     this.config = config.current;
     this.tokenName = this.config.tokenPrefix ? this.config.tokenPrefix + '_' + this.config.tokenName : this.config.tokenName;
+    this.renewTokenName = this.config.tokenPrefix ? this.config.tokenPrefix + '_' + this.config.renewTokenName : this.config.renewTokenName;
     this.idTokenName = this.config.tokenPrefix ? this.config.tokenPrefix + '_' + this.config.idTokenName : this.config.idTokenName;
+    this.idRenewTokenName = this.config.tokenPrefix ? this.config.tokenPrefix + '_' + this.config.idRenewTokenName : this.config.idRenewTokenName;
   }
 
   Authentication.prototype.getLoginRoute = function getLoginRoute() {
@@ -77,6 +79,7 @@ var Authentication = exports.Authentication = (_dec = (0, _aureliaDependencyInje
 
   Authentication.prototype.setToken = function setToken(response, redirect) {
     var accessToken = response && response[this.config.responseTokenProp];
+    var renewToken = response && response[this.config.responseRenewTokenProp];
     var tokenToStore = void 0;
 
     if (accessToken) {
@@ -93,6 +96,7 @@ var Authentication = exports.Authentication = (_dec = (0, _aureliaDependencyInje
 
     if (tokenToStore) {
       this.storage.set(this.tokenName, tokenToStore);
+      this.storage.set(this.renewTokenName, renewToken);
     }
 
     var idToken = response && response[this.config.responseIdTokenProp];
@@ -110,6 +114,7 @@ var Authentication = exports.Authentication = (_dec = (0, _aureliaDependencyInje
 
   Authentication.prototype.removeToken = function removeToken() {
     this.storage.remove(this.tokenName);
+    this.storage.remove(this.renewTokenName);
   };
 
   Authentication.prototype.isAuthenticated = function isAuthenticated() {
@@ -144,6 +149,7 @@ var Authentication = exports.Authentication = (_dec = (0, _aureliaDependencyInje
 
     return new Promise(function (resolve) {
       _this.storage.remove(_this.tokenName);
+      _this.storage.remove(_this.renewTokenName);
 
       if (_this.config.logoutRedirect && !redirect) {
         window.location.href = _this.config.logoutRedirect;
