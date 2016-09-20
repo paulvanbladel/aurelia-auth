@@ -59,7 +59,7 @@ define(['exports', './auth-utilities'], function (exports, _authUtilities) {
         signupRoute: '/signup',
         tokenRoot: false,
         tokenName: 'token',
-        renewTokenName: 'renew_token',
+        renewTokenName: 'token',
         idTokenName: 'id_token',
         idRenewTokenName: 'renew_token',
         tokenPrefix: 'aurelia',

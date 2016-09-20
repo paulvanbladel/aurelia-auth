@@ -683,7 +683,7 @@ export class Authentication {
             token = `${config.authToken} ${token}`;
           }
 
-          request.headers.set(config.authHeader, token);
+          request.headers.add(config.authHeader, token);
         }
         return request;
       }

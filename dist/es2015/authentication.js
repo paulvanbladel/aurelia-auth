@@ -157,7 +157,7 @@ export let Authentication = (_dec = inject(Storage, BaseConfig), _dec(_class = c
             token = `${ config.authToken } ${ token }`;
           }
 
-          request.headers.set(config.authHeader, token);
+          request.headers.add(config.authHeader, token);
         }
         return request;
       }
