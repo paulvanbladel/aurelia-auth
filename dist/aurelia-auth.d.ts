@@ -94,6 +94,7 @@ declare module 'aurelia-auth' {
     getMe(): any;
     isAuthenticated(): any;
     getTokenPayload(): any;
+    setToken(token: any): any;
     signup(displayName: any, email: any, password: any): any;
     signup(props: Object): any;
     login(email: any, password: any): any;
