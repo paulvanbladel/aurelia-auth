@@ -6,7 +6,7 @@
 #### On NPM this module is also called [aurelia-auth](https://www.npmjs.com/package/aurelia-auth)
 
 ## What is aurelia-auth?
-aurelia-auth is a token-based authentication plugin for [Aurelia](http://aurelia.io/) with support for popular social authentication providers (Google, Twitter, Facebook, LinkedIn, Windows Live, FourSquare, Yahoo, Github, Instagram ) and a local stragegy, i.e. simple username (email) and password.
+aurelia-auth is a token-based authentication plugin for [Aurelia](http://aurelia.io/) with support for popular social authentication providers (Google, Twitter, Facebook, LinkedIn, Windows Live, FourSquare, Yahoo, Github, Instagram ) and a local strategy, i.e. simple username (email) and password.
 
 aurelia-auth is a port of the great [Satellizer](https://github.com/sahat/satellizer/) library to ES6 and packaged as an Aurelia plugin.
 
@@ -139,8 +139,8 @@ export class App {
 ```
 
 ## What exactly is 'configured' on the Http Client and can we have multiple endpoints?
-Well, it's import to have a clear understanding how exactly the default Http Client is
-augemented by aurelia-auth and that we have the full freedom to use 
+Well, it's important to have a clear understanding how exactly the default Http Client is
+augmented by aurelia-auth and that we have the full freedom to use 
 your own custom logic as well.
 Let's first show how  aurelia-auth augments the Http Client by 
 looking at app.fetch-httpClient.config.js [](https://github.com/paulvanbladel/aurelia-auth/blob/master/src/app.fetch-httpClient.config.js) :
