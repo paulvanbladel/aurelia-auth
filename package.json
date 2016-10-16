@@ -91,5 +91,42 @@
   "directories": {
     "doc": "doc",
     "packages": "jspm_packages"
+  },
+  "aurelia": {
+    "usedBy": [],
+    "documentation": {
+      "links": [
+        {
+          "rel": "license",
+          "mediaType": "text/plain",
+          "title": "The MIT License (MIT)",
+          "href": "LICENSE"
+        },
+        {
+          "rel": "describedby",
+          "mediaType": "application/aurelia-doc+json",
+          "title": "API",
+          "href": "doc/api.json"
+        },
+        {
+          "rel": "version-history",
+          "mediaType": "text/markdown",
+          "title": "Change Log",
+          "href": "doc/CHANGELOG.md"
+        }
+      ]
+    },
+    "build": {
+      "resources": [
+        "aurelia-auth/aurelia-auth.d.ts",
+        "aurelia-auth/aurelia-auth.js",
+        "aurelia-auth/auth-fetch-config.js",
+        "aurelia-auth/auth-service.js",
+        "aurelia-auth/oAuth1.js",
+        "aurelia-auth/oAuth2.js",
+        "aurelia-auth/popup.js",
+        "aurelia-auth/storage.js",
+      ]
+    }
   }
 }
