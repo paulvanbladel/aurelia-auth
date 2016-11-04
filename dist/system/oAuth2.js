@@ -96,7 +96,7 @@ System.register(['aurelia-dependency-injection', './auth-utilities', './storage'
               return Promise.reject('OAuth 2.0 state parameter mismatch.');
             }
 
-            if (current.responseType.toUpperCase().includes('TOKEN')) {
+            if (current.responseType.toUpperCase().indexOf('TOKEN') !== -1) {
               if (!_this.verifyIdToken(oauthData, current.name)) {
                 return Promise.reject('OAuth 2.0 Nonce parameter mismatch.');
               }

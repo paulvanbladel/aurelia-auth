@@ -9,7 +9,7 @@ var _dec, _class, _dec2, _class2, _dec3, _class3, _dec4, _class4, _dec5, _class5
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 exports.status = status;
 exports.isDefined = isDefined;
@@ -908,7 +908,7 @@ var OAuth2 = exports.OAuth2 = (_dec7 = (0, _aureliaDependencyInjection.inject)(S
         return Promise.reject('OAuth 2.0 state parameter mismatch.');
       }
 
-      if (current.responseType.toUpperCase().includes('TOKEN')) {
+      if (current.responseType.toUpperCase().indexOf('TOKEN') !== -1) {
         if (!_this5.verifyIdToken(oauthData, current.name)) {
           return Promise.reject('OAuth 2.0 Nonce parameter mismatch.');
         }
@@ -1023,6 +1023,10 @@ var AuthService = exports.AuthService = (_dec8 = (0, _aureliaDependencyInjection
 
   AuthService.prototype.getTokenPayload = function getTokenPayload() {
     return this.auth.getPayload();
+  };
+
+  AuthService.prototype.setToken = function setToken(token) {
+    this.auth.setToken(Object.defineProperty({}, this.config.tokenName, { value: token }));
   };
 
   AuthService.prototype.signup = function signup(displayName, email, password) {

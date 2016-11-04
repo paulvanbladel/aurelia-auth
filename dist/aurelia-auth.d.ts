@@ -82,21 +82,17 @@ declare module 'aurelia-auth' {
   export class OAuth2 {
     constructor(storage: any, popup: any, http: any, config: any, auth: any);
     open(options: any, userData: any): any;
-    
-    //responseType is authorization code only (no token nor id_token)
     verifyIdToken(oauthData: any, providerName: any): any;
     exchangeForToken(oauthData: any, userData: any, current: any): any;
     buildQueryString(current: any): any;
   }
   export class AuthService {
     constructor(http: any, auth: any, oAuth1: any, oAuth2: any, config: any, eventAggregator: any);
-    tokenInterceptor: any;
     getMe(): any;
     isAuthenticated(): any;
     getTokenPayload(): any;
     setToken(token: any): any;
     signup(displayName: any, email: any, password: any): any;
-    signup(props: Object): any;
     login(email: any, password: any): any;
     logout(redirectUri: any): any;
     authenticate(name: any, redirect: any, userData: any): any;

@@ -84,7 +84,7 @@ var OAuth2 = exports.OAuth2 = (_dec = (0, _aureliaDependencyInjection.inject)(_s
         return Promise.reject('OAuth 2.0 state parameter mismatch.');
       }
 
-      if (current.responseType.toUpperCase().includes('TOKEN')) {
+      if (current.responseType.toUpperCase().indexOf('TOKEN') !== -1) {
         if (!_this.verifyIdToken(oauthData, current.name)) {
           return Promise.reject('OAuth 2.0 Nonce parameter mismatch.');
         }

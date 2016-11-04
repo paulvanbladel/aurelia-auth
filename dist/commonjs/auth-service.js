@@ -5,7 +5,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.AuthService = undefined;
 
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 var _dec, _class;
 
@@ -51,6 +51,10 @@ var AuthService = exports.AuthService = (_dec = (0, _aureliaDependencyInjection.
 
   AuthService.prototype.getTokenPayload = function getTokenPayload() {
     return this.auth.getPayload();
+  };
+
+  AuthService.prototype.setToken = function setToken(token) {
+    this.auth.setToken(Object.defineProperty({}, this.config.tokenName, { value: token }));
   };
 
   AuthService.prototype.signup = function signup(displayName, email, password) {
