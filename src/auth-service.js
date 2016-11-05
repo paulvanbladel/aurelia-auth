@@ -92,8 +92,10 @@ export class AuthService {
   }
 
   logout(redirectUri) {
-    this.eventAggregator.publish('auth:logout');
-    return this.auth.logout(redirectUri);
+    return this.auth.logout(redirectUri)
+      .then(() => {
+        this.eventAggregator.publish('auth:logout');
+      });
   }
 
   authenticate(name, redirect, userData) {
