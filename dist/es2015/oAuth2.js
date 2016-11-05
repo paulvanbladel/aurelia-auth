@@ -65,7 +65,7 @@ export let OAuth2 = (_dec = inject(Storage, Popup, HttpClient, BaseConfig, Authe
         return Promise.reject('OAuth 2.0 state parameter mismatch.');
       }
 
-      if (current.responseType.toUpperCase().includes('TOKEN')) {
+      if (current.responseType.toUpperCase().indexOf('TOKEN') !== -1) {
         if (!this.verifyIdToken(oauthData, current.name)) {
           return Promise.reject('OAuth 2.0 Nonce parameter mismatch.');
         }

@@ -67,7 +67,7 @@ export class OAuth2 {
           return Promise.reject('OAuth 2.0 state parameter mismatch.');
         }
 
-        if (current.responseType.toUpperCase().includes('TOKEN')) { //meaning implicit flow or hybrid flow
+        if (current.responseType.toUpperCase().indexOf('TOKEN') !== -1) { //meaning implicit flow or hybrid flow
           if (!this.verifyIdToken(oauthData, current.name)) {
             return Promise.reject('OAuth 2.0 Nonce parameter mismatch.');
           }

@@ -854,7 +854,7 @@ export class OAuth2 {
           return Promise.reject('OAuth 2.0 state parameter mismatch.');
         }
 
-        if (current.responseType.toUpperCase().includes('TOKEN')) { //meaning implicit flow or hybrid flow
+        if (current.responseType.toUpperCase().indexOf('TOKEN') !== -1) { //meaning implicit flow or hybrid flow
           if (!this.verifyIdToken(oauthData, current.name)) {
             return Promise.reject('OAuth 2.0 Nonce parameter mismatch.');
           }
@@ -962,6 +962,10 @@ export class AuthService {
 
   getTokenPayload() {
     return this.auth.getPayload();
+  }
+
+  setToken(token) {
+    this.auth.setToken(Object.defineProperty( {}, this.config.tokenName, { value: token } ));
   }
 
   signup(displayName, email, password) {
