@@ -41,6 +41,11 @@
       "core-js": "^1.1.4"
     }
   },
+  "aurelia": {
+    "build": {
+      "resources": ["auth-filter"]
+    }
+  },
   "dependencies": {
     "aurelia-dependency-injection": "^1.0.0-beta.1.2.3",
     "aurelia-fetch-client": "^1.0.0-beta.1.2.5",
