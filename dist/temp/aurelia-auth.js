@@ -1084,12 +1084,15 @@ var AuthService = exports.AuthService = (_dec8 = (0, _aureliaDependencyInjection
   };
 
   AuthService.prototype.logout = function logout(redirectUri) {
-    this.eventAggregator.publish('auth:logout');
-    return this.auth.logout(redirectUri);
+    var _this9 = this;
+
+    return this.auth.logout(redirectUri).then(function () {
+      _this9.eventAggregator.publish('auth:logout');
+    });
   };
 
   AuthService.prototype.authenticate = function authenticate(name, redirect, userData) {
-    var _this9 = this;
+    var _this10 = this;
 
     var provider = this.oAuth2;
     if (this.config.providers[name].type === '1.0') {
@@ -1097,20 +1100,20 @@ var AuthService = exports.AuthService = (_dec8 = (0, _aureliaDependencyInjection
     }
 
     return provider.open(this.config.providers[name], userData || {}).then(function (response) {
-      _this9.auth.setToken(response, redirect);
-      _this9.eventAggregator.publish('auth:authenticate', response);
+      _this10.auth.setToken(response, redirect);
+      _this10.eventAggregator.publish('auth:authenticate', response);
       return response;
     });
   };
 
   AuthService.prototype.unlink = function unlink(provider) {
-    var _this10 = this;
+    var _this11 = this;
 
     var unlinkUrl = this.config.baseUrl ? joinUrl(this.config.baseUrl, this.config.unlinkUrl) : this.config.unlinkUrl;
 
     if (this.config.unlinkMethod === 'get') {
       return this.http.fetch(unlinkUrl + provider).then(status).then(function (response) {
-        _this10.eventAggregator.publish('auth:unlink', response);
+        _this11.eventAggregator.publish('auth:unlink', response);
         return response;
       });
     } else if (this.config.unlinkMethod === 'post') {
@@ -1118,7 +1121,7 @@ var AuthService = exports.AuthService = (_dec8 = (0, _aureliaDependencyInjection
         method: 'post',
         body: (0, _aureliaFetchClient.json)(provider)
       }).then(status).then(function (response) {
-        _this10.eventAggregator.publish('auth:unlink', response);
+        _this11.eventAggregator.publish('auth:unlink', response);
         return response;
       });
     }

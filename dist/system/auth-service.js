@@ -123,12 +123,15 @@ System.register(['aurelia-dependency-injection', 'aurelia-fetch-client', 'aureli
         };
 
         AuthService.prototype.logout = function logout(redirectUri) {
-          this.eventAggregator.publish('auth:logout');
-          return this.auth.logout(redirectUri);
+          var _this3 = this;
+
+          return this.auth.logout(redirectUri).then(function () {
+            _this3.eventAggregator.publish('auth:logout');
+          });
         };
 
         AuthService.prototype.authenticate = function authenticate(name, redirect, userData) {
-          var _this3 = this;
+          var _this4 = this;
 
           var provider = this.oAuth2;
           if (this.config.providers[name].type === '1.0') {
@@ -136,20 +139,20 @@ System.register(['aurelia-dependency-injection', 'aurelia-fetch-client', 'aureli
           }
 
           return provider.open(this.config.providers[name], userData || {}).then(function (response) {
-            _this3.auth.setToken(response, redirect);
-            _this3.eventAggregator.publish('auth:authenticate', response);
+            _this4.auth.setToken(response, redirect);
+            _this4.eventAggregator.publish('auth:authenticate', response);
             return response;
           });
         };
 
         AuthService.prototype.unlink = function unlink(provider) {
-          var _this4 = this;
+          var _this5 = this;
 
           var unlinkUrl = this.config.baseUrl ? joinUrl(this.config.baseUrl, this.config.unlinkUrl) : this.config.unlinkUrl;
 
           if (this.config.unlinkMethod === 'get') {
             return this.http.fetch(unlinkUrl + provider).then(status).then(function (response) {
-              _this4.eventAggregator.publish('auth:unlink', response);
+              _this5.eventAggregator.publish('auth:unlink', response);
               return response;
             });
           } else if (this.config.unlinkMethod === 'post') {
@@ -157,7 +160,7 @@ System.register(['aurelia-dependency-injection', 'aurelia-fetch-client', 'aureli
               method: 'post',
               body: json(provider)
             }).then(status).then(function (response) {
-              _this4.eventAggregator.publish('auth:unlink', response);
+              _this5.eventAggregator.publish('auth:unlink', response);
               return response;
             });
           }

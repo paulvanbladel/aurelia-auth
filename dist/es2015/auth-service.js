@@ -88,8 +88,9 @@ export let AuthService = (_dec = inject(HttpClient, Authentication, OAuth1, OAut
   }
 
   logout(redirectUri) {
-    this.eventAggregator.publish('auth:logout');
-    return this.auth.logout(redirectUri);
+    return this.auth.logout(redirectUri).then(() => {
+      this.eventAggregator.publish('auth:logout');
+    });
   }
 
   authenticate(name, redirect, userData) {
