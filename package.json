@@ -41,11 +41,7 @@
       "core-js": "^1.1.4"
     }
   },
-  "aurelia": {
-    "build": {
-      "resources": ["auth-filter"]
-    }
-  },
+  
   "dependencies": {
     "aurelia-dependency-injection": "^1.0.0-beta.1.2.3",
     "aurelia-fetch-client": "^1.0.0-beta.1.2.5",
@@ -123,6 +119,7 @@
     },
     "build": {
       "resources": [
+        "auth-filter",
         "aurelia-auth/aurelia-auth.d.ts",
         "aurelia-auth/aurelia-auth.js",
         "aurelia-auth/auth-fetch-config.js",
@@ -130,7 +127,7 @@
         "aurelia-auth/oAuth1.js",
         "aurelia-auth/oAuth2.js",
         "aurelia-auth/popup.js",
-        "aurelia-auth/storage.js",
+        "aurelia-auth/storage.js"
       ]
     }
   }
