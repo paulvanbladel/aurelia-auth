@@ -762,7 +762,8 @@ export class FetchConfig {
       httpConfig
         .withDefaults({
           headers: {
-            'Accept': 'application/json'
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
           }
         })
         .withInterceptor(this.auth.tokenInterceptor);

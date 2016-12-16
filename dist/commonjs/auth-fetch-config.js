@@ -29,7 +29,8 @@ var FetchConfig = exports.FetchConfig = (_dec = (0, _aureliaDependencyInjection.
     this.httpClient.configure(function (httpConfig) {
       httpConfig.withDefaults({
         headers: {
-          'Accept': 'application/json'
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
         }
       }).withInterceptor(_this.auth.tokenInterceptor);
     });
