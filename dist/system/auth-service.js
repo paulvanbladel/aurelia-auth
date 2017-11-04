@@ -64,8 +64,8 @@ System.register(['aurelia-dependency-injection', 'aurelia-fetch-client', 'aureli
           return this.auth.getPayload();
         };
 
-        AuthService.prototype.setToken = function setToken(token) {
-          this.auth.setToken(Object.defineProperty({}, this.config.tokenName, { value: token }));
+        AuthService.prototype.setToken = function setToken(token, redirect) {
+          this.auth.setToken(Object.defineProperty({}, this.config.tokenName, { value: token }), redirect);
         };
 
         AuthService.prototype.signup = function signup(displayName, email, password) {
