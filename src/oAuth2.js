@@ -113,7 +113,7 @@ export class OAuth2 {
       method: 'post',
       headers: {
         'Accept': 'application/json',
-        'Content-Type': 'application/json' 
+        'Content-Type': 'application/json'
       },
       body: json(data),
       credentials: credentials

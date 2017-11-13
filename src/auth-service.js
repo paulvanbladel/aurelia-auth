@@ -54,7 +54,7 @@ export class AuthService {
       method: 'post',
       headers: {
         'Accept': 'application/json',
-        'Content-Type': 'application/json' 
+        'Content-Type': 'application/json'
       },
       body: json(content)
     })
@@ -133,7 +133,7 @@ export class AuthService {
         method: 'post',
         headers: {
           'Accept': 'application/json',
-          'Content-Type': 'application/json' 
+          'Content-Type': 'application/json'
         },
         body: json(provider)
       }).then(status)
