@@ -12,12 +12,6 @@ export class FetchConfig {
   configure() {
     this.httpClient.configure(httpConfig => {
       httpConfig
-        .withDefaults({
-          headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json'
-          }
-        })
         .withInterceptor(this.auth.tokenInterceptor);
     });
   }

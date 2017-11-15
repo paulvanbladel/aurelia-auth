@@ -63,6 +63,10 @@ export class OAuth1 {
 
     return this.http.fetch(exchangeForTokenUrl, {
       method: 'post',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
       body: json(data),
       credentials: credentials
     }).then(status);
