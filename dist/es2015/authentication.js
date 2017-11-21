@@ -144,11 +144,11 @@ export let Authentication = (_dec = inject(Storage, BaseConfig), _dec(_class = c
     return {
       request(request) {
         if (auth.isAuthenticated() && config.httpInterceptor) {
-          let tokenName = config.tokenPrefix ? `${ config.tokenPrefix }_${ config.tokenName }` : config.tokenName;
+          let tokenName = config.tokenPrefix ? `${config.tokenPrefix}_${config.tokenName}` : config.tokenName;
           let token = storage.get(tokenName);
 
           if (config.authHeader && config.authToken) {
-            token = `${ config.authToken } ${ token }`;
+            token = `${config.authToken} ${token}`;
           }
 
           request.headers.set(config.authHeader, token);

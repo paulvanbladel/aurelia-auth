@@ -33,8 +33,8 @@ export let AuthService = (_dec = inject(HttpClient, Authentication, OAuth1, OAut
     return this.auth.getPayload();
   }
 
-  setToken(token) {
-    this.auth.setToken(Object.defineProperty({}, this.config.tokenName, { value: token }));
+  setToken(token, redirect) {
+    this.auth.setToken(Object.defineProperty({}, this.config.tokenName, { value: token }), redirect);
   }
 
   signup(displayName, email, password) {
