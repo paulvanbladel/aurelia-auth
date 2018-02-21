@@ -85,7 +85,7 @@ export class AuthService {
     })
       .then(status)
       .then((response) => {
-        this.auth.setToken(response);
+        //this.auth.setToken(response);
         this.eventAggregator.publish('auth:login', response);
         return response;
       });
