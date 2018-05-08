@@ -70,7 +70,7 @@ export class AuthService {
       });
   }
 
-  login(email, password) {
+  login(email, password, headers) {
     let loginUrl = this.auth.getLoginUrl();
     let content;
     if (typeof arguments[1] !== 'string') {
@@ -84,7 +84,7 @@ export class AuthService {
 
     return this.http.fetch(loginUrl, {
       method: 'post',
-      headers: typeof(content) === 'string' ? {'Content-Type': 'application/x-www-form-urlencoded'} : {},
+      headers: headers ? headers : (typeof(content) === 'string' ? {'Content-Type': 'application/x-www-form-urlencoded'} : {}),
       body: typeof(content) === 'string' ? content : json(content)
     })
       .then(status)
